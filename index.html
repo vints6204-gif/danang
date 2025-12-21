@@ -1,91 +1,70 @@
+import json
+from pathlib import Path
 
+# 1. 설정 및 데이터
+OUTPUT_HTML = "MYONGHOON_DANANG_V230.html"
+TRAVEL_TITLE = "묭❤️훈 다낭 여행 완벽 가이드"
+BG_IMAGE = "http://googleusercontent.com/image_collection/image_retrieval/6157223273925369578_0"
+
+# 2. 통합 HTML 템플릿
+html_content = f"""
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>묭❤️훈 다낭 여행 완벽 가이드</title>
+    <title>{TRAVEL_TITLE}</title>
     <style>
-        :root { 
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        :root {{ 
             --primary: #3F51B5; 
             --accent: #FF7043; 
-            --card-bg: rgba(255, 255, 255, 0.92);
-            --text: #222; 
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Pretendard', -apple-system, sans-serif; }
-        
-        body { 
-            margin: 0; padding: 0; 
-            background: url('http://googleusercontent.com/image_collection/image_retrieval/6157223273925369578_0') no-repeat center center fixed;
-            background-size: cover;
-            color: var(--text); 
-            padding-bottom: 80px; 
-            min-height: 100vh;
-        }
-        
-        /* 상단 고정 헤더 및 탭 */
-        .header-container {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-        .header { padding: 15px; text-align: center; font-size: 18px; font-weight: 800; color: var(--primary); }
-        
-        .tabs { display: flex; border-top: 1px solid rgba(0,0,0,0.05); }
-        .tab { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: bold; color: #666; cursor: pointer; }
-        .tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-
-        .tab-content { display: none; padding-top: 10px; }
-        .tab-content.active { display: block; }
-
-        /* 날씨 카드 */
-        .weather-card { 
-            background: linear-gradient(135deg, rgba(63, 81, 181, 0.85) 0%, rgba(48, 63, 159, 0.85) 100%); 
-            color: white; border-radius: 20px; padding: 20px; margin: 15px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .w-horizontal { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-top: 20px; background: rgba(255,255,255,0.15); 
-            padding: 15px 10px; border-radius: 15px; font-size: 11px; text-align: center;
-        }
-        .w-item { flex: 1; border-right: 1px solid rgba(255,255,255,0.2); }
-        .w-item:last-child { border-right: none; }
-        .w-val { display: block; font-weight: bold; font-size: 13px; }
-
-        /* 아코디언 스타일 */
-        details {
-            background: var(--card-bg); margin: 12px 15px; border-radius: 18px;
-            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        summary {
-            padding: 16px 20px; font-weight: 700; font-size: 15px; color: var(--primary);
-            cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;
-        }
-        summary::after { content: '+'; font-size: 20px; transition: transform 0.3s; }
-        details[open] summary::after { transform: rotate(45deg); }
-        .content-inner { padding: 0 15px 15px 15px; }
-        
-        .info-box { background: #F3F5FF; padding: 14px; border-radius: 12px; font-size: 13px; line-height: 1.8; border: 1px solid #E0E4F5; margin-bottom: 10px; }
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-bottom: 6px; color: white; }
-
-        /* 회화 & TTS 버튼 */
-        .phrase-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #FFF; border-radius: 10px; border: 1px solid #F0F0F0; margin-bottom: 8px; }
-        .tts-btn { border: none; background: #E8EAF6; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
-
-        .calc-input { width: 100%; height: 50px; border-radius: 12px; border: 1px solid #DDD; padding: 0 15px; font-size: 20px; margin-bottom: 12px; font-weight: bold; text-align: center; }
-        .btn-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .btn-add { height: 45px; border: 1.2px solid #3F51B5; background: white; color: #3F51B5; border-radius: 10px; font-weight: bold; font-size: 13px; }
-        .map-container { margin: 15px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid white; }
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-heavy: rgba(255, 255, 255, 0.95);
+            --text-main: #1D1D1F;
+        }}
+        * {{ box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Pretendard', sans-serif; }}
+        body {{ 
+            margin: 0; padding: 0; background: url('{BG_IMAGE}') no-repeat center center fixed;
+            background-size: cover; color: var(--text-main); min-height: 100vh;
+        }}
+        .header-container {{
+            position: sticky; top: 0; z-index: 1000; background: var(--glass);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }}
+        .header {{ padding: 18px; text-align: center; font-size: 20px; font-weight: 800; color: var(--primary); }}
+        .tabs {{ display: flex; }}
+        .tab {{ flex: 1; padding: 14px; text-align: center; font-size: 15px; font-weight: 700; color: #8E8E93; cursor: pointer; }}
+        .tab.active {{ color: var(--primary); border-bottom: 3px solid var(--primary); }}
+        .tab-content {{ display: none; padding: 10px 0 100px 0; }}
+        .tab-content.active {{ display: block; }}
+        .weather-card {{ 
+            background: linear-gradient(135deg, rgba(63, 81, 181, 0.8) 0%, rgba(26, 35, 126, 0.8) 100%); 
+            color: white; border-radius: 24px; padding: 24px; margin: 15px; backdrop-filter: blur(10px);
+        }}
+        .w-horizontal {{ display: flex; justify-content: space-between; margin-top: 20px; background: rgba(255,255,255,0.12); padding: 15px; border-radius: 18px; text-align: center; font-size: 11px; }}
+        .w-val {{ display: block; font-weight: 700; font-size: 13px; }}
+        details {{ background: var(--glass-heavy); margin: 12px 15px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); }}
+        summary {{ padding: 18px 22px; font-weight: 700; font-size: 16px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }}
+        summary::after {{ content: '+'; transition: transform 0.3s; }}
+        details[open] summary::after {{ transform: rotate(45deg); }}
+        .content-inner {{ padding: 0 20px 20px 20px; }}
+        .info-box {{ background: rgba(63, 81, 181, 0.05); padding: 15px; border-radius: 15px; font-size: 13px; line-height: 1.7; margin-bottom: 10px; border: 1px solid rgba(63, 81, 181, 0.1); }}
+        .badge {{ display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-bottom: 6px; color: white; }}
+        .calc-input {{ width: 100%; height: 55px; border-radius: 15px; border: 1px solid #DDD; padding: 0 15px; font-size: 22px; margin-bottom: 12px; font-weight: bold; text-align: center; }}
+        .btn-group {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }}
+        .btn-add {{ height: 45px; border: 1px solid var(--primary); background: white; border-radius: 10px; font-weight: bold; }}
+        .file-item {{ display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; border-radius: 12px; margin-top: 8px; border: 1px solid #EEE; }}
+        .phrase-row {{ display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 10px; margin-bottom: 6px; border: 1px solid #F0F0F0; }}
+        .phrase-text {{ font-size: 13px; flex: 1; margin-right: 10px; }}
+        .tts-btn {{ border:none; background:#E8EAF6; border-radius:50%; width:34px; height:34px; cursor:pointer; flex-shrink:0; }}
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <div class="header">묭❤️훈 다낭 여행 완벽 가이드</div>
+        <div class="header">{TRAVEL_TITLE}</div>
         <div class="tabs">
             <div class="tab active" onclick="openTab('info', this)">ℹ️ 정보</div>
             <div class="tab" onclick="openTab('schedule', this)">📅 스케줄</div>
@@ -94,86 +73,99 @@
 
     <div id="info" class="tab-content active">
         <div class="weather-card">
-            <div style="font-size:14px; font-weight:bold; margin-bottom:10px;">📍 <span id="loc-text">위치 분석 중...</span></div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div id="w-icon" style="font-size:60px;">⌛</div>
+            <div style="font-size:14px; font-weight:bold;">📍 <span id="loc-text">위치 분석 중</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                <div id="w-icon" style="font-size:50px;">☀️</div>
                 <div style="text-align:right;">
-                    <div id="w-temp" style="font-size:50px; font-weight:900;">--°</div>
-                    <div id="w-desc" style="font-size:18px; font-weight:bold;">데이터 확인 중</div>
+                    <div id="w-temp" style="font-size:40px; font-weight:900;">--°</div>
+                    <div id="w-desc" style="font-size:16px; font-weight:bold;">데이터 로딩 중</div>
                 </div>
             </div>
             <div class="w-horizontal">
-                <div class="w-item"><span class="w-label">💨 바람</span><span id="w-wind" class="w-val">--m/s</span></div>
-                <div class="w-item"><span class="w-label">💧 습도</span><span id="w-hum" class="w-val">--%</span></div>
-                <div class="w-item"><span class="w-label">☔ 비 확률</span><span id="w-rain" class="w-val">--%</span></div>
-                <div class="w-item"><span class="w-label">🌡️ 체감</span><span id="w-app" class="w-val">--°C</span></div>
+                <div class="w-item"><span>💨 바람</span><span id="w-wind" class="w-val">--</span></div>
+                <div class="w-item"><span>💧 습도</span><span id="w-hum" class="w-val">--</span></div>
+                <div class="w-item"><span>☔ 비</span><span id="w-rain" class="w-val">--</span></div>
+                <div class="w-item"><span>🌡️ 체감</span><span id="w-app" class="w-val">--</span></div>
             </div>
         </div>
 
-        <details class="travel-details"><summary>✈️ 항공 예약 상세</summary><div class="content-inner">
+        <details class="travel-details"><summary>✈️ 항공 예약 상세 정보</summary><div class="content-inner">
             <div class="info-box">
-                <span class="badge" style="background:#E53935;">출국 | 티웨이 TW007</span><br>
-                <b>터미널:</b> 인천공항 제1여객터미널<br>
-                <b>시간:</b> 2026.01.13(화) 07:45 출발 → 10:35 다낭 도착<br>
-                <b>예약번호:</b> <span style="color:#D32F2F; font-weight:bold;">FX4MV3</span><br>
-                <b>수하물:</b> 위탁 15kg / 기내 10kg (합계 1인당)<br>
-                <b>체크인:</b> 출발 3시간 전 권장 (04:45)
+                <span class="badge" style="background:#E53935;">출국 | 티웨이항공 TW007</span><br>
+                <b>일정:</b> 2026.01.13(화) 07:45 서울(ICN) 출발<br>
+                <b>예약자:</b> WON MIYOUNG / PYO SANGHUN<br>
+                <b>예약번호(PNR):</b> <span style="color:#D32F2F; font-weight:bold;">FX4MV3</span><br>
+                <b>온라인 체크인:</b> 01.12 07:45 ~ 01.13 06:45<br>
+                <hr style="border:0.5px solid #EEE; margin:8px 0;">
+                <b>수하물:</b> 위탁 15kg / 휴대 10kg
             </div>
             <div class="info-box">
-                <span class="badge" style="background:#FF7043;">귀국 | 비엣젯 VJ874</span><br>
-                <b>시간:</b> 2026.01.17(토) 15:10 다낭 출발 → 22:15 인천 도착<br>
-                <b>예약번호:</b> <span style="color:#D32F2F; font-weight:bold;">7GJ8NY</span><br>
-                <b>수하물:</b> <span style="color:red;">위탁 수하물 없음(유료)</span> / 기내 7kg<br>
-                <b>참고:</b> 비엣젯 항공은 기내 생수 및 담요가 유료입니다.
+                <span class="badge" style="background:#FF7043;">귀국 | 비엣젯항공 VJ874</span><br>
+                <b>일정:</b> 2026.01.17(토) 15:10 다낭(DAD) 출발<br>
+                <b>예약자:</b> WON MIYOUNG / PYO SANGHUN<br>
+                <b>예약번호(PNR):</b> <span style="color:#D32F2F; font-weight:bold;">7GJ8NY</span><br>
+                <hr style="border:0.5px solid #EEE; margin:8px 0;">
+                <b>수하물:</b> <span style="color:red;">위탁 없음</span> / 휴대 7kg
             </div>
         </div></details>
 
-        <details class="travel-details"><summary>🏨 숙소 예약 상세</summary><div class="content-inner">
+        <details class="travel-details"><summary>🏨 호텔 상세 정보</summary><div class="content-inner">
             <div class="info-box">
                 <span class="badge" style="background:#3F51B5;">멜리아 빈펄 다낭 리버프론트</span><br>
-                <b>주소:</b> 341 Tran Hung Dao, An Hai Bac, Son Tra, Da Nang<br>
-                <b>예약번호:</b> 4575465<br>
-                <b>객실:</b> 스몰 스위트 리버뷰 (킹베드 1개)<br>
-                <b>기간:</b> 2026.01.13 ~ 01.17 (4박)<br>
-                <b>혜택:</b> 성인 2인 조식 포함 / 야외 수영장 및 Gym 무료 이용<br>
-                <b>체크인:</b> 14:00 / <b>체크아웃:</b> 12:00
+                ⛫ 341 Đ. Trần Hưng Đạo, An Hải Bắc, Son Tra, 다낭, 베트남<br>
+                ☏ +84-236-3642888<br><br>
+                <b>호텔 예약 확정번호:</b> 4575465<br>
+                <b>투숙객 이름:</b> WON MIYOUNG, PYO SANGHUN<br><br>
+                <b>예약 정보:</b> 객실 1개, 4박<br>
+                <b>체크인:</b> 2026년 1월 13일 14:00 이후<br>
+                <b>체크아웃:</b> 2026년 1월 17일 12:00 이전<br><br>
+                <b>객실 유형:</b> 스몰 스위트<br>
+                <b>식사:</b> 1/14~1/17 객실당 조식 2인 포함<br>
+                <b>정원:</b> 최대 투숙 인원 2명 (성인 2명)<br>
+                <b>침대 유형:</b> 킹침대 1개 / <b>창문:</b> 창문 있음
             </div>
         </div></details>
 
         <details class="travel-details"><summary>🛡️ 여행자 보험 상세</summary><div class="content-inner">
             <div class="info-box">
-                <span class="badge" style="background:#4CAF50;">피보험자: 원미영</span><br>
-                <b>종목:</b> 해외여행보험 (Deluxe)<br>
-                <b>증권번호:</b> 251214786059<br>
-                <b>기간:</b> 2026.01.13 00:00 ~ 01.17 23:59 (5일)<br>
-                <b>계약자:</b> CTRIP.COM, HONG KONG
+                <span class="badge" style="background:#4CAF50;">피보험자: WON/MIYOUNG</span><br>
+                <b>증권번호:</b> 251214786059 | <b>플랜:</b> Deluxe
             </div>
             <div class="info-box">
-                <span class="badge" style="background:#2196F3;">피보험자: 표상훈</span><br>
-                <b>종목:</b> 해외여행보험 (Deluxe)<br>
-                <b>증권번호:</b> 251214786052<br>
-                <b>기간:</b> 2026.01.13 00:00 ~ 01.17 23:59 (5일)<br>
-                <b>계약자:</b> CTRIP.COM, HONG KONG
+                <span class="badge" style="background:#2196F3;">피보험자: PYO/SANGHUN</span><br>
+                <b>증권번호:</b> 251214786052 | <b>플랜:</b> Deluxe
             </div>
         </div></details>
 
         <details class="travel-details"><summary>📁 주요 서류 보관함</summary><div class="content-inner">
             <input type="file" id="doc-upload" style="display:none" onchange="processFiles(this.files)" accept="image/*, .pdf">
-            <button onclick="document.getElementById('doc-upload').click()" style="width:100%; height:45px; border:2px dashed #3F51B5; background:none; color:#3F51B5; font-weight:bold; border-radius:12px; cursor:pointer; margin-bottom:10px;">+ 서류 추가 (이미지/PDF)</button>
+            <button onclick="document.getElementById('doc-upload').click()" style="width:100%; height:45px; border:2px dashed #3F51B5; background:none; color:#3F51B5; font-weight:bold; border-radius:12px; cursor:pointer; margin-bottom:10px;">+ 서류 추가</button>
             <div id="file-list-container"></div>
         </div></details>
 
-        <details class="travel-details"><summary>🗣️ 상황별 필수 회화</summary><div class="content-inner">
-            <div class="phrase-row"><span>안녕하세요 - Xin chào (씬 짜오)</span><button class="tts-btn" onclick="play('Xin chào')">🔊</button></div>
-            <div class="phrase-row"><span>감사합니다 - Cảm ơn (깜 언)</span><button class="tts-btn" onclick="play('Cảm ơn')">🔊</button></div>
-            <div class="phrase-row"><span>얼마에요? - Bao nhiêu tiền? (바오 니우 띠엔?)</span><button class="tts-btn" onclick="play('Bao nhiêu tiền')">🔊</button></div>
-            <div class="phrase-row"><span>고수 빼주세요 - Đừng cho rau thơm (등 쪼 라우 텀)</span><button class="tts-btn" onclick="play('Đừng cho rau thơm')">🔊</button></div>
-            <div class="phrase-row"><span>깎아주세요 - Giảm giá đi (잠 자 디)</span><button class="tts-btn" onclick="play('Giảm giá đi')">🔊</button></div>
-            <div class="phrase-row"><span>계산서 주세요 - Tính tiền (띤 띠엔)</span><button class="tts-btn" onclick="play('Tính tiền')">🔊</button></div>
+        <details class="travel-details"><summary>🗣️ 상황별 필수 회화 (상세)</summary><div class="content-inner">
+            <div style="margin-bottom:15px;">
+                <b style="color:var(--primary); font-size:14px;">🌟 필수 기본</b>
+                <div class="phrase-row"><span class="phrase-text">안녕하세요<br>Xin chào (씬 짜오)</span><button class="tts-btn" onclick="play('Xin chào')">🔊</button></div>
+                <div class="phrase-row"><span class="phrase-text">감사합니다<br>Cảm ơn (깜 언)</span><button class="tts-btn" onclick="play('Cảm ơn')">🔊</button></div>
+                <div class="phrase-row"><span class="phrase-text">죄송합니다<br>Xin lỗi (씬 로이)</span><button class="tts-btn" onclick="play('Xin lỗi')">🔊</button></div>
+            </div>
+            <div style="margin-bottom:15px;">
+                <b style="color:var(--primary); font-size:14px;">🍴 식당에서</b>
+                <div class="phrase-row"><span class="phrase-text">고수 빼주세요<br>Đừng cho rau thơm (등 쪼 라우 텀)</span><button class="tts-btn" onclick="play('Đừng cho rau thơm')">🔊</button></div>
+                <div class="phrase-row"><span class="phrase-text">계산서 주세요<br>Tính tiền (띤 띠엔)</span><button class="tts-btn" onclick="play('Tính tiền')">🔊</button></div>
+                <div class="phrase-row"><span class="phrase-text">얼음물 주세요<br>Cho tôi nước đá (쪼 또이 느억 다)</span><button class="tts-btn" onclick="play('Cho tôi nước đá')">🔊</button></div>
+            </div>
+            <div style="margin-bottom:15px;">
+                <b style="color:var(--primary); font-size:14px;">🛍️ 쇼핑 & 이동</b>
+                <div class="phrase-row"><span class="phrase-text">얼마에요?<br>Bao nhiêu tiền? (바오 니우 띠엔?)</span><button class="tts-btn" onclick="play('Bao nhiêu tiền')">🔊</button></div>
+                <div class="phrase-row"><span class="phrase-text">비싸요, 깎아주세요<br>Đắt quá, giảm giá đi (닷 꾸아, 잠 자 디)</span><button class="tts-btn" onclick="play('Đắt quá, giảm giá đi')">🔊</button></div>
+                <div class="phrase-row"><span class="phrase-text">여기로 가주세요<br>Làm ơn đưa tôi đến đây (람 언 드아 또이 덴 데이)</span><button class="tts-btn" onclick="play('Làm ơn đưa tôi đến đây')">🔊</button></div>
+            </div>
         </div></details>
 
         <details class="travel-details"><summary>💰 환율계산기</summary><div class="content-inner">
-            <div style="font-size:12px; color:var(--primary); text-align:center; margin-bottom:10px; font-weight:bold;">기준: 1,000동 = 55원</div>
+            <div style="font-size:12px; color:var(--primary); text-align:center; margin-bottom:10px; font-weight:bold;">1,000동 = 55원</div>
             <input type="text" id="vnd-val" class="calc-input" oninput="manualInput(this.value)" placeholder="VND 입력">
             <div class="btn-group">
                 <button class="btn-add" onclick="sumVnd(1000)">+1천</button>
@@ -181,141 +173,123 @@
                 <button class="btn-add" onclick="sumVnd(100000)">+10만</button>
                 <button class="btn-add" style="color:red; border-color:red;" onclick="resetVnd()">AC</button>
             </div>
-            <div id="krw-res" style="margin-top:15px; text-align:right; font-size:22px; font-weight:900; color:#D32F2F;">0 원</div>
+            <div id="krw-res" style="margin-top:15px; text-align:right; font-size:24px; font-weight:900; color:#D32F2F;">0 원</div>
         </div></details>
     </div>
 
     <div id="schedule" class="tab-content">
-        <div class="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d122691.61996131463!2d108.1714617!3d16.0544068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219c792252a13%3A0xfc14e3a30d050605!2z67Kg7Yq464KoIOuLpOuCqQ!5e0!3m2!1sko!2skr!4v1710000000000" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <div style="margin:15px; border-radius:20px; overflow:hidden; height:250px;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d122691.6199173108!2d108.1714607!3d16.0471659!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314219c792252a13%3A0xfc14e3a3da90100!2z67Kg7Yq464KoIOuUuOuCrem9mA!5e0!3m2!1sko!2skr!4v1710000000000!5m2!1sko!2skr" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
         </div>
-        <details class="schedule-details"><summary>🗓️ 1일차: 다낭 도착 및 시내 탐방</summary><div class="content-inner">
-            <div class="info-box">
-                <b>10:35</b> 다낭 국제공항 도착 및 입국 심사<br>
-                <b>12:00</b> 환전 및 유심 구매 후 점심 (냐벱 등 현지식)<br>
-                <b>14:00</b> 멜리아 빈펄 리버프론트 체크인 및 짐 풀기<br>
-                <b>16:00</b> 미케비치 산책 및 카페 타임<br>
-                <b>19:00</b> 용다리 야경 감상 및 저녁 식사 (해산물)
-            </div>
-        </div></details>
-        <details class="schedule-details"><summary>🗓️ 2일차: 문화와 힐링 투어</summary><div class="content-inner">
-            <div class="info-box">
-                <b>09:00</b> 호텔 조식 후 오행산(마블 마운틴) 이동<br>
-                <b>12:00</b> 점심 (반미/쌀국수 맛집 투어)<br>
-                <b>14:00</b> 손짜 반도 링엄사(영응사) 거대 해수관음상<br>
-                <b>16:30</b> 한시장 쇼핑 (아오자이, 기념품)<br>
-                <b>19:00</b> 스파 및 전신 마사지로 피로 풀기
-            </div>
-        </div></details>
-        <details class="schedule-details"><summary>🗓️ 3일차: 바나힐 어드벤처</summary><div class="content-inner">
-            <div class="info-box">
-                <b>08:30</b> 호텔 조식 후 바나힐로 이동 (프라이빗 차량)<br>
-                <b>10:00</b> 세계 최장 케이블카 탑승 → 골든브릿지 사진 촬영<br>
-                <b>12:00</b> 프랑스 빌리지 관람 및 뷔페 점심<br>
-                <b>14:00</b> 테마파크 어트랙션 및 루지 체험<br>
-                <b>18:00</b> 시내 복귀 후 저녁 (스테이크 또는 한식)
-            </div>
-        </div></details>
-        <details class="schedule-details"><summary>🗓️ 4일차: 호이안 올드타운 감성</summary><div class="content-inner">
-            <div class="info-box">
-                <b>10:00</b> 호텔 체크아웃 준비 및 짐 보관<br>
-                <b>13:00</b> 호이안 이동 및 바구니 배(코코넛 배) 체험<br>
-                <b>16:00</b> 호이안 올드타운 도보 관광 및 노란벽 사진 촬영<br>
-                <b>18:30</b> 투본강 소원배 띄우기 및 야시장 구경<br>
-                <b>20:30</b> 호이안 카페 감상 후 다낭 복귀
-            </div>
-        </div></details>
-        <details class="schedule-details"><summary>🗓️ 5일차: 여유로운 마무리 및 출국</summary><div class="content-inner">
-            <div class="info-box">
-                <b>09:00</b> 호텔 조식 후 마지막 수영 또는 스파<br>
-                <b>11:00</b> 다낭 핑크성당 및 기념품 최종 구매<br>
-                <b>12:30</b> 롯데마트 방문 (커피, 간식 등 선물 쇼핑)<br>
-                <b>13:30</b> 마지막 만찬 후 다낭 공항 이동<br>
-                <b>15:10</b> 비엣젯 VJ874 인천행 탑승
-            </div>
-        </div></details>
+        <details class="schedule-details"><summary>🗓️ 1일차: 다낭 도착 및 야경</summary><div class="content-inner"><div class="info-box">공항 도착(10:35) → 중식 → 호텔 체크인(14:00) → 미케비치 → 용다리 야경</div></div></details>
+        <details class="schedule-details"><summary>🗓️ 2일차: 시내 관광</summary><div class="content-inner"><div class="info-box">오행산 → 링엄사 → 한시장 쇼핑 → 마사지</div></div></details>
+        <details class="schedule-details"><summary>🗓️ 3일차: 바나힐 어드벤처</summary><div class="content-inner"><div class="info-box">케이블카 → 골든브릿지 → 테마파크 → 루지 체험</div></div></details>
+        <details class="schedule-details"><summary>🗓️ 4일차: 호이안 올드타운</summary><div class="content-inner"><div class="info-box">바구니 배 → 호이안 투어 → 소원배 띄우기</div></div></details>
+        <details class="schedule-details"><summary>🗓️ 5일차: 쇼핑 및 출국</summary><div class="content-inner"><div class="info-box">핑크성당 → 롯데마트 선물 쇼핑 → 공항 이동(13:30) → 출국(15:10)</div></div></details>
     </div>
 
     <script>
-        function openTab(tabId, el) {
+        function openTab(tabId, el) {{
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             el.classList.add('active');
-        }
+            window.scrollTo(0,0);
+        }}
 
-        // 세션 자동 닫힘 (정보 & 스케줄 모두 적용)
-        function setupAccordion(selector) {
+        function setupAccordion(selector) {{
             const elements = document.querySelectorAll(selector);
-            elements.forEach((target) => {
-                target.addEventListener('click', () => {
-                    elements.forEach((el) => { if (el !== target) el.removeAttribute('open'); });
-                });
-            });
-        }
+            elements.forEach((target) => {{
+                target.addEventListener('click', () => {{
+                    elements.forEach((el) => {{ if (el !== target) el.removeAttribute('open'); }});
+                }});
+            }});
+        }}
         setupAccordion('.travel-details');
         setupAccordion('.schedule-details');
 
-        // 날씨 업데이트 및 지역명 표시
-        async function updateWeather() {
+        async function updateWeather() {{
             if (!navigator.geolocation) return;
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const { latitude: lat, longitude: lon } = pos.coords;
-                try {
-                    // Nominatim API를 통한 지역명 변환
-                    const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            navigator.geolocation.getCurrentPosition(async (pos) => {{
+                const {{ latitude: lat, longitude: lon }} = pos.coords;
+                try {{
+                    const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${{lat}}&lon=${{lon}}`);
                     const gData = await geo.json();
-                    const region = gData.address.city || gData.address.town || gData.address.village || "현위치";
-                    document.getElementById('loc-text').innerText = region;
-
-                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=precipitation_probability&timezone=auto`);
+                    document.getElementById('loc-text').innerText = gData.address.city || gData.address.town || "현재 위치";
+                    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${{lat}}&longitude=${{lon}}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=precipitation_probability&timezone=auto`);
                     const d = await res.json();
-                    document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
-                    document.getElementById('w-app').innerText = Math.round(d.current.apparent_temperature) + "°C";
-                    document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
-                    document.getElementById('w-wind').innerText = (d.current.wind_speed_10m/3.6).toFixed(1) + "m/s";
+                    const c = d.current;
+                    document.getElementById('w-temp').innerText = Math.round(c.temperature_2m) + "°";
+                    document.getElementById('w-app').innerText = Math.round(c.apparent_temperature) + "°C";
+                    document.getElementById('w-hum').innerText = c.relative_humidity_2m + "%";
+                    document.getElementById('w-wind').innerText = (c.wind_speed_10m/3.6).toFixed(1) + "m/s";
                     document.getElementById('w-rain').innerText = d.hourly.precipitation_probability[0] + "%";
-                    document.getElementById('w-desc').innerText = d.current.weather_code <= 3 ? "맑음/구름" : "흐림/비";
-                    document.getElementById('w-icon').innerText = d.current.weather_code <= 1 ? "☀️" : "☁️";
-                } catch(e) {}
-            });
-        }
-
-        // 환율 및 파일 로직 (동일 유지)
-        let currentVnd = 0;
-        function sumVnd(val) { currentVnd += val; updateCalc(); }
-        function manualInput(val) { currentVnd = Number(val.replace(/,/g, '')) || 0; updateCalc(); }
-        function resetVnd() { currentVnd = 0; updateCalc(); }
-        function updateCalc() {
-            document.getElementById('vnd-val').value = currentVnd.toLocaleString();
-            document.getElementById('krw-res').innerText = Math.round((currentVnd/1000)*55).toLocaleString() + " 원";
-        }
-
-        function play(t) {
-            const m = new SpeechSynthesisUtterance(t);
-            m.lang = 'vi-VN';
-            window.speechSynthesis.speak(m);
-        }
+                    document.getElementById('w-desc').innerText = c.weather_code <= 3 ? "맑음" : "흐림/비";
+                    document.getElementById('w-icon').innerText = c.weather_code <= 1 ? "☀️" : "☁️";
+                }} catch(e) {{}}
+            }});
+        }}
 
         let fileStorage = [];
-        function processFiles(list) {
-            for(let f of list) {
-                fileStorage.push({ id: Date.now() + Math.random(), name: f.name, url: URL.createObjectURL(f) });
-            }
-            renderFiles();
-        }
-        function renderFiles() {
+        function processFiles(list) {{
+            for(let f of list) {{
+                const reader = new FileReader();
+                reader.onload = (e) => {{
+                    fileStorage.push({{ id: Date.now()+Math.random(), name: f.name, data: e.target.result, type: f.type }});
+                    renderFiles();
+                }};
+                reader.readAsDataURL(f);
+            }}
+        }}
+
+        function renderFiles() {{
             const div = document.getElementById('file-list-container');
             div.innerHTML = fileStorage.map(f => `
                 <div class="file-item">
-                    <span class="file-link" style="color:var(--primary);cursor:pointer;font-weight:bold" onclick="window.open('${f.url}')">📄 ${f.name}</span>
-                    <span style="color:red;cursor:pointer;font-size:12px;" onclick="removeFile(${f.id})">삭제</span>
+                    <span style="color:var(--primary); font-weight:bold; cursor:pointer;" onclick="openFile('${{f.id}}')">📄 ${{f.name}}</span>
+                    <span style="color:red; cursor:pointer; font-size:12px;" onclick="removeFile(${{f.id}})">삭제</span>
                 </div>
             `).join('');
-        }
-        function removeFile(id) { fileStorage = fileStorage.filter(f => f.id !== id); renderFiles(); }
+        }}
+
+        function openFile(id) {{
+            const file = fileStorage.find(f => f.id == id);
+            const base64Data = file.data.split(',')[1];
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {{ byteNumbers[i] = byteCharacters.charCodeAt(i); }}
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], {{type: file.type}});
+            const fileURL = URL.createObjectURL(blob);
+            window.open(fileURL, '_blank');
+        }}
+
+        function removeFile(id) {{ fileStorage = fileStorage.filter(f => f.id != id); renderFiles(); }}
+
+        let currentVnd = 0;
+        function sumVnd(val) {{ currentVnd += val; updateCalc(); }}
+        function manualInput(val) {{ currentVnd = Number(val.replace(/,/g, '')) || 0; updateCalc(); }}
+        function resetVnd() {{ currentVnd = 0; updateCalc(); }}
+        function updateCalc() {{
+            document.getElementById('vnd-val').value = currentVnd.toLocaleString();
+            document.getElementById('krw-res').innerText = Math.round((currentVnd/1000)*55).toLocaleString() + " 원";
+        }}
+
+        function play(t) {{
+            const m = new SpeechSynthesisUtterance(t);
+            m.lang = 'vi-VN';
+            window.speechSynthesis.speak(m);
+        }}
 
         window.onload = updateWeather;
     </script>
 </body>
 </html>
+"""
+
+# 파일 저장
+try:
+    Path(OUTPUT_HTML).write_text(html_content, encoding="utf-8")
+except Exception:
+    pass
+
