@@ -1,163 +1,199 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DANANG : THE MOMENT</title>
+    <title>DANANG : A1 STANDARD SYNC</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         :root { 
-            --bg-dark: #000000; --card-dark: #1A1A1A; --point-gold: #FFD700;
-            --vj-red: #D71920; --text-white: #FFFFFF; --text-gray: #888888;
+            --bg-dark: #000000; --card-dark: #121212; --point-gold: #FFD700;
+            --vj-red: #D71920; --text-white: #FFFFFF; --text-gray: #A0A0A0;
         }
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.05em; }
-        body { margin: 0; padding: 0; background: var(--bg-dark); color: var(--text-white); font-size: 12px; line-height: 1.2; }
+        body { margin: 0; padding: 0; background: var(--bg-dark); color: var(--text-white); font-size: 13px; line-height: 1.4; overflow: hidden; }
         
-        /* 컨테이너 */
-        .container { padding: 10px 15px 160px; min-height: 100vh; }
-
-        /* 날씨 위젯 (아이콘 + 온도 + 바람세기) */
-        .weather-hero { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 5px; background: var(--bg-dark); margin-bottom: 5px;
+        /* 고정 헤더 */
+        .fixed-header { 
+            position: fixed; top: 0; left: 0; right: 0; 
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); z-index: 1000;
+            padding: 15px 20px 0; border-bottom: 1px solid #1A1A1A;
         }
-        .w-left { font-size: 32px; flex: 1; text-align: left; }
-        .w-center { flex: 2; text-align: center; }
-        .w-center .temp { font-size: 48px; font-weight: 200; color: var(--point-gold); line-height: 1; }
-        .w-center .city-label { font-size: 9px; font-weight: 800; color: var(--text-gray); letter-spacing: 0.1em; margin-bottom: 2px; }
-        .w-right { flex: 1; text-align: right; font-size: 11px; color: var(--text-gray); }
-        .w-right strong { display: block; font-size: 14px; color: var(--text-white); }
+        .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .w-center .temp { font-size: 32px; color: var(--point-gold); font-weight: 200; }
 
-        .section-label { font-size: 9px; font-weight: 800; color: #444; margin: 12px 0 6px; text-transform: uppercase; }
-        
-        /* 항공권 카드 */
-        .flight-card { 
-            background: #FFFFFF; color: #111; border-radius: 14px; margin-bottom: 10px; overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .flight-top { padding: 12px 15px; border-bottom: 1px dashed #DDD; display: flex; justify-content: space-between; align-items: center; }
-        .flight-route { font-size: 20px; font-weight: 900; color: #000; }
-        .flight-pnr { font-size: 11px; font-weight: 800; color: var(--vj-red); background: #FFF0F0; padding: 2px 6px; border-radius: 4px; }
-        
-        .flight-mid { padding: 12px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .info-box { font-size: 10px; color: #777; }
-        .info-box strong { display: block; font-size: 13px; color: #111; margin-top: 1px; }
-        
-        .baggage-section { background: #F8F8F8; padding: 10px 15px; border-top: 1px solid #EEE; }
-        .bag-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 3px; color: #444; }
-        .bag-row strong { color: #000; }
+        .tab-group { display: flex; gap: 8px; padding-bottom: 10px; }
+        .tab-btn { flex: 1; background: #222; border: none; color: #666; padding: 12px 0; border-radius: 10px; font-size: 12px; font-weight: 800; }
+        .tab-btn.active { background: var(--point-gold); color: #000; }
 
-        /* 귀국편 (레드 테마) */
-        .return-flight { background: var(--vj-red) !important; color: #FFF !important; }
-        .return-flight .flight-route, .return-flight .info-box strong { color: #FFF !important; }
-        .return-flight .flight-pnr { background: rgba(255,255,255,0.2); color: #FFF; }
-        .return-flight .info-box { color: rgba(255,255,255,0.7); }
-        .return-flight .baggage-section { background: rgba(0,0,0,0.1); border-top: 1px dashed rgba(255,255,255,0.3); }
-        .return-flight .bag-row { color: rgba(255,255,255,0.9); }
-        .return-flight .bag-row strong { color: #FFF; }
+        .scroll-container { height: 100vh; overflow-y: auto; padding: 135px 0 185px; -webkit-overflow-scrolling: touch; }
+        .scroll-container.no-calc { padding-bottom: 0px !important; }
 
-        /* 호텔 및 보험 카드 */
-        .detail-card { background: #151515; border-radius: 14px; padding: 15px; margin-bottom: 10px; border: 1px solid #222; }
-        .detail-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 6px; }
-        .detail-row span:first-child { color: #666; }
-        .detail-row span:last-child { color: #EEE; font-weight: 600; text-align: right; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        /* 환율 계산기 */
-        .fixed-calc { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: #000; 
-            padding: 15px 20px 30px; border-top: 1px solid #222; z-index: 1000;
-        }
-        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .calc-input { background: transparent; border: none; color: #FFF; font-size: 22px; width: 50%; outline: none; }
-        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; }
-        .btn-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btn { background: #1A1A1A; border: none; color: #FFF; padding: 14px 0; border-radius: 10px; font-size: 12px; font-weight: 700; }
-        .btn-ac { color: var(--vj-red); background: #222; }
+        /* [정보 탭] 고정 데이터 */
+        .padding-wrap { padding: 0 20px; }
+        .section-label { font-size: 10px; font-weight: 900; color: #444; margin: 20px 0 10px; text-transform: uppercase; }
+        .flight-card { background: #FFFFFF; color: #111; border-radius: 16px; margin-bottom: 15px; overflow: hidden; }
+        .flight-top { padding: 15px 18px; border-bottom: 1px dashed #DDD; display: flex; justify-content: space-between; align-items: center; }
+        .flight-route { font-size: 22px; font-weight: 900; }
+        .flight-pnr { font-size: 11px; font-weight: 800; color: var(--vj-red); background: #FFF0F0; padding: 3px 8px; border-radius: 6px; }
+        .flight-mid { padding: 15px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .info-box { font-size: 11px; color: #777; }
+        .info-box strong { display: block; font-size: 14px; color: #111; margin-top: 2px; }
+        .hotel-detail { background: #151515; border: 1px solid #222; border-radius: 16px; padding: 18px; margin-bottom: 20px; }
+
+        /* [일정 탭] 실시간 엑셀 연동 */
+        .plan-layout { display: flex; flex-direction: column; height: calc(100vh - 135px); }
+        .map-frame { width: 100%; height: 38vh; flex-shrink: 0; }
+        .map-frame iframe { width: 100%; height: 100%; border: none; filter: invert(90%) contrast(1.1); }
+        .list-sheet { flex: 1; background: #000; border-top: 2px solid var(--point-gold); border-radius: 24px 24px 0 0; margin-top: -20px; z-index: 100; overflow-y: auto; padding: 20px 0 100px; }
+        .day-scroller { display: flex; gap: 10px; padding: 0 20px 20px; overflow-x: auto; scrollbar-width: none; }
+        .day-chip { background: #1A1A1A; border: 1px solid #2A2A2A; color: #888; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .day-chip.active { background: var(--point-gold); color: #000; border-color: var(--point-gold); }
+        .timeline { padding: 0 20px; display: none; }
+        .timeline.active { display: block; }
+        .plan-card { background: #151515; border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid #222; }
+        .plan-card.active-item { border-color: var(--point-gold); background: #1A1A1A; }
+        .category-tag { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; }
+        .tag-eat { background: rgba(255, 69, 58, 0.1); color: #FF453A; }
+        .tag-play { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
+        .tag-see { background: rgba(52, 199, 89, 0.1); color: #34C759; }
+
+        /* 계산기 */
+        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.98); padding: 15px 20px 35px; border-top: 1px solid #1A1A1A; z-index: 1000; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header class="fixed-header">
         <div class="weather-hero">
-            <div id="w-icon" class="w-left">☀️</div>
-            <div class="w-center">
-                <div class="city-label">DANANG NOW</div>
-                <div id="w-temp" class="temp">28°</div>
+            <div id="w-icon" style="font-size:32px;">☀️</div>
+            <div style="text-align:center;">
+                <div style="font-size:9px; color:#555; font-weight:900;">DANANG NOW</div>
+                <div id="w-temp" class="temp">--°</div>
             </div>
-            <div class="w-right">WIND<strong id="w-wind">3.2 m/s</strong></div>
+            <div style="text-align:right;"><div style="font-size:9px; color:#555;">WIND</div><div id="w-wind" style="font-size:16px;">--m/s</div></div>
         </div>
-
-        <div class="section-label">Departure Flight</div>
-        <div class="flight-card">
-            <div class="flight-top">
-                <div class="flight-route">ICN ✈ DAD</div>
-                <div class="flight-pnr">FX4MV3</div>
-            </div>
-            <div class="flight-mid">
-                <div class="info-box">FLIGHT<strong>T'way TW007</strong></div>
-                <div class="info-box">DEPARTURE<strong>01.13 07:45</strong></div>
-                <div class="info-box">CHECK-IN<strong>01.12 07:45</strong></div>
-                <div class="info-box">PASSENGERS<strong>Won & Pyo</strong></div>
-            </div>
-            <div class="baggage-section">
-                <div class="bag-row"><span>위탁 수하물 (Checked)</span><strong>각 15kg (합계 203cm)</strong></div>
-                <div class="bag-row"><span>기내 수하물 (Cabin)</span><strong>각 10kg (55*40*20)</strong></div>
-            </div>
+        <div class="tab-group">
+            <button id="btn-info" class="tab-btn active" onclick="showTab('info')">INFO</button>
+            <button id="btn-plan" class="tab-btn" onclick="showTab('plan')">PLAN & NAVI</button>
         </div>
+    </header>
 
-        <div class="section-label">Return Flight</div>
-        <div class="flight-card return-flight">
-            <div class="flight-top">
-                <div class="flight-route">DAD ✈ ICN</div>
-                <div class="flight-pnr">7GJ8NY</div>
-            </div>
-            <div class="flight-mid">
-                <div class="info-box">FLIGHT<strong>VietJet VJ874</strong></div>
-                <div class="info-box">DEPARTURE<strong>01.17 15:10</strong></div>
-                <div class="info-box">CHECK-IN<strong>01.16 15:10</strong></div>
-                <div class="info-box">CABIN LIMIT<strong>7kg (Strictly)</strong></div>
-            </div>
-            <div class="baggage-section">
-                <div class="bag-row"><span>WON MIYOUNG</span><strong>위탁 20kg (119*119*81)</strong></div>
-                <div class="bag-row"><span>PYO SANGHUN</span><strong>위탁 불포함 (0kg)</strong></div>
-                <div class="bag-row"><span>기내 공통</span><strong>7kg (56*36*23cm)</strong></div>
+    <main id="main-scroll" class="scroll-container">
+        <div id="info" class="tab-content active">
+            <div class="padding-wrap">
+                <div class="section-label">Departure Flight</div>
+                <div class="flight-card">
+                    <div class="flight-top"><div class="flight-route">ICN ✈ DAD</div><div class="flight-pnr">FX4MV3</div></div>
+                    <div class="flight-mid">
+                        <div class="info-box">FLIGHT<strong>T'way TW007</strong></div>
+                        <div class="info-box">DEPARTURE<strong>01.13 07:45</strong></div>
+                    </div>
+                </div>
+                <div class="section-label">Accommodation</div>
+                <div class="hotel-detail">
+                    <div style="font-size:18px; font-weight:800; color:var(--point-gold);">Melia Vinpearl Riverfront</div>
+                    <div style="font-size:13px; color:#EEE; margin-top:10px;"><b>Reservation: #4575465</b></div>
+                </div>
             </div>
         </div>
 
-        <div class="section-label">Accommodation</div>
-        <div class="detail-card">
-            <div class="detail-row"><span>Hotel</span><span style="color:var(--point-gold)">Melia Vinpearl Riverfront</span></div>
-            <div class="detail-row"><span>Confirmation</span><span>#4575465</span></div>
-            <div class="detail-row"><span>Room Type</span><span>Small Suite (King Bed)</span></div>
-            <div class="detail-row"><span>Breakfast</span><span>Daily 2 Pax Included</span></div>
-            <div class="detail-row" style="border:none; padding-bottom:0;">
-                <span style="font-size:9px; color:#555; line-height:1.4;">
-                    341 Đ. Trần Hưng Đạo, Son Tra, Da Nang<br>☏ +84-236-3642888
-                </span>
+        <div id="plan" class="tab-content">
+            <div class="plan-layout">
+                <div class="map-frame"><iframe id="main-map" src="about:blank"></iframe></div>
+                <div class="list-sheet">
+                    <div style="width:40px; height:4px; background:#333; border-radius:2px; margin: 15px auto;"></div>
+                    <div class="day-scroller" id="day-chips"></div>
+                    <div id="day-area"><div style="text-align:center; padding:50px; color:#555;">일정을 동기화 중...</div></div>
+                </div>
             </div>
         </div>
+    </main>
 
-        <div class="section-label">Travel Insurance</div>
-        <div class="detail-card" style="margin-bottom:20px;">
-            <div class="detail-row"><span>WON MIYOUNG</span><span>251214786059</span></div>
-            <div class="detail-row" style="border:none; padding-bottom:0;"><span>PYO SANGHUN</span><span>251214786052</span></div>
+    <footer id="calc-footer">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <input type="text" id="vnd-in" style="background:transparent; border:none; color:#FFF; font-size:24px; outline:none;" placeholder="0 VND" readonly>
+            <div id="krw-out" style="color:var(--point-gold); font-size:22px; font-weight:800;">≒ 0 KRW</div>
         </div>
-    </div>
-
-    <div class="fixed-calc">
-        <div class="calc-display">
-            <input type="text" id="vnd-in" class="calc-input" placeholder="0 VND" readonly>
-            <div id="krw-out" class="calc-res">≒ 0 KRW</div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+            <button onclick="addVnd(50000)" style="background:#1A1A1A; border:none; color:#FFF; padding:12px; border-radius:10px;">+5만</button>
+            <button onclick="addVnd(100000)" style="background:#1A1A1A; border:none; color:#FFF; padding:12px; border-radius:10px;">+10만</button>
+            <button onclick="addVnd(500000)" style="background:#1A1A1A; border:none; color:#FFF; padding:12px; border-radius:10px;">+50만</button>
+            <button onclick="resetVnd()" style="background:#1A1A1A; border:none; color:red; padding:12px; border-radius:10px;">AC</button>
         </div>
-        <div class="btn-group">
-            <button class="calc-btn" onclick="addVnd(10000)">+1만</button>
-            <button class="calc-btn" onclick="addVnd(50000)">+5만</button>
-            <button class="calc-btn" onclick="addVnd(100000)">+10만</button>
-            <button class="calc-btn btn-ac" onclick="resetVnd()">AC</button>
-        </div>
-    </div>
+    </footer>
 
     <script>
+        async function loadSheets() {
+            const sid = "16BFfmk8BwDgNJyUJ3BS8IXr4zDr98k9u2l3lvKQoYjM";
+            const url = `https://docs.google.com/spreadsheets/d/${sid}/gviz/tq?tqx=out:json`;
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                renderPlan(json.table.rows);
+            } catch(e) {
+                document.getElementById('day-area').innerHTML = '<div style="color:red; text-align:center; padding:20px;">[파일-웹에 게시] 설정을 확인해주세요.</div>';
+            }
+        }
+
+        function renderPlan(rows) {
+            const area = document.getElementById('day-area');
+            const chips = document.getElementById('day-chips');
+            area.innerHTML = ''; chips.innerHTML = '';
+            let days = {};
+            rows.forEach((row, idx) => {
+                if(idx === 0 || !row.c[0]) return;
+                const d = row.c[0].v;
+                if(!days[d]) days[d] = [];
+                days[d].push({ 
+                    time: row.c[1]?row.c[1].v:'', 
+                    cat: row.c[2]?row.c[2].v:'SEE', 
+                    name: row.c[3]?row.c[3].v:'장소', 
+                    desc: row.c[4]?row.c[4].v:'', 
+                    co: row.c[5]?row.c[5].v:'16.0544,108.2022' 
+                });
+            });
+            Object.keys(days).forEach((d, i) => {
+                chips.innerHTML += `<button class="day-chip ${i===0?'active':''}" onclick="showDay(${d})">DAY ${d}</button>`;
+                let tl = `<div id="day${d}" class="timeline ${i===0?'active':''}">`;
+                days[d].forEach(p => {
+                    tl += `<div class="plan-card" onclick="focusLoc('${p.co}', this)">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span class="category-tag tag-${p.cat.toLowerCase()}">${p.cat}</span>
+                            <span style="color:gold; font-size:10px;">${p.time}</span>
+                        </div>
+                        <div style="font-size:16px; font-weight:800; margin:5px 0;">${p.name}</div>
+                        <div style="font-size:11px; color:#777;">${p.desc}</div>
+                    </div>`;
+                });
+                area.innerHTML += tl + "</div>";
+            });
+            if(document.querySelector('.timeline.active .plan-card')) document.querySelector('.timeline.active .plan-card').click();
+        }
+
+        function showTab(t) {
+            document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(t).classList.add('active');
+            document.getElementById('btn-'+t).classList.add('active');
+            document.getElementById('calc-footer').style.display = (t==='info')?'block':'none';
+            document.getElementById('main-scroll').className = 'scroll-container' + (t==='plan'?' no-calc':'');
+        }
+
+        function showDay(d) {
+            document.querySelectorAll('.timeline, .day-chip').forEach(el => el.classList.remove('active'));
+            document.getElementById('day'+d).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function focusLoc(co, el) {
+            document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('active-item'));
+            el.classList.add('active-item');
+            document.getElementById('main-map').src = `https://maps.google.com/maps?q=${co}&hl=ko&z=16&output=embed`;
+        }
+
         let cur = 0;
         function addVnd(v) { cur += v; up(); }
         function resetVnd() { cur = 0; up(); }
@@ -165,20 +201,8 @@
             document.getElementById('vnd-in').value = cur.toLocaleString() + " VND";
             document.getElementById('krw-out').innerText = "≒ " + Math.round(cur/1000*55).toLocaleString() + " KRW";
         }
-        async function getW() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto');
-                const d = await res.json();
-                document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
-                document.getElementById('w-wind').innerText = (d.current.wind_speed_10m / 3.6).toFixed(1) + " m/s";
-                const code = d.current.weather_code;
-                let ico = "☀️";
-                if(code > 3) ico = "☁️";
-                if(code > 50) ico = "🌧️";
-                document.getElementById('w-icon').innerText = ico;
-            } catch(e) {}
-        }
-        window.onload = getW;
+
+        window.onload = () => { loadSheets(); };
     </script>
 </body>
 </html>
