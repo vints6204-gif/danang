@@ -12,12 +12,12 @@
             --vj-red: #D71920; --text-white: #FFFFFF; --text-gray: #888888;
         }
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.05em; }
-        body { margin: 0; padding: 0; background: var(--bg-dark); color: var(--text-white); font-size: 12px; line-height: 1.2; overflow: hidden; }
+        body { margin: 0; padding: 0; background: var(--bg-dark); color: var(--text-white); font-size: 12px; line-height: 1.2; }
         
-        /* 1. 초소형 컨테이너 (스크롤 방지) */
-        .container { padding: 10px 15px 140px; height: 100vh; overflow-y: auto; }
+        /* 컨테이너 */
+        .container { padding: 10px 15px 160px; min-height: 100vh; }
 
-        /* 2. 날씨 위젯 (아이콘 + 바람세기 추가) */
+        /* 날씨 위젯 (아이콘 + 온도 + 바람세기) */
         .weather-hero { 
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 5px; background: var(--bg-dark); margin-bottom: 5px;
@@ -29,45 +29,51 @@
         .w-right { flex: 1; text-align: right; font-size: 11px; color: var(--text-gray); }
         .w-right strong { display: block; font-size: 14px; color: var(--text-white); }
 
-        .section-label { font-size: 9px; font-weight: 800; color: #444; margin: 8px 0 4px; text-transform: uppercase; }
+        .section-label { font-size: 9px; font-weight: 800; color: #444; margin: 12px 0 6px; text-transform: uppercase; }
         
-        /* 3. 항공권 카드 (압축형) */
+        /* 항공권 카드 */
         .flight-card { 
-            background: #FFFFFF; color: #111; border-radius: 12px; margin-bottom: 8px; overflow: hidden;
+            background: #FFFFFF; color: #111; border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .flight-top { padding: 10px 15px; border-bottom: 1px dashed #DDD; display: flex; justify-content: space-between; align-items: center; }
-        .flight-route { font-size: 18px; font-weight: 900; }
-        .flight-pnr { font-size: 10px; font-weight: 800; color: #888; }
+        .flight-top { padding: 12px 15px; border-bottom: 1px dashed #DDD; display: flex; justify-content: space-between; align-items: center; }
+        .flight-route { font-size: 20px; font-weight: 900; color: #000; }
+        .flight-pnr { font-size: 11px; font-weight: 800; color: var(--vj-red); background: #FFF0F0; padding: 2px 6px; border-radius: 4px; }
         
-        .flight-mid { padding: 10px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .flight-mid { padding: 12px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .info-box { font-size: 10px; color: #777; }
-        .info-box strong { display: block; font-size: 12px; color: #111; margin-top: 1px; }
+        .info-box strong { display: block; font-size: 13px; color: #111; margin-top: 1px; }
         
-        .baggage-section { background: #F5F5F5; padding: 8px 15px; border-top: 1px solid #EEE; font-size: 10px; }
-        .bag-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
+        .baggage-section { background: #F8F8F8; padding: 10px 15px; border-top: 1px solid #EEE; }
+        .bag-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 3px; color: #444; }
+        .bag-row strong { color: #000; }
 
         /* 귀국편 (레드 테마) */
         .return-flight { background: var(--vj-red) !important; color: #FFF !important; }
-        .return-flight .flight-pnr, .return-flight .info-box, .return-flight .info-box strong { color: #FFF !important; }
+        .return-flight .flight-route, .return-flight .info-box strong { color: #FFF !important; }
+        .return-flight .flight-pnr { background: rgba(255,255,255,0.2); color: #FFF; }
+        .return-flight .info-box { color: rgba(255,255,255,0.7); }
         .return-flight .baggage-section { background: rgba(0,0,0,0.1); border-top: 1px dashed rgba(255,255,255,0.3); }
+        .return-flight .bag-row { color: rgba(255,255,255,0.9); }
+        .return-flight .bag-row strong { color: #FFF; }
 
-        /* 4. 호텔 카드 (초압축) */
-        .detail-card { background: #111; border-radius: 12px; padding: 12px 15px; margin-bottom: 8px; border: 1px solid #222; }
-        .detail-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+        /* 호텔 및 보험 카드 */
+        .detail-card { background: #151515; border-radius: 14px; padding: 15px; margin-bottom: 10px; border: 1px solid #222; }
+        .detail-row { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 6px; border-bottom: 1px solid #222; padding-bottom: 6px; }
         .detail-row span:first-child { color: #666; }
-        .detail-row span:last-child { color: #DDD; font-weight: 600; }
+        .detail-row span:last-child { color: #EEE; font-weight: 600; text-align: right; }
 
-        /* 5. 환율 계산기 (하단 고정) */
+        /* 환율 계산기 */
         .fixed-calc { 
             position: fixed; bottom: 0; left: 0; right: 0; background: #000; 
-            padding: 15px 20px 25px; border-top: 1px solid #222; z-index: 1000;
+            padding: 15px 20px 30px; border-top: 1px solid #222; z-index: 1000;
         }
-        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .calc-input { background: transparent; border: none; color: #FFF; font-size: 20px; width: 50%; outline: none; font-weight: 200; }
-        .calc-res { color: var(--point-gold); font-size: 18px; font-weight: 800; }
-        .btn-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .calc-btn { background: #1A1A1A; border: none; color: #FFF; padding: 12px 0; border-radius: 8px; font-size: 11px; font-weight: 700; }
-        .btn-ac { color: var(--vj-red); }
+        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .calc-input { background: transparent; border: none; color: #FFF; font-size: 22px; width: 50%; outline: none; }
+        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; }
+        .btn-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { background: #1A1A1A; border: none; color: #FFF; padding: 14px 0; border-radius: 10px; font-size: 12px; font-weight: 700; }
+        .btn-ac { color: var(--vj-red); background: #222; }
     </style>
 </head>
 <body>
@@ -81,42 +87,60 @@
             <div class="w-right">WIND<strong id="w-wind">3.2 m/s</strong></div>
         </div>
 
-        <div class="section-label">Departure</div>
+        <div class="section-label">Departure Flight</div>
         <div class="flight-card">
             <div class="flight-top">
                 <div class="flight-route">ICN ✈ DAD</div>
                 <div class="flight-pnr">FX4MV3</div>
             </div>
             <div class="flight-mid">
-                <div class="info-box">T'WAY TW007<strong>01.13 07:45</strong></div>
+                <div class="info-box">FLIGHT<strong>T'way TW007</strong></div>
+                <div class="info-box">DEPARTURE<strong>01.13 07:45</strong></div>
                 <div class="info-box">CHECK-IN<strong>01.12 07:45</strong></div>
+                <div class="info-box">PASSENGERS<strong>Won & Pyo</strong></div>
             </div>
             <div class="baggage-section">
-                <div class="bag-row"><span>Won & Pyo</span><strong>위탁 각 15kg / 기내 각 10kg</strong></div>
+                <div class="bag-row"><span>위탁 수하물 (Checked)</span><strong>각 15kg (합계 203cm)</strong></div>
+                <div class="bag-row"><span>기내 수하물 (Cabin)</span><strong>각 10kg (55*40*20)</strong></div>
             </div>
         </div>
 
-        <div class="section-label">Return</div>
+        <div class="section-label">Return Flight</div>
         <div class="flight-card return-flight">
             <div class="flight-top">
                 <div class="flight-route">DAD ✈ ICN</div>
                 <div class="flight-pnr">7GJ8NY</div>
             </div>
             <div class="flight-mid">
-                <div class="info-box">VIETJET VJ874<strong>01.17 15:10</strong></div>
+                <div class="info-box">FLIGHT<strong>VietJet VJ874</strong></div>
+                <div class="info-box">DEPARTURE<strong>01.17 15:10</strong></div>
                 <div class="info-box">CHECK-IN<strong>01.16 15:10</strong></div>
+                <div class="info-box">CABIN LIMIT<strong>7kg (Strictly)</strong></div>
             </div>
             <div class="baggage-section">
                 <div class="bag-row"><span>WON MIYOUNG</span><strong>위탁 20kg (119*119*81)</strong></div>
-                <div class="bag-row"><span>PYO SANGHUN</span><strong>위탁 불포함 (기내 7kg)</strong></div>
+                <div class="bag-row"><span>PYO SANGHUN</span><strong>위탁 불포함 (0kg)</strong></div>
+                <div class="bag-row"><span>기내 공통</span><strong>7kg (56*36*23cm)</strong></div>
             </div>
         </div>
 
-        <div class="section-label">Stay & Info</div>
+        <div class="section-label">Accommodation</div>
         <div class="detail-card">
-            <div class="detail-row"><span>Hotel</span><span style="color:var(--point-gold)">Melia Vinpearl (#4575465)</span></div>
-            <div class="detail-row"><span>Room</span><span>Small Suite (King/Breakfast)</span></div>
-            <div class="detail-row"><span>Insure</span><span>251214786059 / ...052</span></div>
+            <div class="detail-row"><span>Hotel</span><span style="color:var(--point-gold)">Melia Vinpearl Riverfront</span></div>
+            <div class="detail-row"><span>Confirmation</span><span>#4575465</span></div>
+            <div class="detail-row"><span>Room Type</span><span>Small Suite (King Bed)</span></div>
+            <div class="detail-row"><span>Breakfast</span><span>Daily 2 Pax Included</span></div>
+            <div class="detail-row" style="border:none; padding-bottom:0;">
+                <span style="font-size:9px; color:#555; line-height:1.4;">
+                    341 Đ. Trần Hưng Đạo, Son Tra, Da Nang<br>☏ +84-236-3642888
+                </span>
+            </div>
+        </div>
+
+        <div class="section-label">Travel Insurance</div>
+        <div class="detail-card" style="margin-bottom:20px;">
+            <div class="detail-row"><span>WON MIYOUNG</span><span>251214786059</span></div>
+            <div class="detail-row" style="border:none; padding-bottom:0;"><span>PYO SANGHUN</span><span>251214786052</span></div>
         </div>
     </div>
 
