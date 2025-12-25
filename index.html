@@ -16,7 +16,7 @@
             --text-main: #FFFFFF;
             --text-sub: #94a3b8;
             --accent-green: #30D158;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { 
@@ -106,13 +106,10 @@
         .flight-top { padding: 18px 22px; border-bottom: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
         .flight-route { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
         .flight-pnr { font-size: 11px; font-weight: 800; color: var(--vj-red); background: #fff0f0; padding: 4px 10px; border-radius: 8px; }
-        
         .flight-mid { padding: 20px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .info-box { font-size: 11px; color: #888; font-weight: 600; }
         .info-box strong { display: block; font-size: 15px; color: #111; margin-top: 4px; font-weight: 800; }
-        
         .baggage-section { background: #f9fafb; padding: 15px 22px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #666; }
-        
         .return-flight { background: var(--vj-red) !important; color: white !important; }
         .return-flight .flight-route, .return-flight .info-box strong { color: white !important; }
         .return-flight .flight-pnr { background: rgba(255,255,255,0.2); color: white; }
@@ -127,12 +124,18 @@
         .h-box { font-size: 11px; color: var(--text-sub); }
         .h-box strong { display: block; color: #eee; font-size: 14px; margin-top: 4px; font-weight: 700; }
 
+        /* 계산기 푸터 애니메이션 설정 */
         #calc-footer { 
             position: fixed; bottom: 0; left: 0; right: 0; 
-            background: rgba(10, 10, 11, 0.9); backdrop-filter: blur(25px);
+            background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px);
             padding: 20px 20px 40px; border-top: 1px solid var(--card-border); 
             z-index: 1000;
+            transition: var(--transition);
+            transform: translateY(0);
         }
+        /* 아래로 스크롤 시 푸터 숨김 클래스 */
+        #calc-footer.hide-footer { transform: translateY(100%); }
+
         .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calc-input { 
             background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); 
@@ -249,6 +252,8 @@
             <div class="padding-wrap">
                 <div class="section-label">Travel Plan</div>
                 <div class="list-item">상세 일정이 준비 중입니다.</div>
+                <div style="height:400px; display:flex; align-items:center; justify-content:center; color:#333;">(스크롤 테스트용 여백)</div>
+                <div class="list-item">일정 마지막 항목입니다.</div>
             </div>
         </div>
 
@@ -273,7 +278,7 @@
 
     <footer id="calc-footer">
         <div class="calc-display">
-            <div class="calc-input-wrap"><input type="text" id="vnd-input" class="calc-input" placeholder="VND" oninput="manualInput(this)"></div>
+            <div class="calc-input-wrap" style="width:100%"><input type="text" id="vnd-input" class="calc-input" placeholder="VND" oninput="manualInput(this)"></div>
             <div id="krw-res" class="calc-res">≒ 0 KRW</div>
         </div>
         <div class="btn-row">
@@ -285,6 +290,28 @@
     </footer>
 
     <script>
+        // 스크롤 감지 로직
+        const mainScroll = document.getElementById('main-scroll');
+        const footer = document.getElementById('calc-footer');
+        let lastScrollTop = 0;
+        let activeTab = 'info';
+
+        mainScroll.addEventListener('scroll', () => {
+            let st = mainScroll.scrollTop;
+            
+            // INFO 또는 PLAN 탭일 때만 작동
+            if(activeTab === 'info' || activeTab === 'plan') {
+                if (st > lastScrollTop && st > 50) {
+                    // 아래로 스크롤 시 계산기 숨김
+                    footer.classList.add('hide-footer');
+                } else {
+                    // 위로 스크롤 시 계산기 다시 표시
+                    footer.classList.remove('hide-footer');
+                }
+            }
+            lastScrollTop = st;
+        });
+
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', hour12: false };
@@ -308,7 +335,6 @@
             reservations.push(input.value); input.value = ''; saveAndRender();
         }
         
-        // 즉시 삭제 적용
         function delRes(idx) { 
             reservations.splice(idx, 1); 
             saveAndRender(); 
@@ -331,7 +357,6 @@
             reader.readAsDataURL(file);
         }
 
-        // 즉시 삭제 적용
         function delFile(idx) { 
             filesData.splice(idx, 1); 
             saveAndRender(); 
@@ -383,13 +408,28 @@
         function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
 
         function showTab(t) {
+            activeTab = t;
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
+            
             const footer = document.getElementById('calc-footer');
             const main = document.getElementById('main-scroll');
-            if(t === 'info') { footer.style.display = 'block'; main.classList.remove('no-calc'); }
-            else { footer.style.display = 'none'; main.classList.add('no-calc'); }
+            
+            // 탭 전환 시 항상 푸터 보이기
+            footer.classList.remove('hide-footer');
+
+            if(t === 'info') { 
+                footer.style.display = 'block'; 
+                main.classList.remove('no-calc'); 
+            } else if(t === 'plan') {
+                footer.style.display = 'block'; 
+                main.classList.remove('no-calc'); 
+            } else { 
+                footer.style.display = 'none'; 
+                main.classList.add('no-calc'); 
+            }
+            main.scrollTop = 0;
         }
 
         async function getW() {
