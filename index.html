@@ -124,7 +124,6 @@
         .h-box { font-size: 11px; color: var(--text-sub); }
         .h-box strong { display: block; color: #eee; font-size: 14px; margin-top: 4px; font-weight: 700; }
 
-        /* 계산기 푸터 애니메이션 설정 */
         #calc-footer { 
             position: fixed; bottom: 0; left: 0; right: 0; 
             background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px);
@@ -133,16 +132,18 @@
             transition: var(--transition);
             transform: translateY(0);
         }
-        /* 아래로 스크롤 시 푸터 숨김 클래스 */
         #calc-footer.hide-footer { transform: translateY(100%); }
 
-        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        /* 계산기 레이아웃 수정: VND 입력창 너비 조절 */
+        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
         .calc-input { 
             background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); 
-            border-radius: 14px; color: #fff; font-size: 20px; width: 100%; padding: 12px 15px; 
+            border-radius: 14px; color: #fff; font-size: 20px; 
+            width: 160px; /* 입력창 너비 줄임 */
+            padding: 12px 15px; 
             outline: none; text-align: right; font-weight: 700;
         }
-        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; text-align: right; flex: 1; padding-left: 15px; }
+        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; text-align: right; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         .btn-row { display: flex; gap: 8px; }
         .calc-btn { 
@@ -252,8 +253,6 @@
             <div class="padding-wrap">
                 <div class="section-label">Travel Plan</div>
                 <div class="list-item">상세 일정이 준비 중입니다.</div>
-                <div style="height:400px; display:flex; align-items:center; justify-content:center; color:#333;">(스크롤 테스트용 여백)</div>
-                <div class="list-item">일정 마지막 항목입니다.</div>
             </div>
         </div>
 
@@ -278,7 +277,7 @@
 
     <footer id="calc-footer">
         <div class="calc-display">
-            <div class="calc-input-wrap" style="width:100%"><input type="text" id="vnd-input" class="calc-input" placeholder="VND" oninput="manualInput(this)"></div>
+            <input type="text" id="vnd-input" class="calc-input" placeholder="VND" oninput="manualInput(this)">
             <div id="krw-res" class="calc-res">≒ 0 KRW</div>
         </div>
         <div class="btn-row">
@@ -290,7 +289,6 @@
     </footer>
 
     <script>
-        // 스크롤 감지 로직
         const mainScroll = document.getElementById('main-scroll');
         const footer = document.getElementById('calc-footer');
         let lastScrollTop = 0;
@@ -298,14 +296,10 @@
 
         mainScroll.addEventListener('scroll', () => {
             let st = mainScroll.scrollTop;
-            
-            // INFO 또는 PLAN 탭일 때만 작동
             if(activeTab === 'info' || activeTab === 'plan') {
                 if (st > lastScrollTop && st > 50) {
-                    // 아래로 스크롤 시 계산기 숨김
                     footer.classList.add('hide-footer');
                 } else {
-                    // 위로 스크롤 시 계산기 다시 표시
                     footer.classList.remove('hide-footer');
                 }
             }
@@ -416,13 +410,9 @@
             const footer = document.getElementById('calc-footer');
             const main = document.getElementById('main-scroll');
             
-            // 탭 전환 시 항상 푸터 보이기
             footer.classList.remove('hide-footer');
 
-            if(t === 'info') { 
-                footer.style.display = 'block'; 
-                main.classList.remove('no-calc'); 
-            } else if(t === 'plan') {
+            if(t === 'info' || t === 'plan') { 
                 footer.style.display = 'block'; 
                 main.classList.remove('no-calc'); 
             } else { 
