@@ -34,6 +34,7 @@
             overflow: hidden; 
         }
 
+        /* 공통 헤더 */
         .fixed-header { 
             position: fixed; top: 0; left: 0; right: 0; 
             background: rgba(10, 10, 11, 0.85); 
@@ -55,6 +56,7 @@
 
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .w-left { font-size: 40px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.3)); }
+        .w-center { text-align: center; }
         .w-center .temp { font-size: 42px; color: var(--point-gold); font-weight: 200; line-height: 1; letter-spacing: -2px; }
         .w-center .feels-like { font-size: 12px; color: var(--text-sub); margin-top: 5px; font-weight: 500; }
         .w-right .label { font-size: 9px; color: #555; font-weight: 800; text-transform: uppercase; }
@@ -79,6 +81,7 @@
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
         }
 
+        /* 메인 스크롤 영역 */
         .scroll-container { 
             height: 100vh; overflow-y: auto; 
             padding: 245px 0 180px; 
@@ -97,7 +100,8 @@
 
         .padding-wrap { padding: 0 20px; }
         .section-label { font-size: 11px; font-weight: 800; color: #444; margin: 25px 0 12px; letter-spacing: 0.05em; text-transform: uppercase; }
-        
+
+        /* 비행기 카드 */
         .flight-card { 
             background: rgba(255, 255, 255, 0.98); color: #111; 
             border-radius: 24px; margin-bottom: 18px; 
@@ -115,6 +119,7 @@
         .return-flight .flight-pnr { background: rgba(255,255,255,0.2); color: white; }
         .return-flight .baggage-section { background: rgba(0,0,0,0.1); border-top: 1px dashed rgba(255,255,255,0.3); color: white; }
 
+        /* 숙소 카드 */
         .hotel-detail { 
             background: var(--card-glass); border: 1px solid var(--card-border); 
             border-radius: 24px; padding: 22px; margin-bottom: 20px; 
@@ -124,24 +129,60 @@
         .h-box { font-size: 11px; color: var(--text-sub); }
         .h-box strong { display: block; color: #eee; font-size: 14px; margin-top: 4px; font-weight: 700; }
 
+        /* PLAN 스타일 */
+        .plan-card {
+            background: var(--card-glass); border: 1px solid var(--card-border);
+            border-radius: 20px; padding: 20px; margin-bottom: 15px; cursor: pointer;
+        }
+        .plan-day { font-size: 16px; font-weight: 800; color: var(--point-gold); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .plan-main-title { font-size: 15px; font-weight: 700; color: #fff; }
+        .clickable-badge { font-size: 10px; background: rgba(255,215,0,0.2); color: var(--point-gold); padding: 2px 8px; border-radius: 20px; }
+
+        /* 사이드 패널 */
+        .side-panel {
+            position: fixed; top: 0; right: -100%; width: 90%; height: 100%;
+            background: #111; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5); padding: 30px 20px;
+            overflow-y: auto;
+        }
+        .side-panel.open { right: 0; }
+        .panel-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1999; display: none;
+        }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: sticky; top: -10px; background: #111; padding: 10px 0; z-index: 10; }
+        .panel-title { font-size: 20px; font-weight: 800; color: var(--point-gold); }
+        .close-btn { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; }
+        
+        .sub-plan-list { list-style: none; padding: 0; }
+        .sub-plan-item { 
+            margin-bottom: 25px; border-left: 2px solid var(--point-gold); padding-left: 15px; 
+            position: relative; display: flex; justify-content: space-between; align-items: flex-start;
+        }
+        .sub-time { font-size: 11px; color: var(--point-gold); font-weight: 700; }
+        .sub-title { font-size: 15px; font-weight: 700; margin: 4px 0; color: #fff; }
+        .sub-desc { font-size: 13px; color: var(--text-sub); }
+        .nav-icon-btn { 
+            background: rgba(48, 209, 88, 0.15); color: var(--accent-green); 
+            border: 1px solid var(--accent-green); width: 40px; height: 40px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; font-size: 18px; margin-left: 10px;
+        }
+
+        /* 계산기 푸터 */
         #calc-footer { 
             position: fixed; bottom: 0; left: 0; right: 0; 
             background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px);
             padding: 20px 20px 40px; border-top: 1px solid var(--card-border); 
-            z-index: 1000;
-            transition: var(--transition);
-            transform: translateY(0);
+            z-index: 1000; transition: var(--transition); transform: translateY(0);
         }
         #calc-footer.hide-footer { transform: translateY(100%); }
 
-        /* 계산기 레이아웃 수정: VND 입력창 너비 조절 */
         .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
         .calc-input { 
             background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); 
-            border-radius: 14px; color: #fff; font-size: 20px; 
-            width: 160px; /* 입력창 너비 줄임 */
-            padding: 12px 15px; 
-            outline: none; text-align: right; font-weight: 700;
+            border-radius: 14px; color: #fff; font-size: 20px; width: 160px; 
+            padding: 12px 15px; outline: none; text-align: right; font-weight: 700;
         }
         .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; text-align: right; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -151,7 +192,6 @@
             padding: 15px 0; border-radius: 14px; font-size: 12px; font-weight: 700;
             transition: var(--transition);
         }
-        .calc-btn:active { transform: scale(0.95); opacity: 0.8; }
         .btn-bargain { background: #1a331f; color: var(--accent-green); border-color: var(--accent-green); }
         .btn-bargain.active { background: #333; color: #666; border-color: #444; }
         .btn-ac { color: var(--vj-red); flex: 0.7; }
@@ -251,8 +291,10 @@
 
         <div id="plan" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label">Travel Plan</div>
-                <div class="list-item">상세 일정이 준비 중입니다.</div>
+                <div class="section-label">Live Travel Schedule (Google Sheets)</div>
+                <div id="plan-list-container">
+                    <p style="text-align:center; padding:20px; color:var(--text-sub);">일정을 불러오는 중...</p>
+                </div>
             </div>
         </div>
 
@@ -275,6 +317,15 @@
         </div>
     </main>
 
+    <div id="panel-overlay" class="panel-overlay" onclick="closeDayPanel()"></div>
+    <div id="day-panel" class="side-panel">
+        <div class="panel-header">
+            <div id="panel-day-title" class="panel-title">DAY Details</div>
+            <button class="close-btn" onclick="closeDayPanel()">×</button>
+        </div>
+        <ul id="sub-plan-list" class="sub-plan-list"></ul>
+    </div>
+
     <footer id="calc-footer">
         <div class="calc-display">
             <input type="text" id="vnd-input" class="calc-input" placeholder="VND" oninput="manualInput(this)">
@@ -289,10 +340,81 @@
     </footer>
 
     <script>
+        // 추출된 구글 시트 ID 적용
+        const SHEET_ID = '1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY'; 
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+        let scheduleData = {};
         const mainScroll = document.getElementById('main-scroll');
         const footer = document.getElementById('calc-footer');
         let lastScrollTop = 0;
         let activeTab = 'info';
+
+        async function fetchSchedule() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47, text.length - 2));
+                const rows = json.table.rows;
+                
+                const newData = {};
+                rows.forEach(row => {
+                    const day = row.c[0]?.v;
+                    const time = row.c[1]?.v || "";
+                    const title = row.c[2]?.v || "";
+                    const desc = row.c[3]?.v || "";
+                    const nav = row.c[4]?.v || "#";
+
+                    if(day && !newData[day]) {
+                        newData[day] = { title: `DAY ${day}. SCHEDULE`, items: [] };
+                    }
+                    if(day) newData[day].items.push({ time, title, desc, nav });
+                });
+
+                scheduleData = newData;
+                renderPlanCards();
+            } catch (e) {
+                document.getElementById('plan-list-container').innerHTML = "<p style='color:red;'>데이터를 불러올 수 없습니다. 공유 설정을 확인하세요.</p>";
+            }
+        }
+
+        function renderPlanCards() {
+            const container = document.getElementById('plan-list-container');
+            container.innerHTML = "";
+            Object.keys(scheduleData).forEach(day => {
+                const card = document.createElement('div');
+                card.className = 'plan-card';
+                card.onclick = () => openDayPanel(day);
+                card.innerHTML = `
+                    <div class="plan-day">DAY ${day} <span class="clickable-badge">DETAIL</span></div>
+                    <div class="plan-main-title">${scheduleData[day].items[0]?.title || "일정 없음"} 외...</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openDayPanel(day) {
+            const data = scheduleData[day];
+            document.getElementById('panel-day-title').innerText = `DAY ${day} Details`;
+            const list = document.getElementById('sub-plan-list');
+            list.innerHTML = data.items.map(item => `
+                <li class="sub-plan-item">
+                    <div>
+                        <div class="sub-time">${item.time}</div>
+                        <div class="sub-title">${item.title}</div>
+                        <div class="sub-desc">${item.desc}</div>
+                    </div>
+                    <a href="${item.nav}" target="_blank" class="nav-icon-btn">🧭</a>
+                </li>
+            `).join('');
+            document.getElementById('day-panel').classList.add('open');
+            document.getElementById('panel-overlay').style.display = 'block';
+        }
+
+        function closeDayPanel() {
+            document.getElementById('day-panel').classList.remove('open');
+            document.getElementById('panel-overlay').style.display = 'none';
+        }
 
         mainScroll.addEventListener('scroll', () => {
             let st = mainScroll.scrollTop;
@@ -328,12 +450,7 @@
             if(!input.value) return;
             reservations.push(input.value); input.value = ''; saveAndRender();
         }
-        
-        function delRes(idx) { 
-            reservations.splice(idx, 1); 
-            saveAndRender(); 
-        }
-
+        function delRes(idx) { reservations.splice(idx, 1); saveAndRender(); }
         function renderRes() {
             document.getElementById('res-list').innerHTML = reservations.map((text, i) => `
                 <li class="list-item"><span style="font-weight:600;">${text}</span><button class="del-btn" onclick="delRes(${i})">×</button></li>
@@ -350,19 +467,13 @@
             };
             reader.readAsDataURL(file);
         }
-
-        function delFile(idx) { 
-            filesData.splice(idx, 1); 
-            saveAndRender(); 
-        }
-
+        function delFile(idx) { filesData.splice(idx, 1); saveAndRender(); }
         function openFile(idx) {
             const f = filesData[idx];
             const win = window.open();
             if (f.type.includes('pdf')) win.document.write(`<iframe src="${f.data}" frameborder="0" style="border:0; width:100%; height:100vh;"></iframe>`);
             else win.document.write(`<html><body style="margin:0; background:#000; display:flex; align-items:center; justify-content:center;"><img src="${f.data}" style="max-width:100%; height:auto;"></body></html>`);
         }
-
         function renderFiles() {
             document.getElementById('file-list').innerHTML = filesData.map((f, i) => `
                 <li class="list-item" onclick="openFile(${i})"><span>${f.type.includes('pdf') ? '📄' : '🖼️'} ${f.name}</span><button class="del-btn" onclick="event.stopPropagation(); delFile(${i});">×</button></li>
@@ -376,13 +487,8 @@
             document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
             document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
             const bBtn = document.getElementById('btn-bargain');
-            if(isBargainMode) {
-                bBtn.classList.add('active');
-                bBtn.innerText = "적용됨 (-40%)";
-            } else {
-                bBtn.classList.remove('active');
-                bBtn.innerText = "흥정(40%↓)";
-            }
+            if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; }
+            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정(40%↓)"; }
         }
 
         function manualInput(el) {
@@ -395,8 +501,7 @@
         function applyBargain() { 
             if(currentVnd > 0 && !isBargainMode) { 
                 currentVnd = Math.round(currentVnd * 0.6);
-                isBargainMode = true; 
-                updateUI(); 
+                isBargainMode = true; updateUI(); 
             }
         }
         function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
@@ -406,20 +511,13 @@
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
-            
             const footer = document.getElementById('calc-footer');
             const main = document.getElementById('main-scroll');
-            
             footer.classList.remove('hide-footer');
-
-            if(t === 'info' || t === 'plan') { 
-                footer.style.display = 'block'; 
-                main.classList.remove('no-calc'); 
-            } else { 
-                footer.style.display = 'none'; 
-                main.classList.add('no-calc'); 
-            }
+            if(t === 'info' || t === 'plan') { footer.style.display = 'block'; main.classList.remove('no-calc'); }
+            else { footer.style.display = 'none'; main.classList.add('no-calc'); }
             main.scrollTop = 0;
+            if(t === 'plan') fetchSchedule();
         }
 
         async function getW() {
@@ -438,7 +536,6 @@
                 document.getElementById('w-icon').innerText = icon;
             } catch(e) {}
         }
-
         window.onload = function() { getW(); updateClocks(); showTab('info'); saveAndRender(); };
     </script>
 </body>
