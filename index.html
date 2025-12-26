@@ -44,7 +44,7 @@
         .tab-btn.active { background: var(--point-gold); color: #000; border-color: var(--point-gold); box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
 
         .scroll-container { height: 100vh; overflow-y: auto; padding: 245px 0 180px; -webkit-overflow-scrolling: touch; transition: var(--transition); }
-        .scroll-container.no-calc { padding-bottom: 40px !important; }
+        .scroll-container.full-view { padding-bottom: 40px !important; }
         .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
         .tab-content.active { display: block; }
 
@@ -52,7 +52,6 @@
         .padding-wrap { padding: 0 20px; }
         .section-label { font-size: 11px; font-weight: 800; color: #444; margin: 25px 0 12px; letter-spacing: 0.05em; text-transform: uppercase; }
 
-        /* 비행기 카드 */
         .flight-card { background: rgba(255, 255, 255, 0.98); color: #111; border-radius: 24px; margin-bottom: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden; }
         .flight-top { padding: 18px 22px; border-bottom: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
         .flight-route { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
@@ -61,162 +60,137 @@
         .info-box { font-size: 11px; color: #888; font-weight: 600; }
         .info-box strong { display: block; font-size: 15px; color: #111; margin-top: 4px; font-weight: 800; }
         .baggage-section { background: #f9fafb; padding: 15px 22px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #666; }
-        .return-flight { background: var(--vj-red) !important; color: white !important; }
-        .return-flight .flight-route, .return-flight .info-box strong { color: white !important; }
-        .return-flight .flight-pnr { background: rgba(255,255,255,0.2); color: white; }
-        .return-flight .baggage-section { background: rgba(0,0,0,0.1); border-top: 1px dashed rgba(255,255,255,0.3); color: white; }
 
-        /* 숙소 카드 */
         .hotel-detail { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 24px; padding: 22px; margin-bottom: 20px; }
         .hotel-name { font-size: 19px; font-weight: 800; color: var(--point-gold); margin-bottom: 6px; }
         .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; border-top: 1px solid var(--card-border); padding-top: 20px; }
         .h-box { font-size: 11px; color: var(--text-sub); }
         .h-box strong { display: block; color: #eee; font-size: 14px; margin-top: 4px; font-weight: 700; }
 
-        /* 일정 카드 */
         .plan-card { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; cursor: pointer; }
-        .plan-day { font-size: 16px; font-weight: 800; color: var(--point-gold); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .plan-day { font-size: 16px; font-weight: 800; color: var(--point-gold); margin-bottom: 8px; }
         .plan-subtitle { font-size: 15px; font-weight: 700; color: #fff; }
-        .clickable-badge { font-size: 10px; background: rgba(255,215,0,0.2); color: var(--point-gold); padding: 2px 8px; border-radius: 20px; }
 
-        /* 사이드 패널 */
-        .side-panel { position: fixed; top: 0; right: -100%; width: 90%; height: 100%; background: #111; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.5); padding: 30px 20px; overflow-y: auto; }
+        .side-panel { position: fixed; top: 0; right: -100%; width: 90%; height: 100%; background: #111; z-index: 2000; transition: 0.4s; padding: 30px 20px; overflow-y: auto; }
         .side-panel.open { right: 0; }
         .panel-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; display: none; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: sticky; top: -10px; background: #111; padding: 10px 0; z-index: 10; }
-        .panel-title { font-size: 20px; font-weight: 800; color: var(--point-gold); }
-        .close-btn { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; }
-        
-        .sub-plan-list { list-style: none; padding: 0; }
-        .sub-plan-item { margin-bottom: 25px; border-left: 2px solid var(--point-gold); padding-left: 15px; position: relative; display: flex; justify-content: space-between; align-items: flex-start; }
-        .sub-time { font-size: 11px; color: var(--point-gold); font-weight: 700; }
-        .sub-title { font-size: 15px; font-weight: 700; margin: 4px 0; color: #fff; }
-        .sub-desc { font-size: 13px; color: var(--text-sub); }
-        .nav-icon-btn { background: rgba(48, 209, 88, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; margin-left: 10px; }
+        .sub-plan-item { margin-bottom: 25px; border-left: 2px solid var(--point-gold); padding-left: 15px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .nav-btn { background: rgba(48, 209, 88, 0.1); color: var(--accent-green); border: 1px solid var(--accent-green); width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; margin-left: 10px; }
 
-        /* 계산기 푸터 */
-        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px); padding: 20px 20px 40px; border-top: 1px solid var(--card-border); z-index: 1000; transition: var(--transition); transform: translateY(0); }
-        #calc-footer.hide-footer { transform: translateY(100%); }
+        .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+
+        /* 복구된 환율 계산기 스타일 */
+        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px); padding: 20px 20px 40px; border-top: 1px solid var(--card-border); z-index: 1000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hide-calc { transform: translateY(100%); }
         .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .calc-input { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 14px; color: #fff; font-size: 20px; width: 160px; padding: 12px 15px; outline: none; text-align: right; font-weight: 700; }
-        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; text-align: right; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .btn-row { display: flex; gap: 8px; }
-        .calc-btn { flex: 1; background: #222; border: 1px solid #333; color: #fff; padding: 15px 0; border-radius: 14px; font-size: 12px; font-weight: 700; transition: var(--transition); }
-        .btn-bargain { background: #1a331f; color: var(--accent-green); border-color: var(--accent-green); }
-        .btn-bargain.active { background: #333; color: #666; border-color: #444; }
-        .btn-ac { color: var(--vj-red); flex: 0.7; }
-
-        /* DOCS 아이템 스타일 */
-        .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
-        .list-item:active { background: rgba(255,255,255,0.1); }
-        .doc-name { font-weight: 700; color: #fff; font-size: 15px; }
-        .doc-icon { font-size: 18px; color: var(--point-gold); }
+        .calc-input { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 14px; color: #fff; font-size: 20px; width: 160px; padding: 12px 15px; text-align: right; font-weight: 700; outline: none; }
+        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; }
+        .btn-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .c-btn { flex: 1; background: #222; border: 1px solid #333; color: #fff; padding: 15px 0; border-radius: 12px; font-size: 13px; font-weight: 700; }
+        .c-btn.bargain { color: var(--accent-green); border-color: var(--accent-green); background: rgba(48, 209, 88, 0.05); }
+        .c-btn.bargain.active { background: var(--accent-green); color: #000; }
+        .c-btn.ac { color: var(--vj-red); }
     </style>
 </head>
 <body>
     <header class="fixed-header">
         <div class="time-bar">
-            <div class="time-item">KOREA <span id="time-kor">--:--</span></div>
-            <div class="time-item">DANANG <span id="time-dad">--:--</span></div>
+            <div class="time-item">한국 <span id="time-kor">--:--</span></div>
+            <div class="time-item">다낭 <span id="time-dad">--:--</span></div>
         </div>
         <div class="weather-hero">
             <div id="w-icon" class="w-left">☀️</div>
             <div class="w-center">
-                <div style="font-size:10px; color:#666; font-weight:800; letter-spacing:0.15em; margin-bottom:2px;">DANANG NOW</div>
+                <div style="font-size:10px; color:#666; font-weight:800; margin-bottom:2px;">다낭 현재 날씨</div>
                 <div id="w-temp" class="temp">--°</div>
-                <div id="w-feels" class="feels-like">FEELS LIKE --°</div>
+                <div id="w-feels" class="feels-like">체감온도 --°</div>
             </div>
             <div class="w-right">
-                <div style="margin-bottom:8px;"><span class="label">Wind</span><br><span id="w-wind" class="val">--m/s</span></div>
-                <div><span class="label">UV Index</span><br><span id="w-uv" class="val">--</span></div>
+                <div style="margin-bottom:8px;"><span class="label">풍속</span><br><span id="w-wind" class="val">--m/s</span></div>
+                <div><span class="label">자외선</span><br><span id="w-uv" class="val">--</span></div>
             </div>
         </div>
         <div class="weather-extra">
-            <div class="ex-item"><div class="ex-label">PRECIP</div><div id="w-pop" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">HUMID</div><div id="w-hum" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">SUNRISE</div><div id="w-sunr" class="ex-val">--:--</div></div>
-            <div class="ex-item"><div class="ex-label">SUNSET</div><div id="w-suns" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">강우확률</div><div id="w-pop" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">습도</div><div id="w-hum" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">일출</div><div id="w-sunr" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">일몰</div><div id="w-suns" class="ex-val">--:--</div></div>
         </div>
         <div class="tab-group">
-            <button id="btn-info" class="tab-btn active" onclick="showTab('info')">INFO</button>
-            <button id="btn-plan" class="tab-btn" onclick="showTab('plan')">PLAN</button>
-            <button id="btn-docs" class="tab-btn" onclick="showTab('docs')">DOCS</button>
+            <button id="btn-info" class="tab-btn active" onclick="showTab('info')">정보</button>
+            <button id="btn-plan" class="tab-btn" onclick="showTab('plan')">일정</button>
+            <button id="btn-docs" class="tab-btn" onclick="showTab('docs')">문서</button>
         </div>
     </header>
 
     <main id="main-scroll" class="scroll-container">
         <div id="info" class="tab-content active">
             <div class="padding-wrap">
-                <div class="section-label">Departure Flight</div>
+                <div class="section-label">출국 항공편</div>
                 <div class="flight-card">
                     <div class="flight-top"><div class="flight-route">ICN ✈ DAD</div><div class="flight-pnr">FX4MV3</div></div>
                     <div class="flight-mid">
-                        <div class="info-box">FLIGHT<strong>T'way TW007</strong></div>
-                        <div class="info-box">DEPARTURE<strong>01.13 07:45</strong></div>
-                        <div class="info-box">CHECK-IN START<strong>01.12 07:45</strong></div>
-                        <div class="info-box">PASSENGERS<strong>Won / Pyo</strong></div>
+                        <div class="info-box">편명<strong>티웨이 TW007</strong></div>
+                        <div class="info-box">출발시간<strong>01.13 07:45</strong></div>
+                        <div class="info-box">체크인시작<strong>01.12 07:45</strong></div>
+                        <div class="info-box">탑승객<strong>Won / Pyo</strong></div>
                     </div>
                     <div class="baggage-section">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>위탁 수하물</span><strong>15kg / Person</strong></div>
-                        <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / Person</strong></div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>위탁 수하물</span><strong>15kg / 인</strong></div>
+                        <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / 인</strong></div>
                     </div>
                 </div>
-
-                <div class="section-label">Return Flight</div>
-                <div class="flight-card return-flight">
-                    <div class="flight-top"><div class="flight-route">DAD ✈ ICN</div><div class="flight-pnr">7GJ8NY</div></div>
+                <div class="section-label">귀국 항공편</div>
+                <div class="flight-card" style="background:var(--vj-red); color:white;">
+                    <div class="flight-top" style="border-bottom:1px dashed rgba(255,255,255,0.3);"><div class="flight-route">DAD ✈ ICN</div><div class="flight-pnr" style="background:rgba(255,255,255,0.2); color:white;">7GJ8NY</div></div>
                     <div class="flight-mid">
-                        <div class="info-box">FLIGHT<strong>VietJet VJ874</strong></div>
-                        <div class="info-box">DEPARTURE<strong>01.17 15:10</strong></div>
-                        <div class="info-box">CHECK-IN START<strong>01.16 15:10</strong></div>
-                        <div class="info-box">PASSENGERS<strong>Won / Pyo</strong></div>
+                        <div class="info-box" style="color:rgba(255,255,255,0.7);">편명<strong style="color:white;">비엣젯 VJ874</strong></div>
+                        <div class="info-box" style="color:rgba(255,255,255,0.7);">출발시간<strong style="color:white;">01.17 15:10</strong></div>
+                        <div class="info-box" style="color:rgba(255,255,255,0.7);">체크인시작<strong style="color:white;">01.16 15:10</strong></div>
+                        <div class="info-box" style="color:rgba(255,255,255,0.7);">탑승객<strong style="color:white;">Won / Pyo</strong></div>
                     </div>
-                    <div class="baggage-section">
+                    <div class="baggage-section" style="background:rgba(0,0,0,0.1); color:white; border-top:1px dashed rgba(255,255,255,0.3);">
                          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Won Mi-Young</span><strong>위탁 20kg</strong></div>
                          <div style="display:flex; justify-content:space-between;"><span>Pyo Sang-Hun</span><strong>위탁 불포함</strong></div>
                     </div>
                 </div>
-
-                <div class="section-label">Accommodation</div>
+                <div class="section-label">숙소 정보</div>
                 <div class="hotel-detail">
-                    <div class="hotel-name">Melia Vinpearl Riverfront</div>
+                    <div class="hotel-name">멜리아 빈펄 리버프론트</div>
                     <div style="font-size:12px; color:var(--text-sub);">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
                     <div class="hotel-info-grid">
-                        <div class="h-box">CONFIRMATION<strong>#4575465</strong></div>
-                        <div class="h-box">ROOM TYPE<strong>Small Suite King</strong></div>
-                        <div class="h-box">CHECK-IN<strong>14:00</strong></div>
-                        <div class="h-box">CHECK-OUT<strong>12:00</strong></div>
-                        <div class="h-box">BREAKFAST<strong>Included (2F)</strong></div>
-                        <div class="h-box">FACILITY<strong>Infinity Pool (2F)</strong></div>
+                        <div class="h-box">예약번호<strong>#4575465</strong></div>
+                        <div class="h-box">객실타입<strong>스몰 스위트 킹</strong></div>
+                        <div class="h-box">체크인<strong>14:00</strong></div>
+                        <div class="h-box">체크아웃<strong>12:00</strong></div>
+                        <div class="h-box">조식<strong>포함 (2층)</strong></div>
+                        <div class="h-box">부대시설<strong>인피니티 풀 (2층)</strong></div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div id="plan" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label">Travel Schedule</div>
+                <div class="section-label">여행 일정</div>
                 <div id="plan-container"></div>
             </div>
         </div>
-
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label">📁 Cloud Digital Vault (Sync)</div>
-                <div id="docs-container" style="margin-top:10px;">
-                    </div>
-                <div id="docs-loading" style="text-align:center; color:var(--text-sub); margin-top:20px;">연결된 문서를 확인하는 중...</div>
+                <div class="section-label">📁 문서 보관함</div>
+                <div id="docs-container"></div>
+                <div id="docs-status" style="text-align:center; color:var(--text-sub); padding:20px;">동기화 중...</div>
             </div>
         </div>
     </main>
 
     <div id="panel-overlay" class="panel-overlay" onclick="closeDayPanel()"></div>
     <div id="day-panel" class="side-panel">
-        <div class="panel-header">
-            <div id="panel-day-title" class="panel-title">DAY Details</div>
-            <button class="close-btn" onclick="closeDayPanel()">×</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <div id="panel-day-title" style="font-size:20px; font-weight:800; color:var(--point-gold);">상세 일정</div>
+            <button style="background:none; border:none; color:#fff; font-size:32px;" onclick="closeDayPanel()">×</button>
         </div>
-        <ul id="sub-plan-list" class="sub-plan-list"></ul>
+        <ul id="sub-plan-list" style="list-style:none; padding:0;"></ul>
     </div>
 
     <footer id="calc-footer">
@@ -225,124 +199,96 @@
             <div id="krw-res" class="calc-res">≒ 0 KRW</div>
         </div>
         <div class="btn-row">
-            <button class="calc-btn" onclick="addVnd(100000)">+100k</button>
-            <button class="calc-btn" onclick="addVnd(500000)">+500k</button>
-            <button class="calc-btn btn-ac" onclick="resetCalc()">AC</button>
-            <button id="btn-bargain" class="calc-btn btn-bargain" onclick="applyBargain()">흥정(40%↓)</button>
+            <button class="c-btn" onclick="addVnd(100000)">+100k</button>
+            <button class="c-btn" onclick="addVnd(500000)">+500k</button>
+            <button class="c-btn ac" onclick="resetCalc()">AC</button>
+            <button id="btn-bargain" class="c-btn bargain" onclick="applyBargain()">흥정(40%↓)</button>
         </div>
     </footer>
 
     <script>
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
         let scheduleData = {};
-        let activeTab = 'info';
+        let lastScrollTop = 0;
 
-        // ---------------------------------------------------------
-        // 데이터 패치 로직 (PLAN 시트 & DOCS 시트 개별 연동)
-        // ---------------------------------------------------------
-        async function fetchAllData() {
-            // 1. PLAN 데이터 가져오기 (첫 번째 시트)
-            const planUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
-            // 2. DOCS 데이터 가져오기 (DOCS 탭)
-            const docsUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=DOCS`;
-
-            try {
-                // 일정 로드
-                const planRes = await fetch(planUrl);
-                const planCsv = await planRes.text();
-                parsePlanCSV(planCsv);
-                renderPlanCards();
-
-                // 문서함 로드
-                const docsRes = await fetch(docsUrl);
-                if(docsRes.ok) {
-                    const docsCsv = await docsRes.text();
-                    renderDocsFromCSV(docsCsv);
-                }
-            } catch (e) { console.error("Sync Error:", e); }
+        async function fetchSheet(name) {
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
+            try { const res = await fetch(url); return await res.text(); } catch(e) { return null; }
         }
 
-        function parsePlanCSV(csv) {
-            const rows = csv.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '').trim()));
+        async function syncPlan() {
+            const csv = await fetchSheet("Sheet1");
+            if(!csv) return;
+            const rows = csv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
             const data = {};
             for (let i = 1; i < rows.length; i++) {
-                const [day, mainTitle, subtitle, time, itemTitle, desc, nav] = rows[i];
+                const [day, main, sub, time, title, desc, nav] = rows[i];
                 if (!day) continue;
-                if (!data[day]) { data[day] = { dayNum: day, main: mainTitle, sub: subtitle, items: [] }; }
-                data[day].items.push({ time, title: itemTitle, desc, nav });
+                if (!data[day]) data[day] = { dayNum: day, main, sub, items: [] };
+                data[day].items.push({ time, title, desc, nav });
             }
             scheduleData = data;
+            document.getElementById('plan-container').innerHTML = Object.keys(data).map(day => `
+                <div class="plan-card" onclick="openDayPanel('${day}')">
+                    <div class="plan-day">DAY ${data[day].dayNum}. ${data[day].main || ''}</div>
+                    <div class="plan-subtitle">${data[day].sub || ''}</div>
+                </div>
+            `).join('');
         }
 
-        function renderPlanCards() {
-            const container = document.getElementById('plan-container');
-            container.innerHTML = "";
-            Object.keys(scheduleData).forEach(day => {
-                const d = scheduleData[day];
-                container.innerHTML += `
-                    <div class="plan-card" onclick="openDayPanel('${day}')">
-                        <div class="plan-day">DAY ${d.dayNum}. ${d.main || ''} <span class="clickable-badge">DETAIL</span></div>
-                        <div class="plan-subtitle">${d.sub || ''}</div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderDocsFromCSV(csv) {
-            const rows = csv.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '').trim()));
+        async function syncDocs() {
+            const csv = await fetchSheet("DOCS");
             const container = document.getElementById('docs-container');
-            document.getElementById('docs-loading').style.display = 'none';
-            container.innerHTML = "";
-            
-            for (let i = 1; i < rows.length; i++) {
-                const [name, link] = rows[i];
-                if (!name || !link) continue;
-                container.innerHTML += `
-                    <div class="list-item" onclick="window.open('${link}', '_blank')">
-                        <span class="doc-name">📄 ${name}</span>
-                        <span class="doc-icon">➜</span>
-                    </div>
-                `;
-            }
+            const status = document.getElementById('docs-status');
+            if(!csv || csv.includes("<!DOCTYPE html>")) { status.innerText = "DOCS 시트를 확인해주세요."; return; }
+            const rows = csv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
+            status.style.display = 'none';
+            container.innerHTML = rows.slice(1).map(r => r[0] && r[1] ? `
+                <div class="list-item" onclick="window.open('${r[1]}', '_blank')">
+                    <span style="font-weight:700; color:#fff;">📄 ${r[0]}</span>
+                    <span style="color:var(--point-gold);">➜</span>
+                </div>` : "").join('');
         }
 
         function openDayPanel(day) {
-            const data = scheduleData[day];
-            document.getElementById('panel-day-title').innerText = `DAY ${data.dayNum} Details`;
-            const list = document.getElementById('sub-plan-list');
-            list.innerHTML = data.items.map(item => `
+            const d = scheduleData[day];
+            document.getElementById('panel-day-title').innerText = `DAY ${d.dayNum} 상세 일정`;
+            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => `
                 <li class="sub-plan-item">
                     <div>
-                        <div class="sub-time">${item.time}</div>
-                        <div class="sub-title">${item.title}</div>
-                        <div class="sub-desc">${item.desc}</div>
+                        <div style="font-size:11px; color:var(--point-gold); font-weight:700;">${item.time}</div>
+                        <div style="font-size:15px; font-weight:700; color:#fff;">${item.title}</div>
+                        <div style="font-size:13px; color:var(--text-sub);">${item.desc}</div>
                     </div>
-                    ${item.nav && item.nav.startsWith('http') ? `<a href="${item.nav}" target="_blank" class="nav-icon-btn">🧭</a>` : ''}
+                    ${item.nav && item.nav.startsWith('http') ? `<a href="${item.nav}" target="_blank" class="nav-btn">🧭</a>` : ''}
                 </li>
             `).join('');
             document.getElementById('day-panel').classList.add('open');
             document.getElementById('panel-overlay').style.display = 'block';
         }
 
-        function closeDayPanel() {
-            document.getElementById('day-panel').classList.remove('open');
-            document.getElementById('panel-overlay').style.display = 'none';
-        }
+        function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
 
         function showTab(t) {
-            activeTab = t;
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
             const footer = document.getElementById('calc-footer');
             const main = document.getElementById('main-scroll');
-            footer.classList.remove('hide-footer');
-            if(t === 'info' || t === 'plan') { footer.style.display = 'block'; main.classList.remove('no-calc'); }
-            else { footer.style.display = 'none'; main.classList.add('no-calc'); }
-            if(t === 'plan' || t === 'docs') fetchAllData();
+            if(t === 'info') { footer.classList.remove('hide-calc'); main.classList.remove('full-view'); } 
+            else { footer.classList.add('hide-calc'); main.classList.add('full-view'); if(t === 'plan') syncPlan(); if(t === 'docs') syncDocs(); }
         }
 
-        // 공통 기능 (날씨, 시계, 환율) - 유지
+        document.getElementById('main-scroll').addEventListener('scroll', function() {
+            if (document.getElementById('info').classList.contains('active')) {
+                let st = this.scrollTop;
+                const footer = document.getElementById('calc-footer');
+                if (st > lastScrollTop && st > 50) { footer.classList.add('hide-calc'); } 
+                else { footer.classList.remove('hide-calc'); }
+                lastScrollTop = st;
+            }
+        });
+
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', hour12: false };
@@ -356,7 +302,7 @@
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,uv_index&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
                 const d = await res.json();
                 document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
-                document.getElementById('w-feels').innerText = "FEELS LIKE " + Math.round(d.current.apparent_temperature) + "°";
+                document.getElementById('w-feels').innerText = "체감온도 " + Math.round(d.current.apparent_temperature) + "°";
                 document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
                 document.getElementById('w-uv').innerText = d.current.uv_index;
                 document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
@@ -368,6 +314,7 @@
             } catch(e) {}
         }
 
+        // 복구된 환율 계산기 로직
         let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
             document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
@@ -381,7 +328,7 @@
         function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
         function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
 
-        window.onload = function() { getW(); updateClocks(); showTab('info'); fetchAllData(); };
+        window.onload = () => { getW(); updateClocks(); showTab('info'); };
     </script>
 </body>
 </html>
