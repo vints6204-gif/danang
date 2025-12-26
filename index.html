@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>두근두근💕 DANANG TRAVEL (4박5일)</title>
+    <title>두군두군💕 해외여행(DANANG)</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
@@ -83,7 +83,7 @@
 
         .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px); padding: 12px 20px 30px; border-top: 1px solid var(--card-border); z-index: 1000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px); padding: 12px 20px 30px; border-top: 1px solid var(--card-border); z-index: 1000; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .hide-calc { transform: translateY(100%); }
         .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
         .calc-input { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 10px; color: #fff; font-size: 16px; width: 130px; padding: 8px 12px; text-align: right; font-weight: 700; outline: none; }
@@ -282,13 +282,17 @@
             else { footer.classList.add('hide-calc'); main.classList.add('full-view'); if(t === 'plan') syncPlan(); if(t === 'docs') syncDocs(); }
         }
 
+        // 스크롤 감지: 아래로 내리면 숨기고 위로 올리면 표시
         document.getElementById('main-scroll').addEventListener('scroll', function() {
             if (document.getElementById('info').classList.contains('active')) {
                 let st = this.scrollTop;
                 const footer = document.getElementById('calc-footer');
-                if (st > lastScrollTop && st > 50) { footer.classList.add('hide-calc'); } 
-                else { footer.classList.remove('hide-calc'); }
-                lastScrollTop = st;
+                if (st > lastScrollTop && st > 20) { 
+                    footer.classList.add('hide-calc'); 
+                } else if (st < lastScrollTop) { 
+                    footer.classList.remove('hide-calc'); 
+                }
+                lastScrollTop = st <= 0 ? 0 : st;
             }
         });
 
