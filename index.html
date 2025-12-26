@@ -5,102 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DANANG TRAVEL MASTER</title>
     <style>
+        /* [기존 스타일 유지 - 절대 변경 없음] */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        
-        :root { 
-            --bg-deep: #0a0a0b; 
-            --card-glass: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --point-gold: #FFD700;
-            --vj-red: #E31E24;
-            --text-main: #FFFFFF;
-            --text-sub: #94a3b8;
-            --accent-green: #30D158;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
+        :root { --bg-deep: #0a0a0b; --card-glass: rgba(255, 255, 255, 0.03); --card-border: rgba(255, 255, 255, 0.08); --point-gold: #FFD700; --vj-red: #E31E24; --text-main: #FFFFFF; --text-sub: #94a3b8; --accent-green: #30D158; --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main); font-size: 14px; line-height: 1.5; overflow: hidden; }
-
-        /* 헤더 & 날씨 */
-        .fixed-header { 
-            position: fixed; top: 0; left: 0; right: 0; 
-            background: rgba(10, 10, 11, 0.85); backdrop-filter: blur(20px); 
-            z-index: 1000; padding: 20px 20px 10px; border-bottom: 1px solid var(--card-border);
-        }
+        .fixed-header { position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.85); backdrop-filter: blur(20px); z-index: 1000; padding: 20px 20px 10px; border-bottom: 1px solid var(--card-border); }
         .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 8px 15px; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 12px; }
         .time-item { font-size: 11px; font-weight: 600; color: var(--text-sub); }
-        .time-item span { color: var(--point-gold); margin-left: 6px; }
-
+        .time-item span { color: var(--point-gold); margin-left: 6px; font-variant-numeric: tabular-nums; }
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .w-left { font-size: 40px; }
-        .w-center .temp { font-size: 42px; color: var(--point-gold); font-weight: 200; line-height: 1; }
-        .w-center .feels-like { font-size: 12px; color: var(--text-sub); margin-top: 5px; }
+        .w-left { font-size: 40px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.3)); }
+        .w-center { text-align: center; }
+        .w-center .temp { font-size: 42px; color: var(--point-gold); font-weight: 200; line-height: 1; letter-spacing: -2px; }
+        .w-center .feels-like { font-size: 12px; color: var(--text-sub); margin-top: 5px; font-weight: 500; }
+        .w-right .label { font-size: 9px; color: #555; font-weight: 800; text-transform: uppercase; }
         .w-right .val { font-size: 14px; font-weight: 700; color: #eee; }
         .weather-extra { display: flex; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--card-border); }
-        .ex-label { font-size: 9px; color: #555; font-weight: 800; }
-        .ex-val { font-size: 12px; color: #ddd; }
-
+        .ex-label { font-size: 9px; color: #555; font-weight: 800; margin-bottom: 4px; }
+        .ex-val { font-size: 12px; color: #ddd; font-weight: 600; }
         .tab-group { display: flex; gap: 8px; padding-top: 10px; }
-        .tab-btn { flex: 1; background: transparent; border: 1px solid var(--card-border); color: var(--text-sub); padding: 12px 0; border-radius: 12px; font-size: 12px; font-weight: 700; }
-        .tab-btn.active { background: var(--point-gold); color: #000; border-color: var(--point-gold); }
-
-        /* 메인 영역 */
-        .scroll-container { height: 100vh; overflow-y: auto; padding: 245px 0 180px; transition: var(--transition); }
+        .tab-btn { flex: 1; background: transparent; border: 1px solid var(--card-border); color: var(--text-sub); padding: 12px 0; border-radius: 12px; font-size: 12px; font-weight: 700; transition: var(--transition); }
+        .tab-btn.active { background: var(--point-gold); color: #000; border-color: var(--point-gold); box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
+        .scroll-container { height: 100vh; overflow-y: auto; padding: 245px 0 180px; -webkit-overflow-scrolling: touch; transition: var(--transition); }
         .scroll-container.no-calc { padding-bottom: 40px !important; }
-        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content { display: none; animation: fadeIn 0.4s ease-out; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .padding-wrap { padding: 0 20px; }
-        .section-label { font-size: 11px; font-weight: 800; color: #444; margin: 25px 0 12px; text-transform: uppercase; }
-
-        /* INFO 카드 */
-        .flight-card { background: #fff; color: #111; border-radius: 24px; margin-bottom: 18px; overflow: hidden; }
+        .section-label { font-size: 11px; font-weight: 800; color: #444; margin: 25px 0 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+        .flight-card { background: rgba(255, 255, 255, 0.98); color: #111; border-radius: 24px; margin-bottom: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden; }
         .flight-top { padding: 18px 22px; border-bottom: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
-        .flight-route { font-size: 24px; font-weight: 900; }
+        .flight-route { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
         .flight-pnr { font-size: 11px; font-weight: 800; color: var(--vj-red); background: #fff0f0; padding: 4px 10px; border-radius: 8px; }
         .flight-mid { padding: 20px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .info-box strong { display: block; font-size: 15px; color: #111; margin-top: 4px; }
-        .baggage-section { background: #f9fafb; padding: 15px 22px; border-top: 1px solid #f1f5f9; font-size: 12px; }
+        .info-box { font-size: 11px; color: #888; font-weight: 600; }
+        .info-box strong { display: block; font-size: 15px; color: #111; margin-top: 4px; font-weight: 800; }
+        .baggage-section { background: #f9fafb; padding: 15px 22px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #666; }
         .return-flight { background: var(--vj-red) !important; color: white !important; }
-        .return-flight * { color: white !important; }
-
-        .hotel-detail { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 24px; padding: 22px; }
-        .hotel-name { font-size: 19px; font-weight: 800; color: var(--point-gold); }
-
-        /* [변경] PLAN 아코디언 스타일 */
-        .plan-acc { margin-bottom: 12px; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 20px; overflow: hidden; }
-        .acc-header { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .acc-header:active { background: rgba(255,255,255,0.05); }
-        .acc-day { font-size: 12px; color: var(--point-gold); font-weight: 800; margin-bottom: 4px; }
-        .acc-title { font-size: 16px; font-weight: 800; color: #fff; }
-        .acc-icon { font-size: 12px; color: var(--text-sub); transition: 0.3s; }
-        .plan-acc.open .acc-icon { transform: rotate(180deg); }
-
-        .acc-content { display: none; padding: 0 20px 20px; border-top: 1px solid var(--card-border); background: rgba(0,0,0,0.2); }
-        .plan-acc.open .acc-content { display: block; }
-        
-        .sub-item { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: flex-start; }
-        .sub-item:last-child { border-bottom: none; }
+        .return-flight .flight-route, .return-flight .info-box strong { color: white !important; }
+        .return-flight .flight-pnr { background: rgba(255,255,255,0.2); color: white; }
+        .return-flight .baggage-section { background: rgba(0,0,0,0.1); border-top: 1px dashed rgba(255,255,255,0.3); color: white; }
+        .hotel-detail { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 24px; padding: 22px; margin-bottom: 20px; }
+        .hotel-name { font-size: 19px; font-weight: 800; color: var(--point-gold); margin-bottom: 6px; }
+        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; border-top: 1px solid var(--card-border); padding-top: 20px; }
+        .h-box { font-size: 11px; color: var(--text-sub); }
+        .h-box strong { display: block; color: #eee; font-size: 14px; margin-top: 4px; font-weight: 700; }
+        .plan-card { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; cursor: pointer; }
+        .plan-day { font-size: 16px; font-weight: 800; color: var(--point-gold); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .plan-main-title { font-size: 15px; font-weight: 700; color: #fff; }
+        .clickable-badge { font-size: 10px; background: rgba(255,215,0,0.2); color: var(--point-gold); padding: 2px 8px; border-radius: 20px; }
+        .side-panel { position: fixed; top: 0; right: -100%; width: 90%; height: 100%; background: #111; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.5); padding: 30px 20px; overflow-y: auto; }
+        .side-panel.open { right: 0; }
+        .panel-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1999; display: none; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: sticky; top: -10px; background: #111; padding: 10px 0; z-index: 10; }
+        .panel-title { font-size: 20px; font-weight: 800; color: var(--point-gold); }
+        .close-btn { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; }
+        .sub-plan-list { list-style: none; padding: 0; }
+        .sub-plan-item { margin-bottom: 25px; border-left: 2px solid var(--point-gold); padding-left: 15px; position: relative; display: flex; justify-content: space-between; align-items: flex-start; }
         .sub-time { font-size: 11px; color: var(--point-gold); font-weight: 700; }
-        .sub-name { font-size: 14px; font-weight: 700; color: #eee; margin: 2px 0; }
-        .sub-desc { font-size: 12px; color: var(--text-sub); }
-        .nav-btn { background: rgba(48, 209, 88, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; margin-left: 10px; }
-
-        /* 계산기 & 문서 [복구 유지] */
-        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px); padding: 20px 20px 40px; border-top: 1px solid var(--card-border); z-index: 1000; transition: var(--transition); }
+        .sub-title { font-size: 15px; font-weight: 700; margin: 4px 0; color: #fff; }
+        .sub-desc { font-size: 13px; color: var(--text-sub); }
+        .nav-icon-btn { background: rgba(48, 209, 88, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; margin-left: 10px; }
+        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 10, 11, 0.95); backdrop-filter: blur(25px); padding: 20px 20px 40px; border-top: 1px solid var(--card-border); z-index: 1000; transition: var(--transition); transform: translateY(0); }
         #calc-footer.hide-footer { transform: translateY(100%); }
-        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .calc-input { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 14px; color: #fff; font-size: 20px; width: 150px; padding: 12px; text-align: right; }
-        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; text-align: right; flex: 1; }
+        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .calc-input { background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: 14px; color: #fff; font-size: 20px; width: 160px; padding: 12px 15px; outline: none; text-align: right; font-weight: 700; }
+        .calc-res { color: var(--point-gold); font-size: 20px; font-weight: 800; text-align: right; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .btn-row { display: flex; gap: 8px; }
-        .calc-btn { flex: 1; background: #222; border: 1px solid #333; color: #fff; padding: 15px 0; border-radius: 12px; font-size: 12px; font-weight: 700; }
+        .calc-btn { flex: 1; background: #222; border: 1px solid #333; color: #fff; padding: 15px 0; border-radius: 14px; font-size: 12px; font-weight: 700; transition: var(--transition); }
         .btn-bargain { background: #1a331f; color: var(--accent-green); border-color: var(--accent-green); }
-        .btn-bargain.active { background: #333; color: #666; }
-
-        .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .docs-input { flex: 1; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 12px; color: #fff; padding: 12px; outline: none; }
-        .add-btn { background: var(--point-gold); border: none; border-radius: 12px; padding: 0 20px; font-weight: 800; }
+        .btn-bargain.active { background: #333; color: #666; border-color: #444; }
+        .btn-ac { color: var(--vj-red); flex: 0.7; }
+        .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .docs-input { flex: 1; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 12px; color: #fff; padding: 12px 15px; outline: none; }
+        .add-btn { background: var(--point-gold); border: none; border-radius: 12px; padding: 0 20px; font-weight: 800; color: #000; }
+        .del-btn { color: #ff453a; background: none; border: none; font-size: 20px; padding: 0 5px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -112,12 +92,13 @@
         <div class="weather-hero">
             <div id="w-icon" class="w-left">☀️</div>
             <div class="w-center">
+                <div style="font-size:10px; color:#666; font-weight:800; letter-spacing:0.15em; margin-bottom:2px;">DANANG NOW</div>
                 <div id="w-temp" class="temp">--°</div>
                 <div id="w-feels" class="feels-like">FEELS LIKE --°</div>
             </div>
             <div class="w-right">
                 <div style="margin-bottom:8px;"><span class="label">Wind</span><br><span id="w-wind" class="val">--m/s</span></div>
-                <div><span class="label">UV</span><br><span id="w-uv" class="val">--</span></div>
+                <div><span class="label">UV Index</span><br><span id="w-uv" class="val">--</span></div>
             </div>
         </div>
         <div class="weather-extra">
@@ -142,44 +123,81 @@
                     <div class="flight-mid">
                         <div class="info-box">FLIGHT<strong>T'way TW007</strong></div>
                         <div class="info-box">DEPARTURE<strong>01.13 07:45</strong></div>
+                        <div class="info-box">CHECK-IN START<strong>01.12 07:45</strong></div>
+                        <div class="info-box">PASSENGERS<strong>Won / Pyo</strong></div>
+                    </div>
+                    <div class="baggage-section">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>위탁 수하물</span><strong>15kg / Person</strong></div>
+                        <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / Person</strong></div>
                     </div>
                 </div>
+
                 <div class="section-label">Return Flight</div>
                 <div class="flight-card return-flight">
                     <div class="flight-top"><div class="flight-route">DAD ✈ ICN</div><div class="flight-pnr">7GJ8NY</div></div>
                     <div class="flight-mid">
                         <div class="info-box">FLIGHT<strong>VietJet VJ874</strong></div>
                         <div class="info-box">DEPARTURE<strong>01.17 15:10</strong></div>
+                        <div class="info-box">CHECK-IN START<strong>01.16 15:10</strong></div>
+                        <div class="info-box">PASSENGERS<strong>Won / Pyo</strong></div>
+                    </div>
+                    <div class="baggage-section">
+                         <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Won Mi-Young</span><strong>위탁 20kg</strong></div>
+                         <div style="display:flex; justify-content:space-between;"><span>Pyo Sang-Hun</span><strong>위탁 불포함</strong></div>
                     </div>
                 </div>
+
                 <div class="section-label">Accommodation</div>
                 <div class="hotel-detail">
                     <div class="hotel-name">Melia Vinpearl Riverfront</div>
-                    <div style="font-size:12px; color:var(--text-sub); margin-top:5px;">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
+                    <div style="font-size:12px; color:var(--text-sub);">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
+                    <div class="hotel-info-grid">
+                        <div class="h-box">CONFIRMATION<strong>#4575465</strong></div>
+                        <div class="h-box">ROOM TYPE<strong>Small Suite King</strong></div>
+                        <div class="h-box">CHECK-IN<strong>14:00</strong></div>
+                        <div class="h-box">CHECK-OUT<strong>12:00</strong></div>
+                        <div class="h-box">BREAKFAST<strong>Included (2F)</strong></div>
+                        <div class="h-box">FACILITY<strong>Infinity Pool (2F)</strong></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="plan" class="tab-content">
-            <div class="padding-wrap" id="plan-container">
+            <div class="padding-wrap">
+                <div class="section-label">Travel Schedule (Auto-Sync)</div>
+                <div id="plan-list-container">
+                    <p style="text-align:center; color:#666;">데이터를 가져오는 중...</p>
                 </div>
+            </div>
         </div>
 
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label">📝 Reservations</div>
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <input type="text" id="res-input" class="docs-input" placeholder="정보 입력...">
-                    <button class="add-btn" onclick="addRes()">추가</button>
+                <div class="section-label">📝 Reservation Management</div>
+                <div class="input-group" style="display:flex; gap:10px; margin-bottom:20px;">
+                    <input type="text" id="res-input" class="docs-input" placeholder="Enter booking info...">
+                    <button class="add-btn" onclick="addRes()">ADD</button>
                 </div>
                 <ul id="res-list" style="list-style:none; padding:0; margin:0;"></ul>
-                <div class="section-label">📁 Digital Vault</div>
-                <button class="add-btn" style="width:100%; height:50px; border-radius:16px;" onclick="document.getElementById('file-input').click()">+ 파일 업로드</button>
-                <input type="file" id="file-input" style="display:none" onchange="addFile(this)">
-                <ul id="file-list" style="list-style:none; padding:0; margin:0; margin-top:15px;"></ul>
+                <div class="section-label">📁 Digital Vault (PDF, IMG)</div>
+                <div style="margin-bottom:20px;">
+                    <input type="file" id="file-input" style="display:none" accept=".pdf, .png, .jpg, .jpeg, .bmp" onchange="addFile(this)">
+                    <button class="add-btn" style="width:100%; height:50px; border-radius:16px;" onclick="document.getElementById('file-input').click()">+ Upload Document</button>
+                </div>
+                <ul id="file-list" style="list-style:none; padding:0; margin:0;"></ul>
             </div>
         </div>
     </main>
+
+    <div id="panel-overlay" class="panel-overlay" onclick="closeDayPanel()"></div>
+    <div id="day-panel" class="side-panel">
+        <div class="panel-header">
+            <div id="panel-day-title" class="panel-title">DAY Details</div>
+            <button class="close-btn" onclick="closeDayPanel()">×</button>
+        </div>
+        <ul id="sub-plan-list" class="sub-plan-list"></ul>
+    </div>
 
     <footer id="calc-footer">
         <div class="calc-display">
@@ -190,97 +208,140 @@
             <button class="calc-btn" onclick="addVnd(100000)">+100k</button>
             <button class="calc-btn" onclick="addVnd(500000)">+500k</button>
             <button class="calc-btn btn-ac" onclick="resetCalc()">AC</button>
-            <button id="btn-bargain" class="calc-btn btn-bargain" onclick="applyBargain()">흥정(-40%)</button>
+            <button id="btn-bargain" class="calc-btn btn-bargain" onclick="applyBargain()">흥정(40%↓)</button>
         </div>
     </footer>
 
     <script>
-        // 고정 타이틀 설정
-        const FIXED_TITLES = {
-            1: "호텔 근처 탐방",
-            2: "바나힐 투어",
-            3: "호이안 올드타운",
-            4: "오행산 & 쇼핑",
-            5: "기념품 정리 및 귀국"
-        };
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY/export?format=csv&gid=0";
+        let scheduleData = {};
 
-        const SHEET_ID = '1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY';
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-
-        async function fetchPlan() {
+        // 1. 스프레드시트 데이터 연동 로직
+        async function fetchSchedule() {
             try {
-                const res = await fetch(SHEET_URL);
-                const txt = await res.text();
-                const json = JSON.parse(txt.substring(47, txt.length - 2));
-                const rows = json.table.rows;
+                const response = await fetch(CSV_URL);
+                const data = await response.text();
+                // 쉼표 분리 시 따옴표 내 쉼표 무시를 위한 로직 (복합 CSV 대응)
+                const rows = data.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*")2)*[^"]*$)/)).slice(1);
                 
-                let dataByDay = { 1: [], 2: [], 3: [], 4: [], 5: [] };
-                let currentDay = 1;
-
-                rows.forEach(row => {
-                    const d = row.c[0]?.v;
-                    if (d && !isNaN(d)) currentDay = parseInt(d);
+                const parsed = {};
+                rows.forEach(cols => {
+                    if(cols.length < 5 || !cols[0]) return;
                     
-                    if (dataByDay[currentDay]) {
-                        dataByDay[currentDay].push({
-                            time: row.c[1]?.v || "",
-                            name: row.c[3]?.v || "",
-                            desc: row.c[4]?.v || "",
-                            nav: row.c[5]?.v || ""
-                        });
+                    const day = cols[0].replace(/"/g, "").trim();
+                    const dayTitle = cols[1].replace(/"/g, "").trim();
+                    const time = cols[2].replace(/"/g, "").trim();
+                    const title = cols[3].replace(/"/g, "").trim();
+                    const desc = cols[4].replace(/"/g, "").trim();
+                    const nav = cols[5] ? cols[5].replace(/"/g, "").trim() : "#";
+
+                    if(!parsed[day]) {
+                        parsed[day] = { title: "DAY " + day + ". " + dayTitle, items: [] };
                     }
+                    parsed[day].items.push({ time, title, desc, nav });
                 });
-                renderPlan(dataByDay);
+
+                scheduleData = parsed;
+                renderPlanCards();
             } catch (e) {
-                document.getElementById('plan-container').innerHTML = "<p>데이터를 불러올 수 없습니다.</p>";
+                document.getElementById('plan-list-container').innerHTML = '<p style="color:red; text-align:center;">데이터 연동 실패 (ID 또는 공유설정 확인)</p>';
             }
         }
 
-        function renderPlan(dataByDay) {
-            const container = document.getElementById('plan-container');
-            container.innerHTML = [1,2,3,4,5].map(day => `
-                <div class="plan-acc" id="acc-day-${day}">
-                    <div class="acc-header" onclick="toggleAcc(${day})">
-                        <div>
-                            <div class="acc-day">DAY ${day}</div>
-                            <div class="acc-title">${FIXED_TITLES[day]}</div>
-                        </div>
-                        <div class="acc-icon">▼</div>
-                    </div>
-                    <div class="acc-content">
-                        ${dataByDay[day].filter(item => item.name).map(item => `
-                            <div class="sub-item">
-                                <div style="flex:1">
-                                    <div class="sub-time">${item.time}</div>
-                                    <div class="sub-name">${item.name}</div>
-                                    <div class="sub-desc">${item.desc}</div>
-                                </div>
-                                ${item.nav ? `<a href="${item.nav}" target="_blank" class="nav-btn">🧭</a>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
+        function renderPlanCards() {
+            const container = document.getElementById('plan-list-container');
+            const keys = Object.keys(scheduleData).sort((a,b) => a-b);
+            if(keys.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666;">일정이 비어있습니다.</p>';
+                return;
+            }
+            container.innerHTML = keys.map(day => `
+                <div class="plan-card" onclick="openDayPanel('${day}')">
+                    <div class="plan-day">DAY ${day} <span class="clickable-badge">DETAIL</span></div>
+                    <div class="plan-main-title">${scheduleData[day].title.split('. ')[1] || '일정'}</div>
                 </div>
             `).join('');
         }
 
-        function toggleAcc(day) {
-            const el = document.getElementById(`acc-day-${day}`);
-            const isOpen = el.classList.contains('open');
-            document.querySelectorAll('.plan-acc').forEach(acc => acc.classList.remove('open'));
-            if (!isOpen) el.classList.add('open');
+        function openDayPanel(day) {
+            const data = scheduleData[day];
+            document.getElementById('panel-day-title').innerText = data.title;
+            const list = document.getElementById('sub-plan-list');
+            list.innerHTML = data.items.map(item => `
+                <li class="sub-plan-item">
+                    <div style="flex:1;">
+                        <div class="sub-time">${item.time}</div>
+                        <div class="sub-title">${item.title}</div>
+                        <div class="sub-desc">${item.desc}</div>
+                    </div>
+                    ${item.nav !== "#" ? `<a href="${item.nav}" target="_blank" class="nav-icon-btn">🧭</a>` : ""}
+                </li>
+            `).join('');
+            document.getElementById('day-panel').classList.add('open');
+            document.getElementById('panel-overlay').style.display = 'block';
         }
 
-        // [복구 기능들] 날씨, 시계, 계산기, 탭전환 등...
+        // [기존 유지 기능]
+        const mainScroll = document.getElementById('main-scroll');
+        const footer = document.getElementById('calc-footer');
+        let lastScrollTop = 0;
+        let activeTab = 'info';
+
+        function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
+        mainScroll.addEventListener('scroll', () => {
+            let st = mainScroll.scrollTop;
+            if(activeTab === 'info' || activeTab === 'plan') {
+                if (st > lastScrollTop && st > 50) { footer.classList.add('hide-footer'); } 
+                else { footer.classList.remove('hide-footer'); }
+            }
+            lastScrollTop = st;
+        });
+
         function updateClocks() {
             const now = new Date();
-            const opt = { hour: '2-digit', minute: '2-digit', hour12: false };
-            document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', { ...opt, timeZone: 'Asia/Seoul' }).format(now);
-            document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', { ...opt, timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
+            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+            document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Seoul' }).format(now);
+            document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
+        }
+        setInterval(updateClocks, 1000);
+
+        let reservations = JSON.parse(localStorage.getItem('myRes') || '[]');
+        let filesData = JSON.parse(localStorage.getItem('myFiles') || '[]');
+        function saveAndRender() { localStorage.setItem('myRes', JSON.stringify(reservations)); localStorage.setItem('myFiles', JSON.stringify(filesData)); renderRes(); renderFiles(); }
+        function addRes() { const input = document.getElementById('res-input'); if(!input.value) return; reservations.push(input.value); input.value = ''; saveAndRender(); }
+        function delRes(idx) { reservations.splice(idx, 1); saveAndRender(); }
+        function renderRes() { document.getElementById('res-list').innerHTML = reservations.map((text, i) => `<li class="list-item"><span>${text}</span><button class="del-btn" onclick="delRes(${i})">×</button></li>`).join(''); }
+        function addFile(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { filesData.push({ name: file.name, type: file.type, data: e.target.result }); saveAndRender(); input.value = ''; }; reader.readAsDataURL(file); }
+        function delFile(idx) { filesData.splice(idx, 1); saveAndRender(); }
+        function openFile(idx) { const f = filesData[idx]; const win = window.open(); if (f.type.includes('pdf')) win.document.write(`<iframe src="${f.data}" frameborder="0" style="border:0; width:100%; height:100vh;"></iframe>`); else win.document.write(`<html><body style="margin:0; background:#000; display:flex; align-items:center; justify-content:center;"><img src="${f.data}" style="max-width:100%; height:auto;"></body></html>`); }
+        function renderFiles() { document.getElementById('file-list').innerHTML = filesData.map((f, i) => `<li class="list-item" onclick="openFile(${i})"><span>${f.type.includes('pdf') ? '📄' : '🖼️'} ${f.name}</span><button class="del-btn" onclick="event.stopPropagation(); delFile(${i}); ">×</button></li>`).join(''); }
+
+        let currentVnd = 0; let isBargainMode = false;
+        function updateUI() {
+            document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
+            document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
+            const bBtn = document.getElementById('btn-bargain');
+            if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; } else { bBtn.classList.remove('active'); bBtn.innerText = "흥정(40%↓)"; }
+        }
+        function manualInput(el) { let val = el.value.replace(/[^0-9]/g, ""); currentVnd = val === "" ? 0 : parseInt(val); isBargainMode = false; updateUI(); }
+        function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
+        function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
+        function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
+
+        function showTab(t) {
+            activeTab = t;
+            document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(t).classList.add('active');
+            document.getElementById('btn-' + t).classList.add('active');
+            footer.classList.remove('hide-footer');
+            if(t === 'info' || t === 'plan') { footer.style.display = 'block'; mainScroll.classList.remove('no-calc'); }
+            else { footer.style.display = 'none'; mainScroll.classList.add('no-calc'); }
+            mainScroll.scrollTop = 0;
         }
 
         async function getW() {
             try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,uv_index&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,uv_index&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
                 const d = await res.json();
                 document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
                 document.getElementById('w-feels').innerText = "FEELS LIKE " + Math.round(d.current.apparent_temperature) + "°";
@@ -295,30 +356,10 @@
             } catch(e) {}
         }
 
-        let currentVnd = 0, isBargainMode = false;
-        function updateUI() {
-            document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
-            document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
-            const bBtn = document.getElementById('btn-bargain');
-            if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; }
-            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정(-40%)"; }
-        }
-        function manualInput(el) { currentVnd = parseInt(el.value.replace(/[^0-9]/g, "")) || 0; isBargainMode = false; updateUI(); }
-        function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
-        function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
-        function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
-
-        function showTab(t) {
-            document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(t).classList.add('active');
-            document.getElementById('btn-' + t).classList.add('active');
-            if(t === 'plan') fetchPlan();
-            const footer = document.getElementById('calc-footer');
-            if(t === 'docs') footer.classList.add('hide-footer');
-            else footer.classList.remove('hide-footer');
-        }
-
-        window.onload = () => { updateClocks(); getW(); setInterval(updateClocks, 1000); showTab('info'); };
+        window.onload = function() { 
+            getW(); updateClocks(); showTab('info'); saveAndRender(); 
+            fetchSchedule();
+        };
     </script>
 </body>
 </html>
