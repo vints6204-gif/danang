@@ -73,10 +73,10 @@
         .h-box { font-size: 11px; color: var(--text-sub); }
         .h-box strong { display: block; color: #eee; font-size: 14px; margin-top: 4px; font-weight: 700; }
 
-        /* PLAN 일정 카드 (요청사항 반영) */
+        /* 일정 카드 */
         .plan-card { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; cursor: pointer; }
         .plan-day { font-size: 16px; font-weight: 800; color: var(--point-gold); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .plan-subtitle { font-size: 15px; font-weight: 700; color: #fff; } /* 서브타이틀: 흰색 */
+        .plan-subtitle { font-size: 15px; font-weight: 700; color: #fff; }
         .clickable-badge { font-size: 10px; background: rgba(255,215,0,0.2); color: var(--point-gold); padding: 2px 8px; border-radius: 20px; }
 
         /* 사이드 패널 */
@@ -106,11 +106,11 @@
         .btn-bargain.active { background: #333; color: #666; border-color: #444; }
         .btn-ac { color: var(--vj-red); flex: 0.7; }
 
-        /* DOCS */
-        .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 15px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .docs-input { flex: 1; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 12px; color: #fff; padding: 12px 15px; outline: none; }
-        .add-btn { background: var(--point-gold); border: none; border-radius: 12px; padding: 0 20px; font-weight: 800; color: #000; }
-        .del-btn { color: #ff453a; background: none; border: none; font-size: 20px; padding: 0 5px; cursor: pointer; }
+        /* DOCS 아이템 스타일 */
+        .list-item { background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .list-item:active { background: rgba(255,255,255,0.1); }
+        .doc-name { font-weight: 700; color: #fff; font-size: 15px; }
+        .doc-icon { font-size: 18px; color: var(--point-gold); }
     </style>
 </head>
 <body>
@@ -202,19 +202,10 @@
 
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label">📝 Reservation Management</div>
-                <div class="input-group" style="display:flex; gap:10px; margin-bottom:20px;">
-                    <input type="text" id="res-input" class="docs-input" placeholder="Enter booking info...">
-                    <button class="add-btn" onclick="addRes()">ADD</button>
-                </div>
-                <ul id="res-list" style="list-style:none; padding:0; margin:0;"></ul>
-
-                <div class="section-label">📁 Digital Vault (PDF, IMG)</div>
-                <div style="margin-bottom:20px;">
-                    <input type="file" id="file-input" style="display:none" accept=".pdf, .png, .jpg, .jpeg, .bmp" onchange="addFile(this)">
-                    <button class="add-btn" style="width:100%; height:50px; border-radius:16px;" onclick="document.getElementById('file-input').click()">+ Upload Document</button>
-                </div>
-                <ul id="file-list" style="list-style:none; padding:0; margin:0;"></ul>
+                <div class="section-label">📁 Cloud Digital Vault (Sync)</div>
+                <div id="docs-container" style="margin-top:10px;">
+                    </div>
+                <div id="docs-loading" style="text-align:center; color:var(--text-sub); margin-top:20px;">연결된 문서를 확인하는 중...</div>
             </div>
         </div>
     </main>
@@ -246,31 +237,38 @@
         let scheduleData = {};
         let activeTab = 'info';
 
-        async function fetchPlanData() {
-            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv`;
+        // ---------------------------------------------------------
+        // 데이터 패치 로직 (PLAN 시트 & DOCS 시트 개별 연동)
+        // ---------------------------------------------------------
+        async function fetchAllData() {
+            // 1. PLAN 데이터 가져오기 (첫 번째 시트)
+            const planUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+            // 2. DOCS 데이터 가져오기 (DOCS 탭)
+            const docsUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=DOCS`;
+
             try {
-                const response = await fetch(url);
-                const csvData = await response.text();
-                parseCSV(csvData);
+                // 일정 로드
+                const planRes = await fetch(planUrl);
+                const planCsv = await planRes.text();
+                parsePlanCSV(planCsv);
                 renderPlanCards();
-            } catch (e) { console.error(e); }
+
+                // 문서함 로드
+                const docsRes = await fetch(docsUrl);
+                if(docsRes.ok) {
+                    const docsCsv = await docsRes.text();
+                    renderDocsFromCSV(docsCsv);
+                }
+            } catch (e) { console.error("Sync Error:", e); }
         }
 
-        function parseCSV(csv) {
+        function parsePlanCSV(csv) {
             const rows = csv.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '').trim()));
             const data = {};
-            // 헤더: Day, MainTitle, Subtitle, Time, ItemTitle, Desc, NavLink 로 가정
             for (let i = 1; i < rows.length; i++) {
                 const [day, mainTitle, subtitle, time, itemTitle, desc, nav] = rows[i];
                 if (!day) continue;
-                if (!data[day]) {
-                    data[day] = { 
-                        dayNum: day, 
-                        main: mainTitle, // 노란색 텍스트로 사용 
-                        sub: subtitle,   // 흰색 텍스트로 사용 
-                        items: [] 
-                    };
-                }
+                if (!data[day]) { data[day] = { dayNum: day, main: mainTitle, sub: subtitle, items: [] }; }
                 data[day].items.push({ time, title: itemTitle, desc, nav });
             }
             scheduleData = data;
@@ -288,6 +286,24 @@
                     </div>
                 `;
             });
+        }
+
+        function renderDocsFromCSV(csv) {
+            const rows = csv.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '').trim()));
+            const container = document.getElementById('docs-container');
+            document.getElementById('docs-loading').style.display = 'none';
+            container.innerHTML = "";
+            
+            for (let i = 1; i < rows.length; i++) {
+                const [name, link] = rows[i];
+                if (!name || !link) continue;
+                container.innerHTML += `
+                    <div class="list-item" onclick="window.open('${link}', '_blank')">
+                        <span class="doc-name">📄 ${name}</span>
+                        <span class="doc-icon">➜</span>
+                    </div>
+                `;
+            }
         }
 
         function openDayPanel(day) {
@@ -323,10 +339,10 @@
             footer.classList.remove('hide-footer');
             if(t === 'info' || t === 'plan') { footer.style.display = 'block'; main.classList.remove('no-calc'); }
             else { footer.style.display = 'none'; main.classList.add('no-calc'); }
-            if(t === 'plan') fetchPlanData();
+            if(t === 'plan' || t === 'docs') fetchAllData();
         }
 
-        // 시계 및 날씨 기능 (수정 없음)
+        // 공통 기능 (날씨, 시계, 환율) - 유지
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', hour12: false };
@@ -352,7 +368,6 @@
             } catch(e) {}
         }
 
-        // 환율 계산기 (수정 없음)
         let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
             document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
@@ -366,18 +381,7 @@
         function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
         function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
 
-        // 문서 기능 (수정 없음)
-        let reservations = JSON.parse(localStorage.getItem('myRes') || '[]');
-        let filesData = JSON.parse(localStorage.getItem('myFiles') || '[]');
-        function saveAndRender() { localStorage.setItem('myRes', JSON.stringify(reservations)); localStorage.setItem('myFiles', JSON.stringify(filesData)); renderRes(); renderFiles(); }
-        function addRes() { const input = document.getElementById('res-input'); if(!input.value) return; reservations.push(input.value); input.value = ''; saveAndRender(); }
-        function delRes(idx) { reservations.splice(idx, 1); saveAndRender(); }
-        function renderRes() { document.getElementById('res-list').innerHTML = reservations.map((text, i) => `<li class="list-item"><span style="font-weight:600;">${text}</span><button class="del-btn" onclick="delRes(${i})">×</button></li>`).join(''); }
-        function addFile(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { filesData.push({ name: file.name, type: file.type, data: e.target.result }); saveAndRender(); input.value = ''; }; reader.readAsDataURL(file); }
-        function delFile(idx) { filesData.splice(idx, 1); saveAndRender(); }
-        function renderFiles() { document.getElementById('file-list').innerHTML = filesData.map((f, i) => `<li class="list-item"><span>${f.type.includes('pdf') ? '📄' : '🖼️'} ${f.name}</span><button class="del-btn" onclick="delFile(${i})">×</button></li>`).join(''); }
-
-        window.onload = function() { getW(); updateClocks(); showTab('info'); saveAndRender(); fetchPlanData(); };
+        window.onload = function() { getW(); updateClocks(); showTab('info'); fetchAllData(); };
     </script>
 </body>
 </html>
