@@ -4,7 +4,7 @@ from google.colab import files
 # 1. 파일명 설정
 OUTPUT_FILENAME = "index.html"
 
-# 2. HTML 콘텐츠 (정보 탭 보존 + 일정 탭 UI 개편)
+# 2. HTML 콘텐츠 (정보 탭 보존 + 일정 탭 UI 전면 개편)
 html_content = """<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,7 +30,7 @@ html_content = """<!DOCTYPE html>
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.02em; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background: var(--bg-deep); background: var(--bg-gradient); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; }
 
-        /* [정보 탭 보존] 헤더 및 공통 스타일 */
+        /* [보존] 헤더 및 공통 스타일 */
         .fixed-header { position: fixed; top: 0; left: 0; right: 0; background: rgba(7, 10, 14, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; padding: env(safe-area-inset-top, 20px) 20px 15px; border-bottom: 1px solid var(--card-border); }
         .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 8px 16px; background: rgba(255,255,255,0.03); border-radius: 20px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
         .time-item { font-size: 11px; font-weight: 500; color: var(--text-sub); }
@@ -54,15 +54,15 @@ html_content = """<!DOCTYPE html>
 
         .scroll-container { height: 100vh; overflow-y: auto; padding: 260px 0 140px; scroll-behavior: smooth; }
         .scroll-container.full-view { padding-bottom: 40px !important; }
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content { display: none; animation: slideUp 0.5s ease-out; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .padding-wrap { padding: 0 20px; }
         
         .section-label { font-size: 12px; font-weight: 800; color: var(--point-mint); margin: 30px 0 12px; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8; }
         .first-label { margin-top: 20px !important; }
 
-        /* [정보 탭 보존] 항공/숙소 카드 */
+        /* [보존] 항공권 및 숙소 디자인 */
         .flight-card { background: #fff; color: #0f172a; border-radius: 24px; margin-bottom: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); overflow: hidden; }
         .flight-top { padding: 20px; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         .flight-route { font-size: 22px; font-weight: 900; }
@@ -83,29 +83,31 @@ html_content = """<!DOCTYPE html>
         .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; border-top: 1px solid var(--card-border); padding-top: 20px; }
         .h-box strong { display: block; color: var(--point-mint); margin-top: 2px; }
 
-        /* [일정 탭] 개편 UI */
-        .plan-card { position: relative; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 28px; padding: 24px; margin-bottom: 20px; transition: var(--transition); overflow: hidden; display: flex; align-items: center; justify-content: space-between; }
-        .plan-card::before { content: ''; position: absolute; left: 0; top: 0; width: 6px; height: 100%; background: var(--point-mint); box-shadow: 0 0 15px var(--point-mint-glow); }
+        /* [개편] 일정 탭 트렌디 UI */
+        .plan-card { position: relative; background: var(--card-glass); border: 1px solid var(--card-border); border-radius: 28px; padding: 24px; margin-bottom: 20px; transition: var(--transition); overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+        .plan-card::after { content: ''; position: absolute; left: 0; top: 0; width: 6px; height: 100%; background: var(--point-mint); box-shadow: 4px 0 15px var(--point-mint-glow); }
         .plan-card:active { transform: scale(0.96); background: rgba(45, 212, 191, 0.1); }
-        .plan-info { flex: 1; }
-        .plan-day-label { font-size: 12px; font-weight: 900; color: var(--point-mint); text-transform: uppercase; margin-bottom: 4px; display: block; }
-        .plan-main-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+        .plan-day-text { font-size: 12px; font-weight: 900; color: var(--point-mint); text-transform: uppercase; margin-bottom: 4px; display: block; letter-spacing: 0.05em; }
+        .plan-main-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
         .plan-sub-title { font-size: 14px; color: var(--text-sub); font-weight: 500; }
-        .plan-arrow { color: var(--point-mint); font-size: 20px; font-weight: 300; opacity: 0.5; }
+        .plan-arrow { font-size: 18px; color: var(--point-mint); opacity: 0.6; }
 
-        /* [일정 상세] 사이드 패널 */
-        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-deep); z-index: 2000; transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); padding: 40px 24px; overflow-y: auto; }
+        /* [개편] 일정 상세 사이드 패널 */
+        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-deep); z-index: 2000; transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); padding: 40px 24px; overflow-y: auto; }
         .side-panel.open { right: 0; }
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .tl-container { position: relative; padding-left: 30px; }
+        
+        .tl-container { position: relative; padding-left: 32px; }
         .tl-line { position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--point-mint) 0%, rgba(45, 212, 191, 0) 100%); }
-        .tl-item { position: relative; margin-bottom: 35px; }
-        .tl-dot { position: absolute; left: -35px; top: 5px; width: 12px; height: 12px; background: var(--point-mint); border-radius: 50%; border: 3px solid var(--bg-deep); box-shadow: 0 0 10px var(--point-mint-glow); }
-        .tl-time { font-size: 11px; font-weight: 800; color: var(--point-mint); margin-bottom: 6px; }
-        .tl-title { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .tl-item { position: relative; margin-bottom: 40px; }
+        .tl-dot { position: absolute; left: -38px; top: 4px; width: 14px; height: 14px; background: var(--point-mint); border-radius: 50%; border: 3px solid var(--bg-deep); box-shadow: 0 0 12px var(--point-mint-glow); }
+        .tl-time { font-size: 11px; font-weight: 800; color: var(--point-mint); margin-bottom: 6px; text-transform: uppercase; }
+        .tl-content-box { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
+        .tl-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 8px; line-height: 1.3; }
         .tl-desc { font-size: 14px; color: var(--text-sub); line-height: 1.6; }
+        .nav-btn { background: #fff; color: #000; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 18px; flex-shrink: 0; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
 
-        /* [정보 탭 보존] 환율 계산기 */
+        /* [보존] 환율 계산기 및 기타 */
         #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(30px); padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid var(--card-border); z-index: 1000; transition: var(--transition); }
         .hide-calc { transform: translateY(100%); opacity: 0; }
         .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -114,7 +116,6 @@ html_content = """<!DOCTYPE html>
         .c-btn { flex: 1; background: #1e293b; border: 1px solid var(--card-border); color: #fff; padding: 14px 0; border-radius: 14px; font-size: 12px; font-weight: 700; transition: transform 0.1s ease, background-color 0.1s ease; outline: none; }
         .c-btn:active { transform: scale(0.92); background-color: rgba(255, 255, 255, 0.1); }
         .c-btn.bargain.active { background: var(--point-mint); color: #000; border-color: var(--point-mint); }
-        .nav-btn { background: #fff; color: #000; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; box-shadow: 0 4px 10px rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -130,7 +131,7 @@ html_content = """<!DOCTYPE html>
                 <div id="w-feels" class="feels-like">체감 --°</div>
             </div>
             <div class="w-right">
-                <div class="dday-badge">TRAVEL D-16</div>
+                <div class="dday-badge">TRAVEL D-17</div>
             </div>
         </div>
         <div class="weather-extra">
@@ -212,7 +213,7 @@ html_content = """<!DOCTYPE html>
         </div>
     </main>
 
-    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1999; display:none; backdrop-filter:blur(8px);"></div>
+    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1999; display:none; backdrop-filter:blur(10px);"></div>
     <div id="day-panel" class="side-panel">
         <div class="panel-header">
             <div id="panel-day-title" style="font-size:26px; font-weight:900; color:var(--point-mint);">DAY 1</div>
@@ -270,9 +271,9 @@ html_content = """<!DOCTYPE html>
             scheduleData = data;
             document.getElementById('plan-container').innerHTML = Object.keys(data).map(day => `
                 <div class="plan-card" onclick="openDayPanel('${day}')">
-                    <div class="plan-info">
-                        <span class="plan-day-label">DAY ${data[day].dayNum}</span>
-                        <div class="plan-main-title">${data[day].main || '일정'}</div>
+                    <div>
+                        <span class="plan-day-text">DAY ${data[day].dayNum}</span>
+                        <div class="plan-main-title">${data[day].main || '상세 보기'}</div>
                         <div class="plan-sub-title">${data[day].sub || ''}</div>
                     </div>
                     <div class="plan-arrow">〉</div>
@@ -284,81 +285,8 @@ html_content = """<!DOCTYPE html>
             const csv = await fetchSheet("DOCS");
             const container = document.getElementById('docs-container');
             const status = document.getElementById('docs-status');
-            if(!csv || csv.includes("<!DOCTYPE html>")) { status.innerText = "데이터가 없거나 연결이 필요합니다."; return; }
+            if(!csv || csv.includes("<!DOCTYPE html>")) { status.innerText = "데이터 로드 실패"; return; }
             const rows = csv.split('\\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
             status.style.display = 'none';
             container.innerHTML = rows.slice(1).map(r => r[0] && r[1] ? `
-                <div class="list-item" onclick="window.open('${r[1]}', '_blank')" style="background:var(--card-glass); border:1px solid var(--card-border); border-radius:20px; padding:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:700; color:#fff;">📄 ${r[0]}</span>
-                    <span style="color:var(--point-mint);">→</span>
-                </div>` : "").join('');
-        }
-
-        function openDayPanel(day) {
-            const d = scheduleData[day];
-            document.getElementById('panel-day-title').innerText = `DAY ${d.dayNum} : ${d.main}`;
-            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => `
-                <div class="tl-item">
-                    <div class="tl-dot"></div>
-                    <div class="tl-time">${item.time}</div>
-                    <div class="tl-title">
-                        <span>${item.title}</span>
-                        ${item.nav ? `<a href="${item.nav.startsWith('http') ? item.nav : 'https://www.google.com/maps/search/' + encodeURIComponent(item.nav)}" target="_blank" class="nav-btn">🧭</a>` : ''}
-                    </div>
-                    <div class="tl-desc">${item.desc}</div>
-                </div>
-            `).join('');
-            document.getElementById('day-panel').classList.add('open');
-            document.getElementById('panel-overlay').style.display = 'block';
-        }
-
-        function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
-
-        /* [보존] 환율 및 시계 로직 */
-        let currentVnd = 0; let isBargainMode = false;
-        function updateUI() {
-            document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
-            document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
-            const bBtn = document.getElementById('btn-bargain');
-            if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; }
-            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정(40%↓)"; }
-        }
-        function manualInput(el) { let val = el.value.replace(/[^0-9]/g, ""); currentVnd = val === "" ? 0 : parseInt(val); isBargainMode = false; updateUI(); }
-        function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
-        function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
-        function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
-
-        function updateClocks() {
-            const now = new Date();
-            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
-            document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Seoul' }).format(now);
-            document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
-        }
-        setInterval(updateClocks, 1000);
-
-        async function getW() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
-                const d = await res.json();
-                document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
-                document.getElementById('w-feels').innerText = "체감 " + Math.round(d.current.apparent_temperature) + "°";
-                document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
-                document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
-                document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
-                document.getElementById('w-sunr').innerText = new Date(d.daily.sunrise[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
-                document.getElementById('w-suns').innerText = new Date(d.daily.sunset[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
-                let icon = "☀️"; if(d.current.weather_code > 0) icon = "⛅"; if(d.current.weather_code > 50) icon = "🌧️";
-                document.getElementById('w-icon').innerText = icon;
-            } catch(e) {}
-        }
-
-        window.onload = () => { getW(); updateClocks(); showTab('info'); };
-    </script>
-</body>
-</html>"""
-
-# 3. 파일 저장 및 다운로드
-with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-files.download(OUTPUT_FILENAME)
+                <div class="list-item" onclick="window.
