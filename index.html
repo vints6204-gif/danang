@@ -1,11 +1,4 @@
-# -*- coding: utf-8 -*-
-from google.colab import files
-
-# 1. 파일명 설정
-OUTPUT_FILENAME = "index.html"
-
-# 2. HTML 콘텐츠 (정보 탭 보존 + 일정 탭 UI 전면 개편)
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -260,7 +253,7 @@ html_content = """<!DOCTYPE html>
         async function syncPlan() {
             const csv = await fetchSheet("Sheet1");
             if(!csv) return;
-            const rows = csv.split('\\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
+            const rows = csv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
             const data = {};
             for (let i = 1; i < rows.length; i++) {
                 const [day, main, sub, time, title, desc, nav] = rows[i];
@@ -286,7 +279,76 @@ html_content = """<!DOCTYPE html>
             const container = document.getElementById('docs-container');
             const status = document.getElementById('docs-status');
             if(!csv || csv.includes("<!DOCTYPE html>")) { status.innerText = "데이터 로드 실패"; return; }
-            const rows = csv.split('\\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
+            const rows = csv.split('\n').map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
             status.style.display = 'none';
             container.innerHTML = rows.slice(1).map(r => r[0] && r[1] ? `
-                <div class="list-item" onclick="window.
+                <div class="list-item" onclick="window.open('${r[1]}', '_blank')" style="background:var(--card-glass); border:1px solid var(--card-border); border-radius:20px; padding:20px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:700; color:#fff;">📄 ${r[0]}</span>
+                    <span style="color:var(--point-mint);">→</span>
+                </div>` : "").join('');
+        }
+
+        function openDayPanel(day) {
+            const d = scheduleData[day];
+            document.getElementById('panel-day-title').innerText = `DAY ${d.dayNum}. ${d.main}`;
+            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => `
+                <div class="tl-item">
+                    <div class="tl-dot"></div>
+                    <div class="tl-time">${item.time}</div>
+                    <div class="tl-content-box">
+                        <div style="flex:1;">
+                            <div class="tl-title">${item.title}</div>
+                            <div class="tl-desc">${item.desc}</div>
+                        </div>
+                        ${item.nav ? `<a href="${item.nav.startsWith('http') ? item.nav : 'https://www.google.com/maps/search/' + encodeURIComponent(item.nav)}" target="_blank" class="nav-btn">🧭</a>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('day-panel').classList.add('open');
+            document.getElementById('panel-overlay').style.display = 'block';
+        }
+
+        function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
+
+        /* [보존] 환율 및 시계 로직 */
+        let currentVnd = 0; let isBargainMode = false;
+        function updateUI() {
+            document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
+            document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
+            const bBtn = document.getElementById('btn-bargain');
+            if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; }
+            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정(40%↓)"; }
+        }
+        function manualInput(el) { let val = el.value.replace(/[^0-9]/g, ""); currentVnd = val === "" ? 0 : parseInt(val); isBargainMode = false; updateUI(); }
+        function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
+        function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
+        function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
+
+        function updateClocks() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+            document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Seoul' }).format(now);
+            document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
+        }
+        setInterval(updateClocks, 1000);
+
+        async function getW() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
+                const d = await res.json();
+                document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
+                document.getElementById('w-feels').innerText = "체감 " + Math.round(d.current.apparent_temperature) + "°";
+                document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
+                document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
+                document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
+                document.getElementById('w-sunr').innerText = new Date(d.daily.sunrise[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
+                document.getElementById('w-suns').innerText = new Date(d.daily.sunset[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
+                let icon = "☀️"; if(d.current.weather_code > 0) icon = "⛅"; if(d.current.weather_code > 50) icon = "🌧️";
+                document.getElementById('w-icon').innerText = icon;
+            } catch(e) {}
+        }
+
+        window.onload = () => { getW(); updateClocks(); showTab('info'); };
+    </script>
+</body>
+</html>
