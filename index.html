@@ -3,132 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>두근두근💕 다낭✈️</title>
+    <title>DANANG: 묭💕</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
         :root { 
-            --bg-main: #F8F9FA;
-            --bg-sub: #F0F2F5;
+            --bg-main: #F2F4F7;
+            --bg-sub: #FFFFFF;
             --point-coral: #FF7F50; 
             --point-navy: #1A237E;  
-            --text-main: #2D3436;
-            --text-sub: #636E72;
+            --text-main: #1D1D1F;
+            --text-sub: #86868B;
             --card-white: #FFFFFF;
             --vj-red: #E31E24;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass: rgba(255, 255, 255, 0.75);
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.02em; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; }
 
-        .fixed-header { position: fixed; top: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; padding: env(safe-area-inset-top, 20px) 20px 15px; border-bottom: 1px solid #eee; }
-        .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 8px 16px; background: var(--bg-sub); border-radius: 12px; }
-        .time-item { font-size: 11px; font-weight: 600; color: var(--text-sub); }
-        .time-item span { color: var(--point-navy); margin-left: 6px; font-weight: 700; }
+        .fixed-header { 
+            position: fixed; top: 0; left: 0; right: 0; 
+            background: var(--glass); 
+            backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); 
+            z-index: 1000; padding: env(safe-area-inset-top, 20px) 20px 15px; 
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px 16px; background: rgba(0,0,0,0.03); border-radius: 14px; }
+        .time-item { font-size: 11px; font-weight: 700; color: var(--text-sub); }
+        .time-item span { color: var(--point-navy); margin-left: 6px; font-weight: 800; }
         
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .w-left { font-size: 38px; }
-        .w-center .temp { font-size: 38px; color: var(--text-main); font-weight: 800; line-height: 1; }
-        .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 600; text-align: center; }
-        .dday-badge { font-size: 10px; font-weight: 800; color: #fff; background: var(--point-coral); padding: 4px 10px; border-radius: 6px; box-shadow: 0 4px 10px rgba(255, 127, 80, 0.3); }
+        .w-left { font-size: 42px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); }
+        .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -2px; }
+        .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 700; text-align: center; }
+        
+        /* D-Day 배지 트렌디 동적 효과 */
+        .dday-badge { 
+            font-size: 11px; font-weight: 900; color: #fff; 
+            padding: 6px 14px; border-radius: 20px; 
+            letter-spacing: 0.05em;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        /* 긴박한 D-Day (D-7 미만) 효과 */
+        @keyframes dday-urgent {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.08); filter: brightness(1.2); box-shadow: 0 0 20px rgba(255, 77, 77, 0.6); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+        .dday-urgent { animation: dday-urgent 1.5s infinite ease-in-out; }
 
-        .weather-extra { display: flex; justify-content: space-between; padding: 12px 10px; background: #fff; border: 1px solid #eee; border-radius: 12px; margin-bottom: 15px; }
-        .ex-label { font-size: 9px; color: var(--text-sub); font-weight: 600; }
-        .ex-val { font-size: 12px; color: var(--text-main); font-weight: 700; }
+        .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: #fff; border-radius: 14px; margin-bottom: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
+        .ex-label { font-size: 9px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
+        .ex-val { font-size: 12px; color: var(--text-main); font-weight: 800; }
 
         .tab-group { display: flex; gap: 8px; }
-        .tab-btn { flex: 1; background: #fff; border: 1px solid #eee; color: var(--text-sub); padding: 12px 0; border-radius: 10px; font-size: 13px; font-weight: 700; transition: var(--transition); }
-        .tab-btn.active { background: var(--point-navy); color: #fff; border-color: var(--point-navy); box-shadow: 0 4px 12px rgba(26, 35, 126, 0.2); }
+        .tab-btn { flex: 1; background: rgba(0,0,0,0.04); border: none; color: var(--text-sub); padding: 14px 0; border-radius: 12px; font-size: 14px; font-weight: 800; transition: var(--transition); }
+        .tab-btn.active { background: var(--point-navy); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26, 35, 126, 0.25); }
 
-        .scroll-container { height: 100vh; overflow-y: auto; padding: 260px 0 140px; background: var(--bg-sub); }
-        .scroll-container.full-view { padding-bottom: 40px !important; }
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .scroll-container { height: 100vh; overflow-y: auto; padding: 270px 0 100px; scroll-behavior: smooth; }
+        .tab-content { display: none; animation: slideUp 0.5s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .padding-wrap { padding: 0 16px; }
-        .section-label { font-size: 12px; font-weight: 800; color: var(--point-navy); margin: 25px 0 12px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; }
-        .section-label::after { content: ''; flex: 1; height: 1px; background: #ddd; margin-left: 10px; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .padding-wrap { padding: 0 20px; }
+        .section-label { font-size: 13px; font-weight: 900; color: var(--point-navy); margin: 30px 0 15px; display: flex; align-items: center; }
+        .section-label::after { content: ''; flex: 1; height: 2px; background: rgba(0,0,0,0.05); margin-left: 12px; border-radius: 2px; }
         .first-label { margin-top: 15px !important; }
 
-        /* 티켓형 카드 디자인 */
         .ticket-card { 
-            background: var(--card-white); border-radius: 16px; margin-bottom: 16px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; position: relative; border: 1px solid #e0e0e0;
+            background: var(--card-white); border-radius: 20px; margin-bottom: 20px; 
+            box-shadow: var(--shadow); overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.03);
         }
-        .ticket-top { padding: 20px; border-bottom: 2px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
-        .ticket-top::before, .ticket-top::after { content: ''; position: absolute; bottom: -10px; width: 20px; height: 20px; background: var(--bg-sub); border-radius: 50%; border: 1px solid #e0e0e0; z-index: 2; }
-        .ticket-top::before { left: -11px; } .ticket-top::after { right: -11px; }
+        .ticket-top { padding: 24px; border-bottom: 2px dashed rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .ticket-top::before, .ticket-top::after { content: ''; position: absolute; bottom: -12px; width: 24px; height: 24px; background: var(--bg-main); border-radius: 50%; z-index: 2; }
+        .ticket-top::before { left: -13px; } .ticket-top::after { right: -13px; }
         
-        .ticket-route { font-size: 20px; font-weight: 900; color: var(--point-navy); }
-        .ticket-pnr { font-size: 11px; font-weight: 800; color: #fff; background: var(--point-navy); padding: 4px 8px; border-radius: 4px; }
-        .ticket-mid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .info-box { font-size: 10px; color: var(--text-sub); font-weight: 600; }
-        .info-box strong { display: block; font-size: 14px; color: var(--text-main); margin-top: 4px; font-weight: 800; }
-        .baggage-section { background: #fdfdfd; padding: 15px 20px; border-top: 1px solid #f0f0f0; font-size: 12px; color: var(--text-sub); }
+        .ticket-route { font-size: 22px; font-weight: 950; color: var(--point-navy); }
+        .ticket-pnr { font-size: 11px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 5px 10px; border-radius: 6px; }
+        .ticket-mid { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
+        .info-box strong { display: block; font-size: 15px; color: var(--text-main); margin-top: 6px; font-weight: 900; }
+        .baggage-section { background: #FAFAFA; padding: 18px 24px; border-top: 1px solid rgba(0,0,0,0.03); font-size: 13px; color: var(--text-sub); }
 
-        .vj-card { border-top: 4px solid var(--vj-red); }
+        .vj-card { border-top: 6px solid var(--vj-red); }
         .vj-card .ticket-pnr { background: var(--vj-red); }
 
-        /* 호텔 상세 정보 복원 스타일 */
-        .hotel-detail-card { background: var(--card-white); border-radius: 20px; border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .hotel-name { font-size: 18px; font-weight: 800; color: var(--point-coral); margin-bottom: 4px; }
-        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid #f0f0f0; padding-top: 15px; }
-        .h-box { font-size: 10px; color: var(--text-sub); font-weight: 600; }
-        .h-box strong { display: block; color: var(--point-navy); font-size: 13px; margin-top: 2px; font-weight: 800; }
+        .hotel-detail-card { background: var(--card-white); border-radius: 24px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.03); }
+        .hotel-name { font-size: 20px; font-weight: 900; color: var(--point-coral); margin-bottom: 6px; }
+        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 18px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 18px; }
+        .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
+        .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        .unified-card { background: #fff; padding: 16px 20px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e0e0e0; transition: var(--transition); }
-        .unified-card:active { transform: scale(0.98); background: #fafafa; }
-        .card-info { flex: 1; }
-        .card-badge { display: inline-block; padding: 2px 6px; background: var(--bg-sub); border-radius: 4px; color: var(--point-navy); font-size: 10px; font-weight: 800; margin-bottom: 6px; }
-        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .card-sub { font-size: 11px; color: var(--text-sub); }
-        .card-icon-wrap { color: var(--point-coral); font-weight: 900; font-size: 16px; }
+        .unified-card { background: #fff; padding: 20px; border-radius: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); }
+        .unified-card:active { transform: scale(0.96); }
+        .card-badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 8px; }
+        .card-title { font-size: 17px; font-weight: 900; }
 
-        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.4s ease; padding: 40px 24px; overflow-y: auto; }
+        .fab-calc { 
+            position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; 
+            background: var(--point-navy); color: #fff; border-radius: 30px; 
+            display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 10px 25px rgba(26, 35, 126, 0.4); z-index: 1500; 
+            font-size: 24px; transition: var(--transition); border: none;
+        }
+        .fab-calc.active { transform: rotate(135deg); background: var(--text-main); }
+
+        #calc-modal { 
+            position: fixed; bottom: 100px; right: 20px; left: 20px; 
+            background: #fff; border-radius: 24px; padding: 24px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); z-index: 1400; 
+            display: none; transform: translateY(20px); transition: var(--transition);
+        }
+        #calc-modal.open { display: block; animation: fabPop 0.3s ease forwards; }
+        @keyframes fabPop { to { transform: translateY(0); opacity: 1; } }
+
+        .calc-display { text-align: right; margin-bottom: 20px; }
+        .calc-input { border: none; background: #F2F4F7; border-radius: 15px; font-size: 24px; width: 100%; padding: 15px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
+        .calc-res { color: var(--point-coral); font-size: 18px; font-weight: 800; }
+        .calc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); padding: 50px 24px; overflow-y: auto; }
         .side-panel.open { right: 0; }
-        .tl-container { position: relative; padding-left: 24px; border-left: 2px solid var(--bg-sub); margin-left: 10px; }
-        .tl-item { position: relative; margin-bottom: 30px; }
-        .tl-dot { position: absolute; left: -31px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; }
-        .tl-time { font-size: 11px; font-weight: 800; color: var(--point-navy); margin-bottom: 4px; }
-        .tl-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .tl-title { font-size: 18px; font-weight: 800; }
-        .sub-list { list-style: none; padding: 0; margin: 0; }
-        .sub-item { position: relative; padding-left: 14px; font-size: 13px; color: var(--text-sub); margin-bottom: 4px; }
-        .sub-item::before { content: '•'; position: absolute; left: 0; color: var(--point-coral); }
-        .nav-btn { background: var(--bg-sub); color: var(--point-navy); width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px; }
+        .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
+        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
 
-        #calc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); border-top: 1px solid #eee; z-index: 1000; transition: var(--transition); }
-        #calc-footer.hide-calc { transform: translateY(100%); }
-        .calc-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .calc-input { border: 2px solid var(--bg-sub); border-radius: 10px; font-size: 20px; width: 140px; padding: 10px; text-align: right; font-weight: 800; outline: none; color: var(--text-main); }
-        .calc-res { color: var(--point-navy); font-size: 18px; font-weight: 800; }
-        .c-btn { flex: 1; background: var(--bg-sub); border: none; color: var(--text-main); padding: 12px 0; border-radius: 10px; font-size: 12px; font-weight: 700; }
+        .c-btn { background: #F2F4F7; border: none; color: var(--text-main); padding: 15px 0; border-radius: 14px; font-size: 14px; font-weight: 800; }
         .c-btn.bargain.active { background: var(--point-coral); color: #fff; }
     </style>
 </head>
 <body>
     <header class="fixed-header">
         <div class="time-bar">
-            <div class="time-item">한국 <span id="time-kor">--:--</span></div>
-            <div class="time-item">다낭 <span id="time-dad">--:--</span></div>
+            <div class="time-item">SEOUL <span><span id="time-kor">--:--</span></span></div>
+            <div class="time-item">DANANG <span><span id="time-dad">--:--</span></span></div>
         </div>
         <div class="weather-hero">
             <div id="w-icon" class="w-left">☀️</div>
             <div class="w-center">
                 <div id="w-temp" class="temp">--°</div>
-                <div id="w-feels" class="feels-like">체감 --°</div>
+                <div id="w-feels" class="feels-like">FEELS --°</div>
             </div>
             <div class="w-right">
-                <div class="dday-badge">TRAVEL D-17</div>
+                <div id="dday-badge" class="dday-badge">D-DAY</div>
             </div>
         </div>
         <div class="weather-extra">
-            <div class="ex-item"><div class="ex-label">풍속</div><div id="w-wind" class="ex-val">--m/s</div></div>
-            <div class="ex-item"><div class="ex-label">강우</div><div id="w-pop" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">습도</div><div id="w-hum" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">일출</div><div id="w-sunr" class="ex-val">--:--</div></div>
-            <div class="ex-item"><div class="ex-label">일몰</div><div id="w-suns" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">WIND</div><div id="w-wind" class="ex-val">--m/s</div></div>
+            <div class="ex-item"><div class="ex-label">RAIN</div><div id="w-pop" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">HUMID</div><div id="w-hum" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">SUNRISE</div><div id="w-sunr" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">SUNSET</div><div id="w-suns" class="ex-val">--:--</div></div>
         </div>
         <div class="tab-group">
             <button id="btn-info" class="tab-btn active" onclick="showTab('info')">정보</button>
@@ -140,7 +169,7 @@
     <main id="main-scroll" class="scroll-container">
         <div id="info" class="tab-content active">
             <div class="padding-wrap">
-                <div class="section-label first-label">출국 항공편</div>
+                <div class="section-label first-label">DEPARTURE FLIGHT</div>
                 <div class="ticket-card">
                     <div class="ticket-top"><div class="ticket-route">ICN ✈ DAD</div><div class="ticket-pnr">FX4MV3</div></div>
                     <div class="ticket-mid">
@@ -150,12 +179,12 @@
                         <div class="info-box">탑승객<strong>Won / Pyo</strong></div>
                     </div>
                     <div class="baggage-section">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>위탁 수하물</span><strong>15kg / 인</strong></div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>위탁 수하물</span><strong>15kg / 인</strong></div>
                         <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / 인</strong></div>
                     </div>
                 </div>
 
-                <div class="section-label">귀국 항공편</div>
+                <div class="section-label">RETURN FLIGHT</div>
                 <div class="ticket-card vj-card">
                     <div class="ticket-top"><div class="ticket-route">DAD ✈ ICN</div><div class="ticket-pnr">7GJ8NY</div></div>
                     <div class="ticket-mid">
@@ -165,15 +194,15 @@
                         <div class="info-box">탑승객<strong>Won / Pyo</strong></div>
                     </div>
                     <div class="baggage-section">
-                         <div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>Won Mi-Young</span><strong>위탁 20kg</strong></div>
+                         <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Won Mi-Young</span><strong>위탁 20kg</strong></div>
                          <div style="display:flex; justify-content:space-between;"><span>Pyo Sang-Hun</span><strong>위탁 불포함</strong></div>
                     </div>
                 </div>
 
-                <div class="section-label">숙소 정보</div>
+                <div class="section-label">ACCOMMODATION</div>
                 <div class="hotel-detail-card">
                     <div class="hotel-name">멜리아 빈펄 리버프론트</div>
-                    <div style="font-size:12px; color:var(--text-sub); margin-bottom:10px;">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
+                    <div style="font-size:12px; color:var(--text-sub); margin-bottom:12px;">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
                     <div class="hotel-info-grid">
                         <div class="h-box">예약번호<strong>#4575465</strong></div>
                         <div class="h-box">객실타입<strong>스몰 스위트 킹</strong></div>
@@ -188,76 +217,87 @@
 
         <div id="plan" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label first-label">Travel Timeline</div>
+                <div class="section-label first-label">TRAVEL TIMELINE</div>
                 <div id="plan-container"></div>
             </div>
         </div>
 
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label first-label">Digital Vault</div>
+                <div class="section-label first-label">DIGITAL VAULT</div>
                 <div id="docs-container"></div>
-                <div id="docs-status" style="text-align:center; color:var(--text-sub); padding:40px;">데이터 동기화 중...</div>
+                <div id="docs-status" style="text-align:center; color:var(--text-sub); padding:60px;">서버 연결 중...</div>
             </div>
         </div>
     </main>
 
-    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1999; display:none;"></div>
-    <div id="day-panel" class="side-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <div id="panel-day-title" style="font-size:20px; font-weight:900; color:var(--point-navy);">DAY</div>
-            <button style="background:none; border:none; font-size:28px;" onclick="closeDayPanel()">×</button>
+    <button id="fab" class="fab-calc" onclick="toggleCalc()">₩</button>
+    <div id="calc-modal">
+        <div class="calc-display">
+            <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)">
+            <div id="krw-res" class="calc-res">≒ 0 KRW</div>
         </div>
-        <div class="tl-container">
-            <div id="sub-plan-list"></div>
+        <div class="calc-grid">
+            <button class="c-btn" onclick="addVnd(100000)">+100k</button>
+            <button class="c-btn" onclick="addVnd(500000)">+500k</button>
+            <button id="btn-bargain" class="c-btn bargain" onclick="applyBargain()">흥정 40%↓</button>
+            <button class="c-btn" style="color:var(--vj-red)" onclick="resetCalc()">AC</button>
         </div>
     </div>
 
-    <footer id="calc-footer">
-        <div class="calc-display">
-            <input type="text" id="vnd-input" class="calc-input" placeholder="VND" oninput="manualInput(this)">
-            <div id="krw-res" class="calc-res">≒ 0 KRW</div>
+    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1999; display:none; backdrop-filter:blur(5px);"></div>
+    <div id="day-panel" class="side-panel">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px;">
+            <div id="panel-day-title" style="font-size:24px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
+            <button style="background:#F2F4F7; border:none; width:40px; height:40px; border-radius:20px; font-size:20px; font-weight:900;" onclick="closeDayPanel()">×</button>
         </div>
-        <div style="display:flex; gap:8px;">
-            <button class="c-btn" onclick="addVnd(100000)">+100k</button>
-            <button class="c-btn" onclick="addVnd(500000)">+500k</button>
-            <button class="c-btn" onclick="resetCalc()">AC</button>
-            <button id="btn-bargain" class="c-btn bargain" onclick="applyBargain()">흥정(40%↓)</button>
-        </div>
-    </footer>
+        <div id="sub-plan-list"></div>
+    </div>
 
     <script>
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
         let scheduleData = {};
-        let lastScrollTop = 0;
-        let currentActiveTab = 'info';
-
-        const mainScroll = document.getElementById('main-scroll');
-        const calcFooter = document.getElementById('calc-footer');
-
-        mainScroll.addEventListener('scroll', () => {
-            if (currentActiveTab !== 'info') return;
-            let st = mainScroll.scrollTop;
-            if (st > lastScrollTop && st > 50) calcFooter.classList.add('hide-calc');
-            else calcFooter.classList.remove('hide-calc');
-            lastScrollTop = st;
-        });
+        
+        // 스마트 D-Day 계산기
+        function initDday() {
+            const target = new Date("2026-01-13T00:00:00+09:00");
+            const now = new Date();
+            const diff = target - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            
+            const badge = document.getElementById('dday-badge');
+            badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
+            
+            // 날짜에 따른 스타일 변경
+            if (days > 14) {
+                // 평온한 대기 (블루)
+                badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
+                badge.style.boxShadow = "0 4px 15px rgba(26, 35, 126, 0.3)";
+            } else if (days > 7) {
+                // 설렘 가득 (퍼플)
+                badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
+                badge.style.boxShadow = "0 4px 15px rgba(98, 0, 234, 0.3)";
+            } else {
+                // 긴박한 출국 (레드/오렌지 + 애니메이션)
+                badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)";
+                badge.style.boxShadow = "0 4px 15px rgba(255, 77, 77, 0.4)";
+                badge.classList.add('dday-urgent');
+            }
+        }
 
         function showTab(t) {
-            currentActiveTab = t;
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
-            
-            if(t === 'info') { 
-                calcFooter.classList.remove('hide-calc'); 
-                mainScroll.classList.remove('full-view'); 
-            } else { 
-                calcFooter.classList.add('hide-calc'); 
-                mainScroll.classList.add('full-view'); 
-                if(t === 'plan') syncPlan(); 
-                if(t === 'docs') syncDocs(); 
-            }
+            if(t === 'plan') syncPlan(); 
+            if(t === 'docs') syncDocs(); 
+        }
+
+        function toggleCalc() {
+            const modal = document.getElementById('calc-modal');
+            const fab = document.getElementById('fab');
+            modal.classList.toggle('open');
+            fab.classList.toggle('active');
         }
 
         async function fetchSheet(name) {
@@ -279,12 +319,12 @@
             scheduleData = data;
             document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
                 <div class="unified-card" onclick="openDayPanel('${day}')">
-                    <div class="card-info">
+                    <div>
                         <span class="card-badge">DAY ${data[day].dayNum}</span>
                         <div class="card-title">${data[day].main || '상세 일정'}</div>
-                        <div class="card-sub">${data[day].sub || ''}</div>
+                        <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">${data[day].sub || ''}</div>
                     </div>
-                    <div class="card-icon-wrap">〉</div>
+                    <div style="color:var(--point-coral); font-weight:900;">〉</div>
                 </div>
             `).join('');
         }
@@ -297,12 +337,11 @@
             document.getElementById('docs-status').style.display = 'none';
             container.innerHTML = rows.slice(1).map(r => (r[0] && r[1]) ? `
                 <div class="unified-card" onclick="window.open('${r[1]}', '_blank')">
-                    <div class="card-info">
-                        <span class="card-badge">DOCUMENT</span>
+                    <div>
+                        <span class="card-badge">PDF/LINK</span>
                         <div class="card-title">${r[0]}</div>
-                        <div class="card-sub">탭하여 문서 열기</div>
                     </div>
-                    <div class="card-icon-wrap">📄</div>
+                    <div style="font-size:20px;">📄</div>
                 </div>` : "").join('');
         }
 
@@ -312,16 +351,15 @@
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
-                const subListHtml = lines.map(line => `<li class="sub-item">${line}</li>`).join('');
                 return `
                 <div class="tl-item">
                     <div class="tl-dot"></div>
-                    <div class="tl-time">${item.time}</div>
-                    <div class="tl-title-row">
-                        <div class="tl-title">${item.title}</div>
-                        ${item.nav ? `<a href="${item.nav}" target="_blank" class="nav-btn">🧭</a>` : ''}
+                    <div style="font-size:11px; font-weight:900; color:var(--point-navy); margin-bottom:4px;">${item.time}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div style="font-size:18px; font-weight:900;">${item.title}</div>
+                        ${item.nav ? `<a href="${item.nav}" target="_blank" style="background:var(--bg-main); padding:8px; border-radius:10px; text-decoration:none;">🧭</a>` : ''}
                     </div>
-                    <ul class="sub-list">${subListHtml}</ul>
+                    <div style="margin-top:8px;">${lines.map(line => `<div style="font-size:13px; color:var(--text-sub); margin-bottom:4px;">• ${line}</div>`).join('')}</div>
                 </div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open');
@@ -336,7 +374,7 @@
             document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
             const bBtn = document.getElementById('btn-bargain');
             if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; }
-            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정(40%↓)"; }
+            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정 40%↓"; }
         }
         function manualInput(el) { let val = el.value.replace(/[^0-9]/g, ""); currentVnd = val === "" ? 0 : parseInt(val); isBargainMode = false; updateUI(); }
         function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
@@ -356,7 +394,7 @@
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
                 const d = await res.json();
                 document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
-                document.getElementById('w-feels').innerText = "체감 " + Math.round(d.current.apparent_temperature) + "°";
+                document.getElementById('w-feels').innerText = "FEELS " + Math.round(d.current.apparent_temperature) + "°";
                 document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
                 document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
                 document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
@@ -366,7 +404,8 @@
                 document.getElementById('w-icon').innerText = icon;
             } catch(e) {}
         }
-        window.onload = () => { getW(); updateClocks(); showTab('info'); };
+        
+        window.onload = () => { getW(); updateClocks(); initDday(); showTab('info'); };
     </script>
 </body>
 </html>
