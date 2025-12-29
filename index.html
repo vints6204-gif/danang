@@ -104,7 +104,7 @@
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
             overflow: hidden; 
-            will-change: height; 
+            will-change: max-height; 
         }
         .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; }
         
@@ -116,7 +116,7 @@
             will-change: max-height, opacity;
         }
         .group-card.open .group-body { 
-            max-height: 1200px;
+            max-height: 2000px;
             opacity: 1; 
             border-top: 1px solid #F2F4F7;
         }
@@ -170,7 +170,9 @@
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
         .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
         
-        /* 영업 상태 뱃지 스타일 */
+        /* 세부 일정 제목 폰트 크기 수정 */
+        .sub-plan-title { font-size: 14px !important; font-weight: 900; }
+
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
@@ -334,9 +336,21 @@
             const card = header.parentElement;
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
-            document.querySelectorAll('.group-card').forEach(c => { if(c !== card) { c.classList.remove('open'); c.querySelector('.group-body').style.maxHeight = null; } });
-            if (!isOpen) { card.classList.add('open'); requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); }
-            else { card.classList.remove('open'); body.style.maxHeight = null; }
+            
+            if (!isOpen) {
+                // 다른 카드 닫기
+                document.querySelectorAll('.group-card').forEach(c => {
+                    if (c !== card) {
+                        c.classList.remove('open');
+                        c.querySelector('.group-body').style.maxHeight = null;
+                    }
+                });
+                card.classList.add('open');
+                body.style.maxHeight = "2000px";
+            } else {
+                card.classList.remove('open');
+                body.style.maxHeight = null;
+            }
         }
 
         function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
@@ -389,7 +403,6 @@
             }
         }
 
-        // 실시간 영업 상태 체크 로직
         function checkBusinessStatus(desc) {
             if (!desc || !desc.includes("영업:")) return "";
             try {
@@ -410,7 +423,7 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
         }
