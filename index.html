@@ -170,7 +170,6 @@
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
         .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
         
-        /* 영업 상태 뱃지 스타일 */
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
@@ -353,12 +352,12 @@
             const data = {};
             for (let i = 1; i < rows.length; i++) {
                 const [day, main, sub, time, title, desc, nav] = rows[i];
-                if (!day) continue;
+                if (!day || !main) continue;
                 if (!data[day]) data[day] = { dayNum: day, main, sub, items: [] };
-                data[day].items.push({ time, title, desc, nav });
+                if (title) data[day].items.push({ time, title, desc, nav });
             }
             scheduleData = data;
-            document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
+            document.getElementById('plan-container').innerHTML = Object.keys(data).sort((a,b) => parseInt(a)-parseInt(b)).map(day => `
                 <div class="group-card" onclick="openDayPanel('${day}')" style="margin-bottom:10px;">
                     <div class="group-header">
                         <div><span class="badge">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
@@ -389,7 +388,6 @@
             }
         }
 
-        // 실시간 영업 상태 체크 로직
         function checkBusinessStatus(desc) {
             if (!desc || !desc.includes("영업:")) return "";
             try {
@@ -410,7 +408,7 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:16px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
         }
