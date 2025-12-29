@@ -19,21 +19,11 @@
             --glass: rgba(255, 255, 255, 0.75);
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        /* 다크모드 테마 적용 */
-        body.dark-mode {
-            --bg-main: #121212;
-            --bg-sub: #1E1E1E;
-            --text-main: #F2F4F7;
-            --text-sub: #A0A0A5;
-            --card-white: #2C2C2E;
-            --glass: rgba(30, 30, 30, 0.85);
-            --shadow: 0 8px 30px rgba(0,0,0,0.3);
+            --spring-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; transition: background 0.5s ease, color 0.5s ease; }
+        body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; }
 
         .fixed-header { 
             position: fixed; top: 0; left: 0; right: 0; 
@@ -43,10 +33,9 @@
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         
-        .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px 16px; background: rgba(128,128,128,0.1); border-radius: 14px; }
+        .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px 16px; background: rgba(0,0,0,0.03); border-radius: 14px; }
         .time-item { font-size: 11px; font-weight: 700; color: var(--text-sub); }
         .time-item span { color: var(--point-navy); margin-left: 6px; font-weight: 800; }
-        body.dark-mode .time-item span { color: var(--point-coral); }
         
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .w-left { font-size: 42px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); }
@@ -57,7 +46,8 @@
         .dday-badge { 
             font-size: 11px; font-weight: 900; color: #fff; 
             padding: 6px 14px; border-radius: 20px; 
-            letter-spacing: 0.05em; transition: all 0.5s ease;
+            letter-spacing: 0.05em;
+            transition: all 0.5s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         @keyframes dday-urgent {
@@ -67,13 +57,13 @@
         }
         .dday-urgent { animation: dday-urgent 1.5s infinite ease-in-out; }
 
-        .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-sub); border-radius: 14px; margin-bottom: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
+        .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: #fff; border-radius: 14px; margin-bottom: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
         .ex-item { text-align: center; flex: 1; }
         .ex-label { font-size: 9px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ex-val { font-size: 12px; color: var(--text-main); font-weight: 800; }
 
         .tab-group { display: flex; gap: 8px; }
-        .tab-btn { flex: 1; background: rgba(128,128,128,0.1); border: none; color: var(--text-sub); padding: 14px 0; border-radius: 12px; font-size: 14px; font-weight: 800; transition: var(--transition); }
+        .tab-btn { flex: 1; background: rgba(0,0,0,0.04); border: none; color: var(--text-sub); padding: 14px 0; border-radius: 12px; font-size: 14px; font-weight: 800; transition: var(--transition); }
         .tab-btn.active { background: var(--point-navy); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26, 35, 126, 0.25); }
 
         .scroll-container { height: 100vh; overflow-y: auto; padding: 270px 0 100px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
@@ -83,63 +73,71 @@
         
         .padding-wrap { padding: 0 20px; }
         .section-label { font-size: 13px; font-weight: 900; color: var(--point-navy); margin: 30px 0 15px; display: flex; align-items: center; }
-        body.dark-mode .section-label { color: var(--point-coral); }
-        .section-label::after { content: ''; flex: 1; height: 2px; background: rgba(128,128,128,0.1); margin-left: 12px; border-radius: 2px; }
+        .section-label::after { content: ''; flex: 1; height: 2px; background: rgba(0,0,0,0.05); margin-left: 12px; border-radius: 2px; }
         .first-label { margin-top: 15px !important; }
 
         .ticket-card { 
             background: var(--card-white); border-radius: 20px; margin-bottom: 20px; 
             box-shadow: var(--shadow); overflow: hidden; position: relative; border: 1px solid rgba(0,0,0,0.03);
         }
-        .ticket-top { padding: 24px; border-bottom: 2px dashed rgba(128,128,128,0.2); display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .ticket-top { padding: 24px; border-bottom: 2px dashed rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; position: relative; }
         .ticket-top::before, .ticket-top::after { content: ''; position: absolute; bottom: -12px; width: 24px; height: 24px; background: var(--bg-main); border-radius: 50%; z-index: 2; }
         .ticket-top::before { left: -13px; } .ticket-top::after { right: -13px; }
         
         .ticket-route { font-size: 22px; font-weight: 950; color: var(--point-navy); }
-        body.dark-mode .ticket-route { color: var(--point-coral); }
         .ticket-pnr { font-size: 11px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 5px 10px; border-radius: 6px; }
         .ticket-mid { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .info-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .info-box strong { display: block; font-size: 15px; color: var(--text-main); margin-top: 4px; font-weight: 900; }
-        .baggage-section { background: rgba(128,128,128,0.05); padding: 18px 24px; border-top: 1px solid rgba(0,0,0,0.03); font-size: 13px; color: var(--text-sub); }
+        .baggage-section { background: #FAFAFA; padding: 18px 24px; border-top: 1px solid rgba(0,0,0,0.03); font-size: 13px; color: var(--text-sub); }
 
         .vj-card { border-top: 6px solid var(--vj-red); }
         .vj-card .ticket-pnr { background: var(--vj-red); }
 
         .hotel-detail-card { background: var(--card-white); border-radius: 24px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.03); }
         .hotel-name { font-size: 20px; font-weight: 900; color: var(--point-coral); margin-bottom: 6px; }
-        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 18px; border-top: 1px solid rgba(128,128,128,0.1); padding-top: 18px; }
+        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 18px; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 18px; }
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
-        body.dark-mode .h-box strong { color: var(--point-coral); }
 
         .group-card { 
-            background: var(--card-white); border-radius: 20px; margin-bottom: 15px; 
+            background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
             overflow: hidden; 
+            will-change: height; 
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: transparent; }
-        .group-body { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; background: rgba(128,128,128,0.03); }
-        .group-card.open .group-body { max-height: 1200px; opacity: 1; border-top: 1px solid rgba(128,128,128,0.1); }
-        .group-body-inner { padding: 10px 15px 20px; }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; }
+        
+        .group-body { 
+            max-height: 0; opacity: 0;
+            overflow: hidden; 
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            background: #FDFDFD;
+            will-change: max-height, opacity;
+        }
+        .group-card.open .group-body { 
+            max-height: 1200px;
+            opacity: 1; 
+            border-top: 1px solid #F2F4F7;
+        }
+        .group-body-inner { padding: 10px 15px 20px; transform: translateZ(0); }
 
         .group-card.open .arrow { transform: rotate(90deg); color: var(--point-navy); }
-        .badge { display: inline-block; padding: 3px 8px; background: rgba(128,128,128,0.1); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
-        body.dark-mode .badge { color: var(--point-coral); }
+        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
         .group-card.open .badge { background: var(--point-navy); color: #fff; }
         .group-title { font-size: 16px; font-weight: 900; }
-        .arrow { transition: transform 0.35s ease; color: var(--point-coral); font-weight: 900; font-size: 16px; }
+        .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
-            padding: 15px; background: var(--bg-main); border-radius: 14px; 
+            padding: 15px; background: #fff; border-radius: 14px; 
             margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.03);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
         .item-main { display: flex; align-items: center; gap: 14px; }
         .item-status-icon { font-size: 16px; width: 20px; display: flex; justify-content: center; }
         .item-text { font-size: 14px; font-weight: 750; color: var(--text-main); }
-        .item-text.completed { color: var(--text-sub); text-decoration: line-through; }
+        .item-text.completed { color: var(--text-sub); }
         .item-sub { font-size: 12px; font-weight: 800; color: var(--point-coral); background: rgba(255,127,80,0.08); padding: 4px 8px; border-radius: 6px; }
         .doc-open-btn { background: var(--point-navy); color: #fff; font-size: 11px; font-weight: 900; padding: 6px 12px; border-radius: 8px; }
 
@@ -150,27 +148,30 @@
             box-shadow: 0 10px 25px rgba(26, 35, 126, 0.4); z-index: 1500; 
             font-size: 24px; transition: var(--transition); border: none;
         }
+        .fab-calc.active { transform: rotate(135deg); background: var(--text-main); }
         #calc-modal { 
             position: fixed; bottom: 100px; right: 20px; left: 20px; 
-            background: var(--bg-sub); border-radius: 24px; padding: 24px; 
+            background: #fff; border-radius: 24px; padding: 24px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.2); z-index: 1400; 
             display: none; transform: translateY(20px); transition: var(--transition);
         }
         #calc-modal.open { display: block; animation: fabPop 0.3s ease forwards; }
         @keyframes fabPop { to { transform: translateY(0); opacity: 1; } }
 
-        .calc-input { border: none; background: var(--bg-main); border-radius: 15px; font-size: 24px; width: 100%; padding: 15px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
-        body.dark-mode .calc-input { color: var(--point-coral); }
-        .calc-res { color: var(--point-coral); font-size: 18px; font-weight: 800; text-align: right; }
-        .calc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
-        .c-btn { background: var(--bg-main); border: none; color: var(--text-main); padding: 15px 0; border-radius: 14px; font-size: 14px; font-weight: 800; }
+        .calc-display { text-align: right; margin-bottom: 20px; }
+        .calc-input { border: none; background: #F2F4F7; border-radius: 15px; font-size: 24px; width: 100%; padding: 15px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
+        .calc-res { color: var(--point-coral); font-size: 18px; font-weight: 800; }
+        .calc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .c-btn { background: #F2F4F7; border: none; color: var(--text-main); padding: 15px 0; border-radius: 14px; font-size: 14px; font-weight: 800; }
         .c-btn.bargain.active { background: var(--point-coral); color: #fff; }
 
-        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-sub); z-index: 2000; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); padding: 50px 24px; overflow-y: auto; }
+        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); padding: 50px 24px; overflow-y: auto; }
         .side-panel.open { right: 0; }
-        .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid rgba(128,128,128,0.2); }
-        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px var(--bg-sub); }
-        .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; }
+        .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
+        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
+        
+        /* 영업 상태 뱃지 스타일 */
+        .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
     </style>
@@ -284,8 +285,10 @@
 
     <button id="fab" class="fab-calc" onclick="toggleCalc()">₩</button>
     <div id="calc-modal">
-        <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)">
-        <div id="krw-res" class="calc-res">≒ 0 KRW</div>
+        <div class="calc-display">
+            <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)">
+            <div id="krw-res" class="calc-res">≒ 0 KRW</div>
+        </div>
         <div class="calc-grid">
             <button class="c-btn" onclick="addVnd(100000)">+100k</button>
             <button class="c-btn" onclick="addVnd(500000)">+500k</button>
@@ -296,49 +299,51 @@
 
     <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1999; display:none; backdrop-filter:blur(5px);"></div>
     <div id="day-panel" class="side-panel">
-        <div id="panel-day-title" style="font-size:24px; font-weight:950; color:var(--point-navy); margin-bottom:40px;">DAY</div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px;">
+            <div id="panel-day-title" style="font-size:24px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
+            <button style="background:#F2F4F7; border:none; width:40px; height:40px; border-radius:20px; font-size:20px; font-weight:900;" onclick="closeDayPanel()">×</button>
+        </div>
         <div id="sub-plan-list"></div>
     </div>
 
     <script>
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
-        let scheduleData = JSON.parse(localStorage.getItem('cached_plan')) || {};
-        let sunsetTime = "18:00";
-
-        // 데이터 세이버 (LocalStorage 기반 fetch)
-        async function fetchSheet(name) {
-            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
-            try { 
-                const res = await fetch(url); 
-                const text = await res.text();
-                if(text.includes("<!DOCTYPE html>")) throw new Error();
-                localStorage.setItem(`cache_${name}`, text); // 캐시 저장
-                return text;
-            } catch(e) { 
-                return localStorage.getItem(`cache_${name}`); // 오프라인 시 캐시 반환
-            }
-        }
-
+        let scheduleData = {};
+        
         function initDday() {
             const target = new Date("2026-01-13T00:00:00+09:00");
-            const dday = Math.ceil((target - new Date()) / (1000*60*60*24));
-            const b = document.getElementById('dday-badge');
-            b.innerText = dday > 0 ? `D-${dday}` : (dday === 0 ? "D-DAY" : `D+${Math.abs(dday)}`);
-            if(dday <= 7) b.classList.add('dday-urgent');
+            const now = new Date();
+            const diff = target - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            const badge = document.getElementById('dday-badge');
+            badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
+            if (days > 14) badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
+            else if (days > 7) badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
+            else { badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)"; badge.classList.add('dday-urgent'); }
         }
 
         function showTab(t) {
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
-            if(t === 'plan') syncPlan(); if(t === 'docs') syncDocs(); 
+            if(t === 'plan') syncPlan(); 
+            if(t === 'docs') syncDocs(); 
         }
 
         function toggleGroup(header) {
             const card = header.parentElement;
             const body = card.querySelector('.group-body');
-            if (card.classList.contains('open')) { card.classList.remove('open'); body.style.maxHeight = null; }
-            else { card.classList.add('open'); body.style.maxHeight = body.scrollHeight + "px"; }
+            const isOpen = card.classList.contains('open');
+            document.querySelectorAll('.group-card').forEach(c => { if(c !== card) { c.classList.remove('open'); c.querySelector('.group-body').style.maxHeight = null; } });
+            if (!isOpen) { card.classList.add('open'); requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); }
+            else { card.classList.remove('open'); body.style.maxHeight = null; }
+        }
+
+        function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
+
+        async function fetchSheet(name) {
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
+            try { const res = await fetch(url); return await res.text(); } catch(e) { return null; }
         }
 
         async function syncPlan() {
@@ -353,15 +358,10 @@
                 data[day].items.push({ time, title, desc, nav });
             }
             scheduleData = data;
-            localStorage.setItem('cached_plan', JSON.stringify(data));
-            renderPlanList();
-        }
-
-        function renderPlanList() {
-            document.getElementById('plan-container').innerHTML = Object.keys(scheduleData).sort().map(day => `
-                <div class="group-card" onclick="openDayPanel('${day}')">
+            document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
+                <div class="group-card" onclick="openDayPanel('${day}')" style="margin-bottom:10px;">
                     <div class="group-header">
-                        <div><span class="badge">DAY ${scheduleData[day].dayNum}</span><div class="group-title">${scheduleData[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub);">${scheduleData[day].sub || ''}</div></div>
+                        <div><span class="badge">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
                         <div class="arrow">〉</div>
                     </div>
                 </div>`).join('');
@@ -369,44 +369,53 @@
 
         async function syncDocs() {
             const qCsv = await fetchSheet("QUICK");
-            if(qCsv) {
+            const qListInner = document.querySelector('#quick-list .group-body-inner');
+            if(qCsv && !qCsv.includes("<!DOCTYPE html>")) {
                 const rows = qCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                document.querySelector('#quick-list .group-body-inner').innerHTML = rows.slice(1).map(r => r[1] ? `<div class="list-item"><div class="item-main"><span class="item-status-icon">${r[0]?'✅':'🔲'}</span><span class="item-text ${r[0]?'completed':''}">${r[1]}</span></div><span class="item-sub">${r[2]||'-'}</span></div>` : '').join('');
+                qListInner.innerHTML = rows.slice(1).map(r => {
+                    if(!r[1]) return "";
+                    const isDone = r[0] ? true : false;
+                    return `<div class="list-item"><div class="item-main"><span class="item-status-icon">${isDone ? '✅' : '🔲'}</span><span class="item-text ${isDone ? 'completed' : ''}">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
+                }).join('');
             }
             const dCsv = await fetchSheet("DOCS");
-            if(dCsv) {
+            const dListInner = document.querySelector('#docs-list .group-body-inner');
+            if(dCsv && !dCsv.includes("<!DOCTYPE html>")) {
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                document.querySelector('#docs-list .group-body-inner').innerHTML = rows.slice(1).map(r => r[0] ? `<div class="list-item" onclick="window.open('${r[1]}','_blank')"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>` : '').join('');
+                dListInner.innerHTML = rows.slice(1).map(r => {
+                    if(!r[0] || !r[1]) return "";
+                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
+                }).join('');
             }
+        }
+
+        // 실시간 영업 상태 체크 로직
+        function checkBusinessStatus(desc) {
+            if (!desc || !desc.includes("영업:")) return "";
+            try {
+                const match = desc.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
+                if (!match) return "";
+                const [_, start, end] = match;
+                const now = new Date();
+                const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+                const curTimeStr = dadTime.getHours().toString().padStart(2, '0') + ":" + dadTime.getMinutes().toString().padStart(2, '0');
+                if (curTimeStr >= start && curTimeStr <= end) return '<span class="status-badge status-open">영업 중 ✅</span>';
+                else return '<span class="status-badge status-closed">영업 종료 ❌</span>';
+            } catch(e) { return ""; }
         }
 
         function openDayPanel(day) {
-            const d = scheduleData[day];
+            const d = scheduleData[day]; if(!d) return;
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
-                let bizStatus = "";
-                if(item.desc && item.desc.includes("영업:")) {
-                    const m = item.desc.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
-                    const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
-                    const cur = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
-                    if(m) bizStatus = (cur >= m[1] && cur <= m[2]) ? '<span class="status-badge status-open">영업 중 ✅</span>' : '<span class="status-badge status-closed">영업 종료 ❌</span>';
-                }
-                const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => !l.includes("영업:")) : [];
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="font-size:18px; font-weight:900;">${item.title}${bizStatus}</div><div>${lines.map(l => `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
+                const bizStatus = checkBusinessStatus(item.desc);
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
-            document.getElementById('day-panel').classList.add('open');
-            document.getElementById('panel-overlay').style.display = 'block';
+            document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
         }
 
         function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
-
-        // 스마트 다크모드 체크
-        function checkDarkMode() {
-            const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
-            const cur = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
-            if (cur >= sunsetTime || cur < "06:00") document.body.classList.add('dark-mode');
-            else document.body.classList.remove('dark-mode');
-        }
 
         let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
@@ -420,35 +429,30 @@
         function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
         function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
         function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
-        function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); }
+
+        function updateClocks() {
+            const now = new Date(); const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+            document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Seoul' }).format(now);
+            document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
+        }
+        setInterval(updateClocks, 1000);
 
         async function getW() {
             try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,apparent_temperature,weather_code&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=16.0544&longitude=108.2022&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=sunrise,sunset,precipitation_probability_max&timezone=auto');
                 const d = await res.json();
                 document.getElementById('w-temp').innerText = Math.round(d.current.temperature_2m) + "°";
                 document.getElementById('w-feels').innerText = "FEELS " + Math.round(d.current.apparent_temperature) + "°";
+                document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
                 document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
-                document.getElementById('w-sunr').innerText = d.daily.sunrise[0].split('T')[1];
-                document.getElementById('w-suns').innerText = d.daily.sunset[0].split('T')[1];
-                sunsetTime = d.daily.sunset[0].split('T')[1];
-                checkDarkMode();
+                document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
+                document.getElementById('w-sunr').innerText = new Date(d.daily.sunrise[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
+                document.getElementById('w-suns').innerText = new Date(d.daily.sunset[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
+                let icon = "☀️"; if(d.current.weather_code > 0) icon = "⛅"; if(d.current.weather_code > 50) icon = "🌧️";
+                document.getElementById('w-icon').innerText = icon;
             } catch(e) {}
         }
-
-        function updateClocks() {
-            const now = new Date();
-            const opt = { hour:'2-digit', minute:'2-digit', hour12:false };
-            document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', {...opt, timeZone:'Asia/Seoul'}).format(now);
-            document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', {...opt, timeZone:'Asia/Ho_Chi_Minh'}).format(now);
-        }
-
-        window.onload = () => {
-            if(Object.keys(scheduleData).length > 0) renderPlanList();
-            getW(); updateClocks(); initDday(); showTab('info');
-            setInterval(updateClocks, 1000);
-            setInterval(checkDarkMode, 60000);
-        };
+        window.onload = () => { getW(); updateClocks(); initDday(); showTab('info'); };
     </script>
 </body>
 </html>
