@@ -100,7 +100,6 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* --- 정교해진 문서 리스트 디자인 --- */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
@@ -129,26 +128,18 @@
         .group-title { font-size: 16px; font-weight: 900; }
         .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
-        /* 리스트 아이템 정교화 */
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 15px; background: #fff; border-radius: 14px; 
             margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.03);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
-        .list-item:last-child { margin-bottom: 0; }
         .item-main { display: flex; align-items: center; gap: 14px; }
         .item-status-icon { font-size: 16px; width: 20px; display: flex; justify-content: center; }
         .item-text { font-size: 14px; font-weight: 750; color: var(--text-main); }
-        .item-text.completed { color: var(--text-sub); text-decoration: none; }
+        .item-text.completed { color: var(--text-sub); }
         .item-sub { font-size: 12px; font-weight: 800; color: var(--point-coral); background: rgba(255,127,80,0.08); padding: 4px 8px; border-radius: 6px; }
-        
-        .doc-open-btn {
-            background: var(--point-navy); color: #fff; 
-            font-size: 11px; font-weight: 900; 
-            padding: 6px 12px; border-radius: 8px; 
-            display: flex; align-items: center; gap: 4px;
-        }
+        .doc-open-btn { background: var(--point-navy); color: #fff; font-size: 11px; font-weight: 900; padding: 6px 12px; border-radius: 8px; }
 
         .fab-calc { 
             position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; 
@@ -178,6 +169,11 @@
         .side-panel.open { right: 0; }
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
         .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
+        
+        /* 영업 상태 뱃지 스타일 */
+        .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
+        .status-open { background: #E8F5E9; color: #2E7D32; }
+        .status-closed { background: #FFEBEE; color: #C62828; }
     </style>
 </head>
 <body>
@@ -271,27 +267,17 @@
                 <div class="section-label first-label">TRAVEL DOCUMENTS</div>
                 <div class="group-card">
                     <div class="group-header" onclick="toggleGroup(this)">
-                        <div>
-                            <span class="badge">RESERVATION</span>
-                            <div class="group-title">QUICK RESERVE 관리</div>
-                        </div>
+                        <div><span class="badge">RESERVATION</span><div class="group-title">QUICK RESERVE 관리</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                    <div id="quick-list" class="group-body">
-                        <div class="group-body-inner">로딩 중...</div>
-                    </div>
+                    <div id="quick-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
                 </div>
                 <div class="group-card">
                     <div class="group-header" onclick="toggleGroup(this)">
-                        <div>
-                            <span class="badge">E-DOCS</span>
-                            <div class="group-title">DOCUMENT 서류함</div>
-                        </div>
+                        <div><span class="badge">E-DOCS</span><div class="group-title">DOCUMENT 서류함</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                    <div id="docs-list" class="group-body">
-                        <div class="group-body-inner">로딩 중...</div>
-                    </div>
+                    <div id="docs-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
                 </div>
             </div>
         </div>
@@ -348,29 +334,12 @@
             const card = header.parentElement;
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
-            
-            document.querySelectorAll('.group-card').forEach(c => {
-                if(c !== card) {
-                    c.classList.remove('open');
-                    c.querySelector('.group-body').style.maxHeight = null;
-                }
-            });
-
-            if (!isOpen) {
-                card.classList.add('open');
-                requestAnimationFrame(() => {
-                    body.style.maxHeight = body.scrollHeight + "px";
-                });
-            } else {
-                card.classList.remove('open');
-                body.style.maxHeight = null;
-            }
+            document.querySelectorAll('.group-card').forEach(c => { if(c !== card) { c.classList.remove('open'); c.querySelector('.group-body').style.maxHeight = null; } });
+            if (!isOpen) { card.classList.add('open'); requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); }
+            else { card.classList.remove('open'); body.style.maxHeight = null; }
         }
 
-        function toggleCalc() {
-            document.getElementById('calc-modal').classList.toggle('open');
-            document.getElementById('fab').classList.toggle('active');
-        }
+        function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
 
         async function fetchSheet(name) {
             const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
@@ -392,11 +361,7 @@
             document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
                 <div class="group-card" onclick="openDayPanel('${day}')" style="margin-bottom:10px;">
                     <div class="group-header">
-                        <div>
-                            <span class="badge">DAY ${data[day].dayNum}</span>
-                            <div class="group-title">${data[day].main || '일정'}</div>
-                            <div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div>
-                        </div>
+                        <div><span class="badge">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
                         <div class="arrow">〉</div>
                     </div>
                 </div>`).join('');
@@ -410,14 +375,7 @@
                 qListInner.innerHTML = rows.slice(1).map(r => {
                     if(!r[1]) return "";
                     const isDone = r[0] ? true : false;
-                    return `
-                    <div class="list-item">
-                        <div class="item-main">
-                            <span class="item-status-icon">${isDone ? '✅' : '🔲'}</span>
-                            <span class="item-text ${isDone ? 'completed' : ''}">${r[1]}</span>
-                        </div>
-                        <span class="item-sub">${r[2] || '-'}</span>
-                    </div>`;
+                    return `<div class="list-item"><div class="item-main"><span class="item-status-icon">${isDone ? '✅' : '🔲'}</span><span class="item-text ${isDone ? 'completed' : ''}">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
                 }).join('');
             }
             const dCsv = await fetchSheet("DOCS");
@@ -426,28 +384,35 @@
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
                 dListInner.innerHTML = rows.slice(1).map(r => {
                     if(!r[0] || !r[1]) return "";
-                    return `
-                    <div class="list-item" onclick="window.open('${r[1]}', '_blank')">
-                        <div class="item-main">
-                            <span class="item-status-icon">📄</span>
-                            <span class="item-text">${r[0]}</span>
-                        </div>
-                        <div class="doc-open-btn">열기 〉</div>
-                    </div>`;
+                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
                 }).join('');
             }
         }
 
+        // 실시간 영업 상태 체크 로직
+        function checkBusinessStatus(desc) {
+            if (!desc || !desc.includes("영업:")) return "";
+            try {
+                const match = desc.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
+                if (!match) return "";
+                const [_, start, end] = match;
+                const now = new Date();
+                const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+                const curTimeStr = dadTime.getHours().toString().padStart(2, '0') + ":" + dadTime.getMinutes().toString().padStart(2, '0');
+                if (curTimeStr >= start && curTimeStr <= end) return '<span class="status-badge status-open">영업 중 ✅</span>';
+                else return '<span class="status-badge status-closed">영업 종료 ❌</span>';
+            } catch(e) { return ""; }
+        }
+
         function openDayPanel(day) {
-            const d = scheduleData[day];
-            if(!d) return;
+            const d = scheduleData[day]; if(!d) return;
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                const bizStatus = checkBusinessStatus(item.desc);
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
-            document.getElementById('day-panel').classList.add('open');
-            document.getElementById('panel-overlay').style.display = 'block';
+            document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
         }
 
         function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
@@ -466,8 +431,7 @@
         function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
 
         function updateClocks() {
-            const now = new Date();
-            const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+            const now = new Date(); const options = { hour: '2-digit', minute: '2-digit', hour12: false };
             document.getElementById('time-kor').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Seoul' }).format(now);
             document.getElementById('time-dad').innerText = new Intl.DateTimeFormat('ko-KR', { ...options, timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
         }
@@ -488,7 +452,6 @@
                 document.getElementById('w-icon').innerText = icon;
             } catch(e) {}
         }
-        
         window.onload = () => { getW(); updateClocks(); initDday(); showTab('info'); };
     </script>
 </body>
