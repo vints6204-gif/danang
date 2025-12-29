@@ -98,21 +98,26 @@
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
         .unified-card { 
-            background: #fff; border-radius: 16px; margin-bottom: 10px; 
+            background: #fff; border-radius: 18px; margin-bottom: 12px; 
             box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); 
             overflow: hidden;
         }
-        .card-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .card-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .card-body { 
             max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; 
-            background: #F9FAFB; padding: 0 18px;
+            background: #F9FAFB; padding: 0 20px;
         }
-        .unified-card.open .card-body { max-height: 1000px; padding: 18px; border-top: 1px solid #EEE; }
+        .unified-card.open .card-body { max-height: 1200px; padding: 18px 20px; border-top: 1px solid #EEE; }
         .unified-card.open .arrow { transform: rotate(90deg); }
         .arrow { transition: transform 0.3s ease; color: var(--point-coral); font-weight: 900; font-size: 12px; }
 
         .card-badge { display: inline-block; padding: 2px 7px; background: var(--bg-main); border-radius: 5px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 5px; }
-        .card-title { font-size: 15px; font-weight: 900; }
+        .card-title { font-size: 16px; font-weight: 900; }
+
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #F0F0F0; }
+        .item-row:last-child { border-bottom: none; }
+        .item-label { font-weight: 800; color: var(--point-navy); font-size: 14px; }
+        .item-val { font-size: 12px; color: var(--point-coral); font-weight: 800; }
 
         .fab-calc { 
             position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; 
@@ -236,10 +241,35 @@
 
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label first-label">RESERVATION & DOCUMENTS</div>
-                <div id="quick-items-container"></div>
-                <div id="docs-container"></div>
-                <div id="docs-status" style="text-align:center; color:var(--text-sub); padding:60px;">서버 연결 중...</div>
+                <div class="section-label first-label">TRAVEL ARCHIVE</div>
+                
+                <div class="unified-card">
+                    <div class="card-header" onclick="toggleAccordion(this)">
+                        <div>
+                            <span class="card-badge">RESERVATION</span>
+                            <div class="card-title">QUICK RESERVE 관리</div>
+                        </div>
+                        <div class="arrow">〉</div>
+                    </div>
+                    <div id="quick-group-body" class="card-body">
+                        <div style="text-align:center; color:var(--text-sub); font-size:12px; padding:20px;">불러오는 중...</div>
+                    </div>
+                </div>
+
+                <div class="unified-card">
+                    <div class="card-header" onclick="toggleAccordion(this)">
+                        <div>
+                            <span class="card-badge">FILES</span>
+                            <div class="card-title">DIGITAL DOCUMENTS</div>
+                        </div>
+                        <div class="arrow">〉</div>
+                    </div>
+                    <div id="docs-group-body" class="card-body">
+                        <div style="text-align:center; color:var(--text-sub); font-size:12px; padding:20px;">불러오는 중...</div>
+                    </div>
+                </div>
+
+                <div id="docs-status" style="text-align:center; color:var(--text-sub); padding:30px; font-size:11px;">서버 연결 중...</div>
             </div>
         </div>
     </main>
@@ -280,13 +310,10 @@
             badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
             if (days > 14) {
                 badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
-                badge.style.boxShadow = "0 4px 15px rgba(26, 35, 126, 0.3)";
             } else if (days > 7) {
                 badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
-                badge.style.boxShadow = "0 4px 15px rgba(98, 0, 234, 0.3)";
             } else {
                 badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)";
-                badge.style.boxShadow = "0 4px 15px rgba(255, 77, 77, 0.4)";
                 badge.classList.add('dday-urgent');
             }
         }
@@ -345,51 +372,35 @@
         }
 
         async function syncDocs() {
-            // QUICK 데이터 연동 -> 개별 카드화
+            // QUICK 데이터 연동
             const quickCsv = await fetchSheet("QUICK");
-            const quickContainer = document.getElementById('quick-items-container');
+            const quickGroup = document.getElementById('quick-group-body');
             if(quickCsv && !quickCsv.includes("<!DOCTYPE html>")) {
                 const qRows = quickCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                quickContainer.innerHTML = qRows.slice(1).map((r) => {
+                quickGroup.innerHTML = qRows.slice(1).map(r => {
                     if(!r[1]) return "";
                     const isChecked = r[0] && r[0].length > 0;
                     return `
-                    <div class="unified-card">
-                        <div class="card-header" onclick="toggleAccordion(this)">
-                            <div>
-                                <span class="card-badge">QUICK RESERVE</span>
-                                <div class="card-title">${r[1]}</div>
-                            </div>
-                            <div class="arrow">〉</div>
+                    <div class="item-row">
+                        <div style="display:flex; align-items:center;">
+                            <span style="margin-right:12px; font-size:16px;">${isChecked ? "✅" : "🔲"}</span>
+                            <span class="item-label">${r[1]}</span>
                         </div>
-                        <div class="card-body">
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
-                                <span style="font-size:16px;">${isChecked ? "✅ 완료됨" : "🔲 확인필요"}</span>
-                                <span style="font-weight:800; color:var(--point-coral);">${r[2] || '내용 없음'}</span>
-                            </div>
-                        </div>
+                        <span class="item-val">${r[2] || '-'}</span>
                     </div>`;
                 }).join('');
             }
 
             // DOCS 데이터 연동
             const csv = await fetchSheet("DOCS");
-            const container = document.getElementById('docs-container');
+            const docsGroup = document.getElementById('docs-group-body');
             if(!csv || csv.includes("<!DOCTYPE html>")) return;
             const rows = csv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
             document.getElementById('docs-status').style.display = 'none';
-            container.innerHTML = rows.slice(1).map(r => (r[0] && r[1]) ? `
-                <div class="unified-card">
-                    <div class="card-header" onclick="toggleAccordion(this)">
-                        <div>
-                            <span class="card-badge">DOCUMENT</span>
-                            <div class="card-title">${r[0]}</div>
-                        </div>
-                        <div class="arrow">〉</div>
-                    </div>
-                    <div class="card-body">
-                        <button onclick="window.open('${r[1]}', '_blank')" style="width:100%; padding:15px; background:var(--point-navy); color:#fff; border:none; border-radius:12px; font-weight:800; margin-bottom:10px;">문서 열기 📄</button>
-                    </div>
+            docsGroup.innerHTML = rows.slice(1).map(r => (r[0] && r[1]) ? `
+                <div class="item-row" onclick="window.open('${r[1]}', '_blank')" style="cursor:pointer;">
+                    <span class="item-label">${r[0]}</span>
+                    <span style="font-size:18px;">📄</span>
                 </div>` : "").join('');
         }
 
