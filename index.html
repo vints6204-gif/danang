@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DANANG: 묭훈💕</title>
+    <title>다낭 프리미엄 가이드✈️</title>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
@@ -41,7 +41,6 @@
         .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -2px; }
         .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 700; text-align: center; }
         
-        /* D-Day 배지 트렌디 동적 효과 */
         .dday-badge { 
             font-size: 11px; font-weight: 900; color: #fff; 
             padding: 6px 14px; border-radius: 20px; 
@@ -49,7 +48,6 @@
             transition: all 0.5s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        /* 긴박한 D-Day (D-7 미만) 효과 */
         @keyframes dday-urgent {
             0% { transform: scale(1); filter: brightness(1); }
             50% { transform: scale(1.08); filter: brightness(1.2); box-shadow: 0 0 20px rgba(255, 77, 77, 0.6); }
@@ -99,10 +97,14 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        .unified-card { background: #fff; padding: 20px; border-radius: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); }
-        .unified-card:active { transform: scale(0.96); }
-        .card-badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 8px; }
-        .card-title { font-size: 17px; font-weight: 900; }
+        .unified-card { 
+            background: #fff; padding: 14px 18px; border-radius: 16px; margin-bottom: 10px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); 
+        }
+        .unified-card:active { transform: scale(0.97); }
+        .card-badge { display: inline-block; padding: 2px 7px; background: var(--bg-main); border-radius: 5px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 5px; }
+        .card-title { font-size: 15px; font-weight: 900; }
 
         .fab-calc { 
             position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; 
@@ -153,11 +155,11 @@
             </div>
         </div>
         <div class="weather-extra">
-            <div class="ex-item"><div class="ex-label">WIND</div><div id="w-wind" class="ex-val">--m/s</div></div>
-            <div class="ex-item"><div class="ex-label">RAIN</div><div id="w-pop" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">HUMID</div><div id="w-hum" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">SUNRISE</div><div id="w-sunr" class="ex-val">--:--</div></div>
-            <div class="ex-item"><div class="ex-label">SUNSET</div><div id="w-suns" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">바람세기</div><div id="w-wind" class="ex-val">--m/s</div></div>
+            <div class="ex-item"><div class="ex-label">비 올 확률</div><div id="w-pop" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">습도</div><div id="w-hum" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">일출</div><div id="w-sunr" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">일몰</div><div id="w-suns" class="ex-val">--:--</div></div>
         </div>
         <div class="tab-group">
             <button id="btn-info" class="tab-btn active" onclick="showTab('info')">정보</button>
@@ -258,27 +260,20 @@
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
         let scheduleData = {};
         
-        // 스마트 D-Day 계산기
         function initDday() {
             const target = new Date("2026-01-13T00:00:00+09:00");
             const now = new Date();
             const diff = target - now;
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-            
             const badge = document.getElementById('dday-badge');
             badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
-            
-            // 날짜에 따른 스타일 변경
             if (days > 14) {
-                // 평온한 대기 (블루)
                 badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
                 badge.style.boxShadow = "0 4px 15px rgba(26, 35, 126, 0.3)";
             } else if (days > 7) {
-                // 설렘 가득 (퍼플)
                 badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
                 badge.style.boxShadow = "0 4px 15px rgba(98, 0, 234, 0.3)";
             } else {
-                // 긴박한 출국 (레드/오렌지 + 애니메이션)
                 badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)";
                 badge.style.boxShadow = "0 4px 15px rgba(255, 77, 77, 0.4)";
                 badge.classList.add('dday-urgent');
@@ -322,7 +317,7 @@
                     <div>
                         <span class="card-badge">DAY ${data[day].dayNum}</span>
                         <div class="card-title">${data[day].main || '상세 일정'}</div>
-                        <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">${data[day].sub || ''}</div>
+                        <div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div>
                     </div>
                     <div style="color:var(--point-coral); font-weight:900;">〉</div>
                 </div>
@@ -341,7 +336,7 @@
                         <span class="card-badge">PDF/LINK</span>
                         <div class="card-title">${r[0]}</div>
                     </div>
-                    <div style="font-size:20px;">📄</div>
+                    <div style="font-size:18px;">📄</div>
                 </div>` : "").join('');
         }
 
