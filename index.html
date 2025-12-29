@@ -83,9 +83,9 @@
         
         .ticket-route { font-size: 22px; font-weight: 950; color: var(--point-navy); }
         .ticket-pnr { font-size: 11px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 5px 10px; border-radius: 6px; }
-        .ticket-mid { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .ticket-mid { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .info-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
-        .info-box strong { display: block; font-size: 15px; color: var(--text-main); margin-top: 6px; font-weight: 900; }
+        .info-box strong { display: block; font-size: 15px; color: var(--text-main); margin-top: 4px; font-weight: 900; }
         .baggage-section { background: #FAFAFA; padding: 18px 24px; border-top: 1px solid rgba(0,0,0,0.03); font-size: 13px; color: var(--text-sub); }
 
         .vj-card { border-top: 6px solid var(--vj-red); }
@@ -175,10 +175,11 @@
                 <div class="ticket-card">
                     <div class="ticket-top"><div class="ticket-route">ICN ✈ DAD</div><div class="ticket-pnr">FX4MV3</div></div>
                     <div class="ticket-mid">
-                        <div class="info-box">편명<strong>티웨이 TW007</strong></div>
                         <div class="info-box">출발시간<strong>01.13 07:45</strong></div>
+                        <div class="info-box">도착예정<strong>01.13 11:15</strong></div>
+                        <div class="info-box">편명<strong>티웨이 TW007</strong></div>
                         <div class="info-box">체크인시작<strong>01.12 07:45</strong></div>
-                        <div class="info-box">탑승객<strong>Won / Pyo</strong></div>
+                        <div class="info-box" style="grid-column: span 2;">탑승객<strong>Won / Pyo</strong></div>
                     </div>
                     <div class="baggage-section">
                         <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>위탁 수하물</span><strong>15kg / 인</strong></div>
@@ -190,10 +191,11 @@
                 <div class="ticket-card vj-card">
                     <div class="ticket-top"><div class="ticket-route">DAD ✈ ICN</div><div class="ticket-pnr">7GJ8NY</div></div>
                     <div class="ticket-mid">
-                        <div class="info-box">편명<strong>비엣젯 VJ874</strong></div>
                         <div class="info-box">출발시간<strong>01.17 15:10</strong></div>
+                        <div class="info-box">도착예정<strong>01.17 22:20</strong></div>
+                        <div class="info-box">편명<strong>비엣젯 VJ874</strong></div>
                         <div class="info-box">체크인시작<strong>01.16 15:10</strong></div>
-                        <div class="info-box">탑승객<strong>Won / Pyo</strong></div>
+                        <div class="info-box" style="grid-column: span 2;">탑승객<strong>Won / Pyo</strong></div>
                     </div>
                     <div class="baggage-section">
                          <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Won Mi-Young</span><strong>위탁 20kg</strong></div>
@@ -226,7 +228,12 @@
 
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
-                <div class="section-label first-label">DIGITAL VAULT</div>
+                <div class="section-label first-label">QUICK 예약 관리</div>
+                <div id="quick-container" class="unified-card" style="display:block; padding:20px;">
+                    <div style="text-align:center; color:var(--text-sub); font-size:12px;">불러오는 중...</div>
+                </div>
+                
+                <div class="section-label">DIGITAL DOCUMENTS</div>
                 <div id="docs-container"></div>
                 <div id="docs-status" style="text-align:center; color:var(--text-sub); padding:60px;">서버 연결 중...</div>
             </div>
@@ -325,6 +332,21 @@
         }
 
         async function syncDocs() {
+            // QUICK 데이터 연동
+            const quickCsv = await fetchSheet("QUICK");
+            const quickContainer = document.getElementById('quick-container');
+            if(quickCsv && !quickCsv.includes("<!DOCTYPE html>")) {
+                const qRows = quickCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
+                quickContainer.innerHTML = qRows.slice(1).map((r, idx) => r[0] ? `
+                    <div style="display:flex; justify-content:space-between; align-items:center; ${idx === qRows.length-2 ? '' : 'margin-bottom:15px; border-bottom:1px solid #f0f0f0; padding-bottom:10px;'}">
+                        <span style="font-weight:900; color:var(--point-navy);">${r[0]}</span>
+                        <span style="font-size:11px; color:var(--point-coral); font-weight:800;">${r[1] || ''}</span>
+                    </div>` : "").join('');
+            } else {
+                quickContainer.innerHTML = '<div style="text-align:center; color:var(--text-sub); font-size:12px;">데이터가 없습니다.</div>';
+            }
+
+            // DOCS 데이터 연동
             const csv = await fetchSheet("DOCS");
             const container = document.getElementById('docs-container');
             if(!csv || csv.includes("<!DOCTYPE html>")) return;
