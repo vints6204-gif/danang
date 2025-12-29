@@ -38,9 +38,11 @@
         
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .w-left { font-size: 42px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); }
+        .w-center { text-align: center; }
         .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -2px; }
-        .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 700; text-align: center; }
+        .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 700; }
         
+        /* D-DAY 배지 원상복구 */
         .dday-badge { 
             font-size: 11px; font-weight: 900; color: #fff; 
             padding: 6px 14px; border-radius: 20px; 
@@ -56,6 +58,7 @@
         .dday-urgent { animation: dday-urgent 1.5s infinite ease-in-out; }
 
         .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: #fff; border-radius: 14px; margin-bottom: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
+        .ex-item { text-align: center; flex: 1; }
         .ex-label { font-size: 9px; color: var(--text-sub); font-weight: 700; margin-bottom: 2px; }
         .ex-val { font-size: 12px; color: var(--text-main); font-weight: 800; }
 
@@ -97,7 +100,6 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* 그룹화 카드 스타일 */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
@@ -108,9 +110,8 @@
             max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; 
             background: #F9FAFB; padding: 0 20px;
         }
-        .group-card.open .group-body { max-height: 1500px; padding: 10px 20px 20px; border-top: 1px solid #EEE; }
+        .group-card.open .group-body { max-height: 2000px; padding: 10px 20px 20px; border-top: 1px solid #EEE; }
         .group-card.open .arrow { transform: rotate(90deg); }
-        
         .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; }
         .group-title { font-size: 16px; font-weight: 900; }
         .arrow { transition: transform 0.3s ease; color: var(--point-coral); font-weight: 900; }
@@ -120,9 +121,7 @@
         .item-main { display: flex; align-items: center; gap: 12px; }
         .item-text { font-size: 14px; font-weight: 800; color: var(--text-main); }
         .item-sub { font-size: 13px; font-weight: 800; color: var(--point-coral); }
-        .check-box { font-size: 18px; }
 
-        /* 계산기 및 애니메이션 */
         .fab-calc { 
             position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; 
             background: var(--point-navy); color: #fff; border-radius: 30px; 
@@ -144,13 +143,13 @@
         .calc-input { border: none; background: #F2F4F7; border-radius: 15px; font-size: 24px; width: 100%; padding: 15px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
         .calc-res { color: var(--point-coral); font-size: 18px; font-weight: 800; }
         .calc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        
+        .c-btn { background: #F2F4F7; border: none; color: var(--text-main); padding: 15px 0; border-radius: 14px; font-size: 14px; font-weight: 800; }
+        .c-btn.bargain.active { background: var(--point-coral); color: #fff; }
+
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); padding: 50px 24px; overflow-y: auto; }
         .side-panel.open { right: 0; }
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
         .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
-        .c-btn { background: #F2F4F7; border: none; color: var(--text-main); padding: 15px 0; border-radius: 14px; font-size: 14px; font-weight: 800; }
-        .c-btn.bargain.active { background: var(--point-coral); color: #fff; }
     </style>
 </head>
 <body>
@@ -201,6 +200,7 @@
                         <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / 인</strong></div>
                     </div>
                 </div>
+
                 <div class="section-label">RETURN FLIGHT</div>
                 <div class="ticket-card vj-card">
                     <div class="ticket-top"><div class="ticket-route">DAD ✈ ICN</div><div class="ticket-pnr">7GJ8NY</div></div>
@@ -216,6 +216,7 @@
                          <div style="display:flex; justify-content:space-between;"><span>Pyo Sang-Hun</span><strong>위탁 불포함</strong></div>
                     </div>
                 </div>
+
                 <div class="section-label">ACCOMMODATION</div>
                 <div class="hotel-detail-card">
                     <div class="hotel-name">멜리아 빈펄 리버프론트</div>
@@ -242,7 +243,6 @@
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
                 <div class="section-label first-label">TRAVEL DOCUMENTS</div>
-                
                 <div class="group-card">
                     <div class="group-header" onclick="toggleGroup(this)">
                         <div>
@@ -255,7 +255,6 @@
                         <div style="text-align:center; padding:20px; color:var(--text-sub);">불러오는 중...</div>
                     </div>
                 </div>
-
                 <div class="group-card">
                     <div class="group-header" onclick="toggleGroup(this)">
                         <div>
@@ -306,7 +305,16 @@
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
             const badge = document.getElementById('dday-badge');
             badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
-            if (days <= 7) badge.classList.add('dday-urgent');
+            
+            // 디자인 원상복구
+            if (days > 14) {
+                badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
+            } else if (days > 7) {
+                badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
+            } else {
+                badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)";
+                badge.classList.add('dday-urgent');
+            }
         }
 
         function showTab(t) {
@@ -352,45 +360,30 @@
                         <div>
                             <span class="badge">DAY ${data[day].dayNum}</span>
                             <div class="group-title">${data[day].main || '일정'}</div>
+                            <div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div>
                         </div>
                         <div class="arrow">〉</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         async function syncDocs() {
-            // QUICK 데이터 그룹화
             const qCsv = await fetchSheet("QUICK");
             const qList = document.getElementById('quick-list');
             if(qCsv && !qCsv.includes("<!DOCTYPE html>")) {
                 const rows = qCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
                 qList.innerHTML = rows.slice(1).map(r => {
                     if(!r[1]) return "";
-                    return `<div class="list-item">
-                        <div class="item-main">
-                            <span class="check-box">${r[0] ? '✅' : '🔲'}</span>
-                            <span class="item-text">${r[1]}</span>
-                        </div>
-                        <span class="item-sub">${r[2] || '-'}</span>
-                    </div>`;
+                    return `<div class="list-item"><div class="item-main"><span>${r[0] ? '✅' : '🔲'}</span><span class="item-text">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
                 }).join('');
             }
-
-            // DOCS 데이터 그룹화
             const dCsv = await fetchSheet("DOCS");
             const dList = document.getElementById('docs-list');
             if(dCsv && !dCsv.includes("<!DOCTYPE html>")) {
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
                 dList.innerHTML = rows.slice(1).map(r => {
                     if(!r[0] || !r[1]) return "";
-                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')">
-                        <div class="item-main">
-                            <span style="font-size:18px;">📄</span>
-                            <span class="item-text">${r[0]}</span>
-                        </div>
-                        <span style="color:var(--point-navy); font-size:12px; font-weight:900;">열기</span>
-                    </div>`;
+                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span>📄</span><span class="item-text">${r[0]}</span></div><span style="color:var(--point-navy); font-size:12px; font-weight:900;">열기</span></div>`;
                 }).join('');
             }
         }
@@ -399,34 +392,29 @@
             const d = scheduleData[day];
             if(!d) return;
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
-            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => `
-                <div class="tl-item">
-                    <div class="tl-dot"></div>
-                    <div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size:18px; font-weight:900;">${item.title}</div>
-                        ${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}
-                    </div>
-                    <div style="font-size:13px; color:var(--text-sub); margin-top:5px;">${item.desc || ''}</div>
-                </div>`).join('');
+            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
+                const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+            }).join('');
             document.getElementById('day-panel').classList.add('open');
             document.getElementById('panel-overlay').style.display = 'block';
         }
 
         function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
 
-        // 계산기 기능
-        let currentVnd = 0; let isBargain = false;
+        let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
             document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
             document.getElementById('krw-res').innerText = "≒ " + Math.round(currentVnd / 1000 * 55).toLocaleString() + " KRW";
+            const bBtn = document.getElementById('btn-bargain');
+            if(isBargainMode) { bBtn.classList.add('active'); bBtn.innerText = "적용됨 (-40%)"; }
+            else { bBtn.classList.remove('active'); bBtn.innerText = "흥정 40%↓"; }
         }
-        function manualInput(el) { currentVnd = parseInt(el.value.replace(/[^0-9]/g, "")) || 0; updateUI(); }
-        function addVnd(v) { currentVnd += v; updateUI(); }
-        function applyBargain() { currentVnd = Math.round(currentVnd * 0.6); updateUI(); }
-        function resetCalc() { currentVnd = 0; updateUI(); }
+        function manualInput(el) { currentVnd = parseInt(el.value.replace(/[^0-9]/g, "")) || 0; isBargainMode = false; updateUI(); }
+        function addVnd(v) { currentVnd += v; isBargainMode = false; updateUI(); }
+        function applyBargain() { if(currentVnd > 0 && !isBargainMode) { currentVnd = Math.round(currentVnd * 0.6); isBargainMode = true; updateUI(); } }
+        function resetCalc() { currentVnd = 0; isBargainMode = false; updateUI(); }
 
-        // 시계 및 날씨
         function updateClocks() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', hour12: false };
@@ -444,8 +432,10 @@
                 document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
                 document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
                 document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
-                document.getElementById('w-sunr').innerText = d.daily.sunrise[0].split('T')[1];
-                document.getElementById('w-suns').innerText = d.daily.sunset[0].split('T')[1];
+                document.getElementById('w-sunr').innerText = new Date(d.daily.sunrise[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
+                document.getElementById('w-suns').innerText = new Date(d.daily.sunset[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false});
+                let icon = "☀️"; if(d.current.weather_code > 0) icon = "⛅"; if(d.current.weather_code > 50) icon = "🌧️";
+                document.getElementById('w-icon').innerText = icon;
             } catch(e) {}
         }
         
