@@ -19,7 +19,7 @@
             --glass: rgba(255, 255, 255, 0.75);
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            --spring-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --spring-ease: cubic-bezier(0.68, -0.6, 0.32, 1.6); /* 트렌디한 스프링 효과 */
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
@@ -100,39 +100,38 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
+        /* 그룹카드(아코디언) 개선 */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
-            overflow: hidden; 
+            overflow: hidden; transition: var(--transition);
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; user-select: none; }
         
         .group-body { 
             max-height: 0; opacity: 0;
             overflow: hidden; 
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            transition: max-height 0.6s var(--spring-ease), opacity 0.3s ease;
             background: #FDFDFD;
-            will-change: max-height, opacity;
         }
-        .group-card.open .group-body { 
-            max-height: 2000px;
-            opacity: 1; 
-            border-top: 1px solid #F2F4F7;
-        }
-        .group-body-inner { padding: 10px 15px 20px; transform: translateZ(0); }
+        .group-card.open { transform: scale(1.01); }
+        .group-card.open .group-body { opacity: 1; border-top: 1px solid #F2F4F7; }
+        .group-body-inner { padding: 10px 15px 20px; }
 
         .group-card.open .arrow { transform: rotate(90deg); color: var(--point-navy); }
         .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
         .group-card.open .badge { background: var(--point-navy); color: #fff; }
         .group-title { font-size: 16px; font-weight: 900; }
-        .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; }
+        .arrow { transition: transform 0.4s var(--spring-ease); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 15px; background: #fff; border-radius: 14px; 
             margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.03);
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: 0.2s;
         }
+        .list-item:active { transform: scale(0.97); background: #F9F9F9; }
         .item-main { display: flex; align-items: center; gap: 14px; }
         .item-status-icon { font-size: 16px; width: 20px; display: flex; justify-content: center; }
         .item-text { font-size: 14px; font-weight: 750; color: var(--text-main); }
@@ -266,14 +265,14 @@
             <div class="padding-wrap">
                 <div class="section-label first-label">TRAVEL DOCUMENTS</div>
                 <div class="group-card">
-                    <div class="group-header" onclick="toggleGroup(event, this)">
+                    <div class="group-header" onclick="toggleGroup(this)">
                         <div><span class="badge">RESERVATION</span><div class="group-title">QUICK RESERVE 관리</div></div>
                         <div class="arrow">〉</div>
                     </div>
                     <div id="quick-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
                 </div>
                 <div class="group-card">
-                    <div class="group-header" onclick="toggleGroup(event, this)">
+                    <div class="group-header" onclick="toggleGroup(this)">
                         <div><span class="badge">E-DOCS</span><div class="group-title">DOCUMENT 서류함</div></div>
                         <div class="arrow">〉</div>
                     </div>
@@ -297,7 +296,7 @@
         </div>
     </div>
 
-    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1999; display:none; backdrop-filter:blur(5px);"></div>
+    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1999; display:none; backdrop-filter:blur(5px); cursor:pointer;"></div>
     <div id="day-panel" class="side-panel">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px;">
             <div id="panel-day-title" style="font-size:24px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
@@ -326,34 +325,30 @@
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
+            
+            // 패널이 열려있다면 탭 이동시 강제 종료하여 오버레이 간섭 제거
+            closeDayPanel();
+
             if(t === 'plan') syncPlan(); 
             if(t === 'docs') syncDocs(); 
         }
 
-        /* 아코디언 동작 수정: 클릭 전파 방지 및 상태 강제 동기화 */
-        function toggleGroup(event, header) {
-            if (event) event.stopPropagation();
+        /* 아코디언 동작 수정: 자연스러운 높이 애니메이션 및 클릭 무반응 방지 */
+        function toggleGroup(header) {
             const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
             
-            // 모든 그룹 닫기 (하나만 열리도록 설정된 경우)
+            // 모든 카드 닫기 및 스타일 초기화
             document.querySelectorAll('.group-card').forEach(c => {
-                if (c !== card) {
-                    c.classList.remove('open');
-                    c.querySelector('.group-body').style.maxHeight = "0";
-                    c.querySelector('.group-body').style.opacity = "0";
-                }
+                c.classList.remove('open');
+                c.querySelector('.group-body').style.maxHeight = "0";
             });
 
             if (!isOpen) {
                 card.classList.add('open');
-                body.style.maxHeight = "2000px";
-                body.style.opacity = "1";
-            } else {
-                card.classList.remove('open');
-                body.style.maxHeight = "0";
-                body.style.opacity = "0";
+                // 실제 내부 콘텐츠 높이에 맞춰 유연하게 오픈
+                body.style.maxHeight = body.scrollHeight + 100 + "px";
             }
         }
 
@@ -429,10 +424,14 @@
                 const bizStatus = checkBusinessStatus(item.desc);
                 return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
-            document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
+            document.getElementById('day-panel').classList.add('open'); 
+            document.getElementById('panel-overlay').style.display = 'block';
         }
 
-        function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
+        function closeDayPanel() { 
+            document.getElementById('day-panel').classList.remove('open'); 
+            document.getElementById('panel-overlay').style.display = 'none'; 
+        }
 
         let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
