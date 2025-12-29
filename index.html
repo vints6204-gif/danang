@@ -104,7 +104,6 @@
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
             overflow: hidden; 
-            will-change: max-height; 
         }
         .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; }
         
@@ -170,7 +169,6 @@
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
         .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
         
-        /* 세부 일정 제목 폰트 크기 수정 */
         .sub-plan-title { font-size: 14px !important; font-weight: 900; }
 
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
@@ -268,14 +266,14 @@
             <div class="padding-wrap">
                 <div class="section-label first-label">TRAVEL DOCUMENTS</div>
                 <div class="group-card">
-                    <div class="group-header" onclick="toggleGroup(this)">
+                    <div class="group-header" onclick="toggleGroup(event, this)">
                         <div><span class="badge">RESERVATION</span><div class="group-title">QUICK RESERVE 관리</div></div>
                         <div class="arrow">〉</div>
                     </div>
                     <div id="quick-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
                 </div>
                 <div class="group-card">
-                    <div class="group-header" onclick="toggleGroup(this)">
+                    <div class="group-header" onclick="toggleGroup(event, this)">
                         <div><span class="badge">E-DOCS</span><div class="group-title">DOCUMENT 서류함</div></div>
                         <div class="arrow">〉</div>
                     </div>
@@ -332,24 +330,30 @@
             if(t === 'docs') syncDocs(); 
         }
 
-        function toggleGroup(header) {
-            const card = header.parentElement;
+        /* 아코디언 동작 수정: 클릭 전파 방지 및 상태 강제 동기화 */
+        function toggleGroup(event, header) {
+            if (event) event.stopPropagation();
+            const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
             
+            // 모든 그룹 닫기 (하나만 열리도록 설정된 경우)
+            document.querySelectorAll('.group-card').forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('open');
+                    c.querySelector('.group-body').style.maxHeight = "0";
+                    c.querySelector('.group-body').style.opacity = "0";
+                }
+            });
+
             if (!isOpen) {
-                // 다른 카드 닫기
-                document.querySelectorAll('.group-card').forEach(c => {
-                    if (c !== card) {
-                        c.classList.remove('open');
-                        c.querySelector('.group-body').style.maxHeight = null;
-                    }
-                });
                 card.classList.add('open');
                 body.style.maxHeight = "2000px";
+                body.style.opacity = "1";
             } else {
                 card.classList.remove('open');
-                body.style.maxHeight = null;
+                body.style.maxHeight = "0";
+                body.style.opacity = "0";
             }
         }
 
@@ -398,7 +402,7 @@
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
                 dListInner.innerHTML = rows.slice(1).map(r => {
                     if(!r[0] || !r[1]) return "";
-                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
+                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank'); event.stopPropagation();"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
                 }).join('');
             }
         }
