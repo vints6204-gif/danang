@@ -19,6 +19,7 @@
             --glass: rgba(255, 255, 255, 0.75);
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --spring-transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
@@ -42,7 +43,6 @@
         .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -2px; }
         .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 700; }
         
-        /* D-DAY 배지 원상복구 */
         .dday-badge { 
             font-size: 11px; font-weight: 900; color: #fff; 
             padding: 6px 14px; border-radius: 20px; 
@@ -100,23 +100,35 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
+        /* --- 트렌디한 그룹카드 애니메이션 --- */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
-            overflow: hidden; transition: var(--transition);
+            overflow: hidden; transition: var(--spring-transition);
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .group-card.open { background: #fff; transform: scale(1.01); }
+        
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; }
         .group-body { 
-            max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; 
-            background: #F9FAFB; padding: 0 20px;
+            max-height: 0; opacity: 0; transform: translateY(-10px);
+            overflow: hidden; transition: max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, transform 0.4s ease;
+            background: #FDFDFD; padding: 0 20px;
         }
-        .group-card.open .group-body { max-height: 2000px; padding: 10px 20px 20px; border-top: 1px solid #EEE; }
-        .group-card.open .arrow { transform: rotate(90deg); }
-        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; }
+        .group-card.open .group-body { 
+            max-height: 2000px; opacity: 1; transform: translateY(0);
+            padding: 10px 20px 20px; border-top: 1px solid #F2F4F7; 
+        }
+        .group-card.open .arrow { transform: rotate(90deg) scale(1.2); color: var(--point-navy); }
+        
+        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
+        .group-card.open .badge { background: var(--point-navy); color: #fff; }
         .group-title { font-size: 16px; font-weight: 900; }
-        .arrow { transition: transform 0.3s ease; color: var(--point-coral); font-weight: 900; }
+        .arrow { transition: var(--spring-transition); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #F0F0F0; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #F0F0F0; animation: listItemShow 0.5s ease backwards; }
+        .group-card.open .list-item { animation-play-state: running; }
+        @keyframes listItemShow { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
+        
         .list-item:last-child { border-bottom: none; }
         .item-main { display: flex; align-items: center; gap: 12px; }
         .item-text { font-size: 14px; font-weight: 800; color: var(--text-main); }
@@ -200,7 +212,6 @@
                         <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / 인</strong></div>
                     </div>
                 </div>
-
                 <div class="section-label">RETURN FLIGHT</div>
                 <div class="ticket-card vj-card">
                     <div class="ticket-top"><div class="ticket-route">DAD ✈ ICN</div><div class="ticket-pnr">7GJ8NY</div></div>
@@ -216,7 +227,6 @@
                          <div style="display:flex; justify-content:space-between;"><span>Pyo Sang-Hun</span><strong>위탁 불포함</strong></div>
                     </div>
                 </div>
-
                 <div class="section-label">ACCOMMODATION</div>
                 <div class="hotel-detail-card">
                     <div class="hotel-name">멜리아 빈펄 리버프론트</div>
@@ -305,16 +315,9 @@
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
             const badge = document.getElementById('dday-badge');
             badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
-            
-            // 디자인 원상복구
-            if (days > 14) {
-                badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
-            } else if (days > 7) {
-                badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
-            } else {
-                badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)";
-                badge.classList.add('dday-urgent');
-            }
+            if (days > 14) badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
+            else if (days > 7) badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
+            else { badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)"; badge.classList.add('dday-urgent'); }
         }
 
         function showTab(t) {
@@ -372,18 +375,18 @@
             const qList = document.getElementById('quick-list');
             if(qCsv && !qCsv.includes("<!DOCTYPE html>")) {
                 const rows = qCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                qList.innerHTML = rows.slice(1).map(r => {
+                qList.innerHTML = rows.slice(1).map((r, idx) => {
                     if(!r[1]) return "";
-                    return `<div class="list-item"><div class="item-main"><span>${r[0] ? '✅' : '🔲'}</span><span class="item-text">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
+                    return `<div class="list-item" style="animation-delay: ${idx * 0.05}s"><div class="item-main"><span>${r[0] ? '✅' : '🔲'}</span><span class="item-text">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
                 }).join('');
             }
             const dCsv = await fetchSheet("DOCS");
             const dList = document.getElementById('docs-list');
             if(dCsv && !dCsv.includes("<!DOCTYPE html>")) {
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                dList.innerHTML = rows.slice(1).map(r => {
+                dList.innerHTML = rows.slice(1).map((r, idx) => {
                     if(!r[0] || !r[1]) return "";
-                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span>📄</span><span class="item-text">${r[0]}</span></div><span style="color:var(--point-navy); font-size:12px; font-weight:900;">열기</span></div>`;
+                    return `<div class="list-item" style="animation-delay: ${idx * 0.05}s" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span>📄</span><span class="item-text">${r[0]}</span></div><span style="color:var(--point-navy); font-size:12px; font-weight:900;">열기</span></div>`;
                 }).join('');
             }
         }
