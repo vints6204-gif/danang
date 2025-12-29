@@ -19,7 +19,7 @@
             --glass: rgba(255, 255, 255, 0.75);
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            --smooth-ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --smooth-ease: cubic-bezier(0.33, 1, 0.68, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
@@ -100,7 +100,7 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* 그룹카드(아코디언) 부드러운 애니메이션 적용 */
+        /* 그룹카드(아코디언) 개선 */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
@@ -111,7 +111,7 @@
         .group-body { 
             max-height: 0; opacity: 0;
             overflow: hidden; 
-            transition: max-height 0.5s var(--smooth-ease), opacity 0.4s var(--smooth-ease);
+            transition: max-height 0.4s var(--smooth-ease), opacity 0.3s ease;
             background: #FDFDFD;
         }
         .group-card.open .group-body { opacity: 1; border-top: 1px solid #F2F4F7; }
@@ -263,14 +263,14 @@
         <div id="docs" class="tab-content">
             <div class="padding-wrap">
                 <div class="section-label first-label">TRAVEL DOCUMENTS</div>
-                <div class="group-card">
+                <div class="group-card" id="card-quick">
                     <div class="group-header" onclick="toggleGroup(this)">
                         <div><span class="badge">RESERVATION</span><div class="group-title">QUICK RESERVE 관리</div></div>
                         <div class="arrow">〉</div>
                     </div>
                     <div id="quick-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
                 </div>
-                <div class="group-card">
+                <div class="group-card" id="card-docs">
                     <div class="group-header" onclick="toggleGroup(this)">
                         <div><span class="badge">E-DOCS</span><div class="group-title">DOCUMENT 서류함</div></div>
                         <div class="arrow">〉</div>
@@ -325,38 +325,40 @@
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
             
-            // 탭 전환 시 모든 아코디언 상태 강제 초기화 (이슈 해결 핵심)
+            // 탭 이동 시 모든 카드 상태 및 오버레이 초기화
             document.querySelectorAll('.group-card').forEach(c => {
                 c.classList.remove('open');
-                c.querySelector('.group-body').style.maxHeight = "0";
-                c.querySelector('.group-body').style.opacity = "0";
+                const body = c.querySelector('.group-body');
+                if(body) { body.style.maxHeight = "0"; body.style.opacity = "0"; }
             });
-
             closeDayPanel();
+
             if(t === 'plan') syncPlan(); 
             if(t === 'docs') syncDocs(); 
         }
 
-        /* 아코디언 동작 수정: 자연스럽고 부드러운 Ease 효과 적용 */
+        /* 부드럽고 자연스러운 카드 열림 함수 */
         function toggleGroup(header) {
             const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
             
-            // 다른 그룹 닫기
+            // 다른 카드 닫기
             document.querySelectorAll('.group-card').forEach(c => {
-                if (c !== card) {
+                if(c !== card) {
                     c.classList.remove('open');
-                    c.querySelector('.group-body').style.maxHeight = "0";
-                    c.querySelector('.group-body').style.opacity = "0";
+                    const b = c.querySelector('.group-body');
+                    if(b) { b.style.maxHeight = "0"; b.style.opacity = "0"; }
                 }
             });
 
             if (!isOpen) {
                 card.classList.add('open');
                 body.style.opacity = "1";
-                // 콘텐츠 높이를 측정하여 부드럽게 확장
-                body.style.maxHeight = body.scrollHeight + "px";
+                // 렌더링 완료 후 높이 계산을 위해 약간의 지연 처리
+                requestAnimationFrame(() => {
+                    body.style.maxHeight = body.scrollHeight + "px";
+                });
             } else {
                 card.classList.remove('open');
                 body.style.maxHeight = "0";
@@ -392,6 +394,7 @@
                 </div>`).join('');
         }
 
+        /* 문서 탭 데이터 동기화 - HTML 재생성 시 상태 초기화 방지 로직 적용 */
         async function syncDocs() {
             const qCsv = await fetchSheet("QUICK");
             const qListInner = document.querySelector('#quick-list .group-body-inner');
@@ -412,6 +415,11 @@
                     return `<div class="list-item" onclick="window.open('${r[1]}', '_blank'); event.stopPropagation();"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
                 }).join('');
             }
+            // 데이터 로드 후 닫힌 상태를 확실히 보장
+            document.querySelectorAll('#docs .group-body').forEach(b => {
+                b.style.maxHeight = "0";
+                b.style.opacity = "0";
+            });
         }
 
         function checkBusinessStatus(desc) {
