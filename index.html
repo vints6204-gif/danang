@@ -100,7 +100,7 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* --- 모바일 최적화 그룹카드 --- */
+        /* --- 정교해진 문서 리스트 디자인 --- */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
@@ -121,7 +121,7 @@
             opacity: 1; 
             border-top: 1px solid #F2F4F7;
         }
-        .group-body-inner { padding: 15px 20px 20px; transform: translateZ(0); }
+        .group-body-inner { padding: 10px 15px 20px; transform: translateZ(0); }
 
         .group-card.open .arrow { transform: rotate(90deg); color: var(--point-navy); }
         .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
@@ -129,11 +129,26 @@
         .group-title { font-size: 16px; font-weight: 900; }
         .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #F0F0F0; }
-        .list-item:last-child { border-bottom: none; }
-        .item-main { display: flex; align-items: center; gap: 12px; }
-        .item-text { font-size: 14px; font-weight: 800; color: var(--text-main); }
-        .item-sub { font-size: 13px; font-weight: 800; color: var(--point-coral); }
+        /* 리스트 아이템 정교화 */
+        .list-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px; background: #fff; border-radius: 14px; 
+            margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .list-item:last-child { margin-bottom: 0; }
+        .item-main { display: flex; align-items: center; gap: 14px; }
+        .item-status-icon { font-size: 16px; width: 20px; display: flex; justify-content: center; }
+        .item-text { font-size: 14px; font-weight: 750; color: var(--text-main); }
+        .item-text.completed { color: var(--text-sub); text-decoration: none; }
+        .item-sub { font-size: 12px; font-weight: 800; color: var(--point-coral); background: rgba(255,127,80,0.08); padding: 4px 8px; border-radius: 6px; }
+        
+        .doc-open-btn {
+            background: var(--point-navy); color: #fff; 
+            font-size: 11px; font-weight: 900; 
+            padding: 6px 12px; border-radius: 8px; 
+            display: flex; align-items: center; gap: 4px;
+        }
 
         .fab-calc { 
             position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; 
@@ -343,7 +358,6 @@
 
             if (!isOpen) {
                 card.classList.add('open');
-                // 정확한 높이 계산 후 적용 (Reflow 최적화)
                 requestAnimationFrame(() => {
                     body.style.maxHeight = body.scrollHeight + "px";
                 });
@@ -395,7 +409,15 @@
                 const rows = qCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
                 qListInner.innerHTML = rows.slice(1).map(r => {
                     if(!r[1]) return "";
-                    return `<div class="list-item"><div class="item-main"><span>${r[0] ? '✅' : '🔲'}</span><span class="item-text">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
+                    const isDone = r[0] ? true : false;
+                    return `
+                    <div class="list-item">
+                        <div class="item-main">
+                            <span class="item-status-icon">${isDone ? '✅' : '🔲'}</span>
+                            <span class="item-text ${isDone ? 'completed' : ''}">${r[1]}</span>
+                        </div>
+                        <span class="item-sub">${r[2] || '-'}</span>
+                    </div>`;
                 }).join('');
             }
             const dCsv = await fetchSheet("DOCS");
@@ -404,7 +426,14 @@
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
                 dListInner.innerHTML = rows.slice(1).map(r => {
                     if(!r[0] || !r[1]) return "";
-                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span>📄</span><span class="item-text">${r[0]}</span></div><span style="color:var(--point-navy); font-size:12px; font-weight:900;">열기</span></div>`;
+                    return `
+                    <div class="list-item" onclick="window.open('${r[1]}', '_blank')">
+                        <div class="item-main">
+                            <span class="item-status-icon">📄</span>
+                            <span class="item-text">${r[0]}</span>
+                        </div>
+                        <div class="doc-open-btn">열기 〉</div>
+                    </div>`;
                 }).join('');
             }
         }
