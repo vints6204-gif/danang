@@ -106,7 +106,7 @@
             overflow: hidden; 
             will-change: height; 
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; pointer-events: auto; }
         
         .group-body { 
             max-height: 0; opacity: 0;
@@ -123,10 +123,10 @@
         .group-body-inner { padding: 10px 15px 20px; transform: translateZ(0); }
 
         .group-card.open .arrow { transform: rotate(90deg); color: var(--point-navy); }
-        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
+        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; pointer-events: none; }
         .group-card.open .badge { background: var(--point-navy); color: #fff; }
-        .group-title { font-size: 16px; font-weight: 900; }
-        .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; }
+        .group-title { font-size: 16px; font-weight: 900; pointer-events: none; }
+        .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; pointer-events: none; }
 
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
@@ -330,12 +330,26 @@
         }
 
         function toggleGroup(header) {
-            const card = header.parentElement;
+            const card = header.closest('.group-card');
+            if (!card) return;
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
-            document.querySelectorAll('.group-card').forEach(c => { if(c !== card) { c.classList.remove('open'); c.querySelector('.group-body').style.maxHeight = null; } });
-            if (!isOpen) { card.classList.add('open'); requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); }
-            else { card.classList.remove('open'); body.style.maxHeight = null; }
+            
+            document.querySelectorAll('.group-card').forEach(c => { 
+                if(c !== card) { 
+                    c.classList.remove('open'); 
+                    const otherBody = c.querySelector('.group-body');
+                    if(otherBody) otherBody.style.maxHeight = null; 
+                } 
+            });
+
+            if (!isOpen) { 
+                card.classList.add('open'); 
+                requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); 
+            } else { 
+                card.classList.remove('open'); 
+                body.style.maxHeight = null; 
+            }
         }
 
         function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
@@ -408,7 +422,7 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:16px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:14px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
         }
