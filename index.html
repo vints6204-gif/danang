@@ -106,7 +106,7 @@
             overflow: hidden; 
             will-change: height; 
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; pointer-events: auto; }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 5; background: #fff; }
         
         .group-body { 
             max-height: 0; opacity: 0;
@@ -123,10 +123,10 @@
         .group-body-inner { padding: 10px 15px 20px; transform: translateZ(0); }
 
         .group-card.open .arrow { transform: rotate(90deg); color: var(--point-navy); }
-        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; pointer-events: none; }
+        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
         .group-card.open .badge { background: var(--point-navy); color: #fff; }
-        .group-title { font-size: 16px; font-weight: 900; pointer-events: none; }
-        .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; pointer-events: none; }
+        .group-title { font-size: 16px; font-weight: 900; }
+        .arrow { transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
@@ -170,6 +170,7 @@
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
         .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
         
+        /* 영업 상태 뱃지 스타일 */
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
@@ -330,26 +331,12 @@
         }
 
         function toggleGroup(header) {
-            const card = header.closest('.group-card');
-            if (!card) return;
+            const card = header.parentElement;
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
-            
-            document.querySelectorAll('.group-card').forEach(c => { 
-                if(c !== card) { 
-                    c.classList.remove('open'); 
-                    const otherBody = c.querySelector('.group-body');
-                    if(otherBody) otherBody.style.maxHeight = null; 
-                } 
-            });
-
-            if (!isOpen) { 
-                card.classList.add('open'); 
-                requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); 
-            } else { 
-                card.classList.remove('open'); 
-                body.style.maxHeight = null; 
-            }
+            document.querySelectorAll('.group-card').forEach(c => { if(c !== card) { c.classList.remove('open'); c.querySelector('.group-body').style.maxHeight = null; } });
+            if (!isOpen) { card.classList.add('open'); requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; }); }
+            else { card.classList.remove('open'); body.style.maxHeight = null; }
         }
 
         function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
@@ -366,12 +353,12 @@
             const data = {};
             for (let i = 1; i < rows.length; i++) {
                 const [day, main, sub, time, title, desc, nav] = rows[i];
-                if (!day || !main) continue;
+                if (!day) continue;
                 if (!data[day]) data[day] = { dayNum: day, main, sub, items: [] };
-                if (title) data[day].items.push({ time, title, desc, nav });
+                data[day].items.push({ time, title, desc, nav });
             }
             scheduleData = data;
-            document.getElementById('plan-container').innerHTML = Object.keys(data).sort((a,b) => parseInt(a)-parseInt(b)).map(day => `
+            document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
                 <div class="group-card" onclick="openDayPanel('${day}')" style="margin-bottom:10px;">
                     <div class="group-header">
                         <div><span class="badge">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
@@ -402,6 +389,7 @@
             }
         }
 
+        // 실시간 영업 상태 체크 로직
         function checkBusinessStatus(desc) {
             if (!desc || !desc.includes("영업:")) return "";
             try {
@@ -422,7 +410,7 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:14px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size:18px; font-weight:900;">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); document.getElementById('panel-overlay').style.display = 'block';
         }
