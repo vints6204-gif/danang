@@ -19,7 +19,7 @@
             --glass: rgba(255, 255, 255, 0.75);
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            --spring-ease: cubic-bezier(0.68, -0.6, 0.32, 1.6); /* 트렌디한 스프링 효과 */
+            --smooth-ease: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
@@ -100,21 +100,20 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* 그룹카드(아코디언) 개선 */
+        /* 그룹카드(아코디언) 부드러운 애니메이션 적용 */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
             overflow: hidden; transition: var(--transition);
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; user-select: none; }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; position: relative; z-index: 10; }
         
         .group-body { 
             max-height: 0; opacity: 0;
             overflow: hidden; 
-            transition: max-height 0.6s var(--spring-ease), opacity 0.3s ease;
+            transition: max-height 0.5s var(--smooth-ease), opacity 0.4s var(--smooth-ease);
             background: #FDFDFD;
         }
-        .group-card.open { transform: scale(1.01); }
         .group-card.open .group-body { opacity: 1; border-top: 1px solid #F2F4F7; }
         .group-body-inner { padding: 10px 15px 20px; }
 
@@ -122,7 +121,7 @@
         .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
         .group-card.open .badge { background: var(--point-navy); color: #fff; }
         .group-title { font-size: 16px; font-weight: 900; }
-        .arrow { transition: transform 0.4s var(--spring-ease); color: var(--point-coral); font-weight: 900; font-size: 16px; }
+        .arrow { transition: transform 0.4s var(--smooth-ease); color: var(--point-coral); font-weight: 900; font-size: 16px; }
 
         .list-item { 
             display: flex; justify-content: space-between; align-items: center; 
@@ -326,29 +325,42 @@
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
             
-            // 패널이 열려있다면 탭 이동시 강제 종료하여 오버레이 간섭 제거
-            closeDayPanel();
+            // 탭 전환 시 모든 아코디언 상태 강제 초기화 (이슈 해결 핵심)
+            document.querySelectorAll('.group-card').forEach(c => {
+                c.classList.remove('open');
+                c.querySelector('.group-body').style.maxHeight = "0";
+                c.querySelector('.group-body').style.opacity = "0";
+            });
 
+            closeDayPanel();
             if(t === 'plan') syncPlan(); 
             if(t === 'docs') syncDocs(); 
         }
 
-        /* 아코디언 동작 수정: 자연스러운 높이 애니메이션 및 클릭 무반응 방지 */
+        /* 아코디언 동작 수정: 자연스럽고 부드러운 Ease 효과 적용 */
         function toggleGroup(header) {
             const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
             
-            // 모든 카드 닫기 및 스타일 초기화
+            // 다른 그룹 닫기
             document.querySelectorAll('.group-card').forEach(c => {
-                c.classList.remove('open');
-                c.querySelector('.group-body').style.maxHeight = "0";
+                if (c !== card) {
+                    c.classList.remove('open');
+                    c.querySelector('.group-body').style.maxHeight = "0";
+                    c.querySelector('.group-body').style.opacity = "0";
+                }
             });
 
             if (!isOpen) {
                 card.classList.add('open');
-                // 실제 내부 콘텐츠 높이에 맞춰 유연하게 오픈
-                body.style.maxHeight = body.scrollHeight + 100 + "px";
+                body.style.opacity = "1";
+                // 콘텐츠 높이를 측정하여 부드럽게 확장
+                body.style.maxHeight = body.scrollHeight + "px";
+            } else {
+                card.classList.remove('open');
+                body.style.maxHeight = "0";
+                body.style.opacity = "0";
             }
         }
 
