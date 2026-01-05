@@ -131,10 +131,12 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* [업그레이드] Stay Tips 뱃지 스타일 */
         .stay-tip-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-right: 5px; margin-top: 10px; }
         .tip-active { background: #E8F5E9; color: #2E7D32; }
         .tip-inactive { background: #F5F5F5; color: #9E9E9E; }
+
+        /* [강화] Auto-Focus 하이라이트 효과 */
+        .today-focus { border: 2px solid var(--point-coral) !important; transform: scale(1.02); }
 
         .group-card { 
             background: var(--bg-sub); border-radius: 20px; margin-bottom: 15px; 
@@ -347,15 +349,12 @@
         window.addEventListener('online', () => document.getElementById('offline-indicator').style.display = 'none');
         window.addEventListener('offline', () => document.getElementById('offline-indicator').style.display = 'block');
 
-        // [업그레이드] 조식 및 수영장 리마인더
         function updateStayTips() {
             const now = new Date();
             const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
             const hhmm = dadTime.getHours() * 100 + dadTime.getMinutes();
-            
             let breakfast = (hhmm >= 630 && hhmm <= 1030) ? '<span class="stay-tip-badge tip-active">🍳 조식 이용 가능</span>' : '<span class="stay-tip-badge tip-inactive">🍳 조식 마감</span>';
             let pool = (hhmm >= 600 && hhmm <= 2100) ? '<span class="stay-tip-badge tip-active">🏊 수영장 이용 가능</span>' : '<span class="stay-tip-badge tip-inactive">🏊 수영장 마감</span>';
-            
             document.getElementById('hotel-status-badges').innerHTML = breakfast + pool;
         }
 
@@ -374,7 +373,7 @@
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
             closeDayPanel();
-            if(t === 'plan') syncPlan(true); // [업그레이드] 자동 스크롤 활성화
+            if(t === 'plan') syncPlan(true); 
             if(t === 'docs') syncDocs(); 
         }
 
@@ -395,29 +394,19 @@
 
         function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
 
-        // [업그레이드] LocalStorage 캐시 및 로딩 최적화
         async function fetchSheet(name) {
             const healthBar = document.getElementById('health-check');
             const cacheKey = `danang_cache_${name.toLowerCase()}`;
-            
-            // 1. 오프라인 대비 로컬 캐시 먼저 확인
             const localData = localStorage.getItem(cacheKey);
-            if(localData && !navigator.onLine) {
-                cache[name.toLowerCase()] = localData;
-                return localData;
-            }
-
+            if(localData && !navigator.onLine) { cache[name.toLowerCase()] = localData; return localData; }
             healthBar.style.width = "30%";
             const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
-            
             try { 
                 const res = await fetch(url); 
                 healthBar.style.width = "70%";
                 const data = await res.text();
                 healthBar.style.width = "100%";
                 setTimeout(() => healthBar.style.width = "0%", 500);
-                
-                // 2. 새로운 데이터 캐시 저장
                 localStorage.setItem(cacheKey, data);
                 cache[name.toLowerCase()] = data;
                 return data;
@@ -428,6 +417,7 @@
             }
         }
 
+        // [강화] 향상된 동적 Auto-Focus 로직
         async function syncPlan(autoScroll = false) {
             const csv = await fetchSheet("Sheet1");
             if(!csv) return;
@@ -443,10 +433,16 @@
             
             const now = new Date();
             const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
-            const currentDay = dadTime.getDate(); // 현지 날짜 기반 자동 포커싱
+            const curDateStr = (dadTime.getMonth()+1).toString().padStart(2,'0') + "." + dadTime.getDate().toString().padStart(2,'0');
+            const curHHMM = dadTime.getHours().toString().padStart(2,'0') + ":" + dadTime.getMinutes().toString().padStart(2,'0');
             
+            let focusId = null;
+
             document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => {
-                const isToday = day.includes(currentDay.toString());
+                // 시트 데이터의 sub 필드(예: 01.13)와 현재 날짜 비교
+                const isToday = data[day].sub.includes(curDateStr);
+                if(isToday && !focusId) focusId = `day-card-${day}`;
+                
                 return `
                 <div class="group-card ${isToday ? 'today-focus' : ''}" id="day-card-${day}" onclick="openDayPanel('${day}')">
                     <div class="group-header">
@@ -456,13 +452,12 @@
                 </div>`;
             }).join('');
 
-            // [업그레이드] 오늘 날짜 일정으로 자동 스크롤
             if(autoScroll) {
-                const target = document.querySelector('.today-focus');
+                const target = document.getElementById(focusId) || document.querySelector('.group-card');
                 if(target) {
                     setTimeout(() => {
                         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
+                    }, 500);
                 }
             }
         }
@@ -506,20 +501,23 @@
         function openDayPanel(day) {
             const d = scheduleData[day]; if(!d) return;
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
+            
+            const now = new Date();
+            const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+            const curHHMM = dadTime.getHours().toString().padStart(2,'0') + ":" + dadTime.getMinutes().toString().padStart(2,'0');
+
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                // [강화] 세부 일정에서도 현재 시간과 매칭되는 일정 강조
+                const isNow = (item.time <= curHHMM); 
+                return `<div class="tl-item" style="${isNow ? 'opacity:1;' : 'opacity:0.6;'}"><div class="tl-dot" style="${isNow ? 'background:var(--point-coral); scale:1.2;' : 'background:#ccc;'}"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
         }
 
-        function closeDayPanel() { 
-            document.getElementById('day-panel').classList.remove('open'); 
-            document.getElementById('panel-overlay').style.display = 'none'; 
-        }
-
+        function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
         let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
             document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
