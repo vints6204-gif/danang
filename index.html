@@ -168,10 +168,9 @@
         
         .sub-plan-title { font-size: 14px !important; font-weight: 900; }
 
-        .status-badge { font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: 5px; display: inline-block; vertical-align: middle; }
+        .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
-        .nav-link { display: inline-block; margin-left: 8px; font-size: 14px; text-decoration: none; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -407,17 +406,17 @@
             document.querySelectorAll('#docs .group-body').forEach(b => { b.style.maxHeight = "0"; b.style.opacity = "0"; });
         }
 
-        function checkBusinessStatus(text) {
-            if (!text || !text.includes("영업:")) return "";
+        function checkBusinessStatus(desc) {
+            if (!desc || !desc.includes("영업:")) return "";
             try {
-                const match = text.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
+                const match = desc.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
                 if (!match) return "";
                 const [_, start, end] = match;
                 const now = new Date();
                 const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
                 const curTimeStr = dadTime.getHours().toString().padStart(2, '0') + ":" + dadTime.getMinutes().toString().padStart(2, '0');
-                if (curTimeStr >= start && curTimeStr <= end) return '<span class="status-badge status-open">영업 중</span>';
-                else return '<span class="status-badge status-closed">종료</span>';
+                if (curTimeStr >= start && curTimeStr <= end) return '<span class="status-badge status-open">영업 중 ✅</span>';
+                else return '<span class="status-badge status-closed">영업 종료 ❌</span>';
             } catch(e) { return ""; }
         }
 
@@ -426,13 +425,8 @@
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => {
-                    const statusBadge = checkBusinessStatus(l);
-                    const linkMatch = l.match(/링크:(https?:\/\/[^\s\)]+)/);
-                    const mapLink = linkMatch ? `<a href="${linkMatch[1]}" target="_blank" class="nav-link">🧭</a>` : '';
-                    const cleanText = l.replace(/\(영업:\d{2}:\d{2}-\d{2}:\d{2}\)/g, '').replace(/영업:\d{2}:\d{2}-\d{2}:\d{2}/g, '').replace(/\(링크:.*?\)/g, '').replace(/링크:.*?\b/g, '').trim();
-                    return `<div style="font-size:13px; color:var(--text-sub); margin-bottom:8px;">• ${cleanText} ${statusBadge} ${mapLink}</div>`;
-                }).join('')}</div></div>`;
+                const bizStatus = checkBusinessStatus(item.desc);
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
