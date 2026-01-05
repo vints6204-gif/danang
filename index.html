@@ -78,15 +78,8 @@
             font-size: 11px; font-weight: 900; color: #fff; 
             padding: 6px 14px; border-radius: 20px; 
             letter-spacing: 0.05em;
-            transition: all 0.5s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        @keyframes dday-urgent {
-            0% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.08); filter: brightness(1.2); box-shadow: 0 0 20px rgba(255, 77, 77, 0.6); }
-            100% { transform: scale(1); filter: brightness(1); }
-        }
-        .dday-urgent { animation: dday-urgent 1.5s infinite ease-in-out; }
 
         .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: #fff; border-radius: 14px; margin-bottom: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
         .ex-item { text-align: center; flex: 1; }
@@ -134,14 +127,6 @@
         .stay-tip-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-right: 5px; margin-top: 10px; }
         .tip-active { background: #E8F5E9; color: #2E7D32; }
         .tip-inactive { background: #F5F5F5; color: #9E9E9E; }
-
-        /* [완벽 최적화] Auto-Focus 하이라이트 애니메이션 */
-        .today-focus { border: 2px solid var(--point-coral) !important; animation: focusPulse 2s ease; }
-        @keyframes focusPulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4); }
-            50% { transform: scale(1.02); box-shadow: 0 0 20px 10px rgba(255, 127, 80, 0); }
-            100% { transform: scale(1); }
-        }
 
         .group-card { 
             background: var(--bg-sub); border-radius: 20px; margin-bottom: 15px; 
@@ -204,8 +189,14 @@
 
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); padding: 50px 24px; overflow-y: auto; }
         .side-panel.open { right: 0; }
-        .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
-        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px var(--bg-sub); }
+
+        /* [신규] 세로형 타임라인 강화 스타일 */
+        .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; transition: 0.3s; }
+        .tl-item.past { border-left-color: var(--point-coral); opacity: 0.5; }
+        .tl-item.active { border-left-color: var(--point-navy); opacity: 1; transform: scale(1.02); }
+        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: #DDD; border-radius: 50%; box-shadow: 0 0 0 4px var(--bg-sub); z-index: 5; }
+        .tl-item.past .tl-dot { background: var(--point-coral); }
+        .tl-item.active .tl-dot { background: var(--point-navy); box-shadow: 0 0 0 6px var(--bg-sub), 0 0 15px var(--point-navy); }
         
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
@@ -368,9 +359,7 @@
             const now = new Date();
             const diff = target - now;
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-            const badge = document.getElementById('dday-badge');
-            badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
-            if (days <= 7) badge.classList.add('dday-urgent');
+            document.getElementById('dday-badge').innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
         }
 
         function showTab(t) {
@@ -378,7 +367,7 @@
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
             closeDayPanel();
-            if(t === 'plan') syncPlan(true); 
+            if(t === 'plan') syncPlan(); 
             if(t === 'docs') syncDocs(); 
         }
 
@@ -422,8 +411,7 @@
             }
         }
 
-        // [완벽 강화] 정밀 Auto-Focus 로직
-        async function syncPlan(autoScroll = false) {
+        async function syncPlan() {
             const csv = await fetchSheet("Sheet1");
             if(!csv) return;
             const rows = csv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
@@ -435,45 +423,13 @@
                 data[day].items.push({ time, title, desc, nav });
             }
             scheduleData = data;
-            
-            const now = new Date();
-            const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
-            const curDateStr = (dadTime.getMonth()+1).toString().padStart(2,'0') + "." + dadTime.getDate().toString().padStart(2,'0');
-            
-            let focusId = null;
-            const dayKeys = Object.keys(data).sort();
-
-            document.getElementById('plan-container').innerHTML = dayKeys.map(day => {
-                const isToday = data[day].sub.includes(curDateStr);
-                if(isToday) focusId = `day-card-${day}`;
-                
-                return `
-                <div class="group-card ${isToday ? 'today-focus' : ''}" id="day-card-${day}" onclick="openDayPanel('${day}')">
+            document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
+                <div class="group-card" onclick="openDayPanel('${day}')">
                     <div class="group-header">
-                        <div><span class="badge" style="${isToday ? 'background:var(--point-coral); color:#fff;' : ''}">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
+                        <div><span class="badge">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                </div>`;
-            }).join('');
-
-            // [완벽 강화] 스크롤 위치 보정 및 예외처리
-            if(autoScroll) {
-                // 오늘 일정이 없으면(여행 전/후) 첫 번째 또는 마지막 카드 선택
-                if(!focusId) {
-                    const firstDaySub = data[dayKeys[0]].sub;
-                    if(curDateStr < firstDaySub) focusId = `day-card-${dayKeys[0]}`;
-                    else focusId = `day-card-${dayKeys[dayKeys.length-1]}`;
-                }
-
-                const target = document.getElementById(focusId);
-                const container = document.getElementById('main-scroll');
-                if(target && container) {
-                    setTimeout(() => {
-                        const offset = target.offsetTop - (window.innerHeight * 0.15); // 화면의 15% 지점에 정렬
-                        container.scrollTo({ top: offset, behavior: 'smooth' });
-                    }, 400);
-                }
-            }
+                </div>`).join('');
         }
 
         async function syncDocs() {
@@ -516,15 +472,26 @@
             const d = scheduleData[day]; if(!d) return;
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             
+            // [강화] 세로형 타임라인 진행률 로직
             const now = new Date();
             const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
             const curHHMM = dadTime.getHours().toString().padStart(2,'0') + ":" + dadTime.getMinutes().toString().padStart(2,'0');
+            const curDateStr = (dadTime.getMonth()+1).toString().padStart(2,'0') + "." + dadTime.getDate().toString().padStart(2,'0');
+            const isToday = d.sub.includes(curDateStr);
 
-            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
+            document.getElementById('sub-plan-list').innerHTML = d.items.map((item, idx) => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                const isNow = (item.time <= curHHMM); 
-                return `<div class="tl-item" style="${isNow ? 'opacity:1;' : 'opacity:0.6;'}"><div class="tl-dot" style="${isNow ? 'background:var(--point-coral); scale:1.2;' : 'background:#ccc;'}"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                
+                // 오늘일 경우에만 과거/현재/미래 상태 계산
+                let stateClass = "";
+                if(isToday) {
+                    const nextItem = d.items[idx + 1];
+                    if(item.time <= curHHMM && (!nextItem || nextItem.time > curHHMM)) stateClass = "active";
+                    else if(item.time < curHHMM) stateClass = "past";
+                }
+
+                return `<div class="tl-item ${stateClass}"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
