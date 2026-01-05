@@ -55,12 +55,25 @@
         .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -2px; }
         .w-center .feels-like { font-size: 12px; color: var(--point-coral); margin-top: 4px; font-weight: 700; }
         
+        /* [UPGRADE] D-Day 설렘 애니메이션 */
         .dday-badge { 
             font-size: 11px; font-weight: 900; color: #fff; 
             padding: 6px 14px; border-radius: 20px; 
             letter-spacing: 0.05em;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             background: var(--point-navy);
+            transition: var(--transition);
+        }
+        .dday-excitement {
+            animation: heartBeat 1.5s ease-in-out infinite;
+            background: var(--point-coral); /* 임박 시 컬러 변경으로 설렘 강조 */
+        }
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
         }
 
         .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: #fff; border-radius: 14px; margin-bottom: 15px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
@@ -136,39 +149,25 @@
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.5s var(--smooth-ease); padding: env(safe-area-inset-top, 50px) 24px 50px; overflow-y: auto; }
         .side-panel.open { right: 0; }
 
-        /* [UPGRADE] 완벽 단계 타임라인 스타일 */
+        /* 완벽 단계 타임라인 스타일 보존 */
         .tl-list { position: relative; padding: 10px 0; }
         .tl-item { position: relative; padding-left: 35px; padding-bottom: 40px; transition: 0.3s; }
         .tl-item:last-child { padding-bottom: 0; }
-        
         .tl-line { position: absolute; left: 6px; top: 22px; bottom: 0; width: 2px; background: #EEE; z-index: 1; }
-        .tl-item:last-child .tl-line { display: none; }
-        
-        /* 진행률에 따른 선 색상 */
         .tl-item.past .tl-line { background: var(--point-coral); }
         .tl-item.active .tl-line { background: linear-gradient(to bottom, var(--point-navy), #EEE); }
-
         .tl-dot { position: absolute; left: 0; top: 5px; width: 14px; height: 14px; background: #DDD; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px #EEE; z-index: 5; transition: 0.3s; }
         .tl-item.past .tl-dot { background: var(--point-coral); box-shadow: 0 0 0 1px var(--point-coral); }
-        .tl-item.active .tl-dot { 
-            background: var(--point-navy); 
-            box-shadow: 0 0 0 6px rgba(26, 35, 126, 0.1), 0 0 15px var(--point-navy); 
-            transform: scale(1.2);
-            animation: pulse 1.5s infinite;
-        }
+        .tl-item.active .tl-dot { background: var(--point-navy); box-shadow: 0 0 0 6px rgba(26, 35, 126, 0.1), 0 0 15px var(--point-navy); transform: scale(1.2); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0px rgba(26, 35, 126, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(26, 35, 126, 0); } 100% { box-shadow: 0 0 0 0px rgba(26, 35, 126, 0); } }
-
         .tl-time { font-size: 11px; font-weight: 950; color: var(--point-navy); margin-bottom: 4px; display: block; opacity: 0.6; }
-        .tl-item.active .tl-time { opacity: 1; color: var(--point-navy); }
+        .tl-item.active .tl-time { opacity: 1; }
         .tl-item.past .tl-time { color: var(--point-coral); }
-
         .tl-content { background: #F8F9FB; padding: 15px; border-radius: 16px; transition: 0.3s; }
         .tl-item.active .tl-content { background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border: 1px solid rgba(26, 35, 126, 0.05); }
         .tl-item.past .tl-content { opacity: 0.6; }
-
         .tl-title { font-size: 16px; font-weight: 900; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; }
         .tl-desc-line { font-size: 13px; color: var(--text-sub); margin-top: 4px; display: flex; align-items: flex-start; gap: 6px; }
-
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
@@ -332,7 +331,16 @@
             const now = new Date();
             const diff = target - now;
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-            document.getElementById('dday-badge').innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
+            const badge = document.getElementById('dday-badge');
+            
+            badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
+            
+            // [UPGRADE] 임박 시(D-7 이내) 설렘 애니메이션 클래스 추가
+            if (days >= 0 && days <= 7) {
+                badge.classList.add('dday-excitement');
+            } else {
+                badge.classList.remove('dday-excitement');
+            }
         }
 
         function showTab(t) {
@@ -481,7 +489,6 @@
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
 
-            // [UPGRADE] 자동 스크롤 포커스
             if(activeIdx !== -1) {
                 setTimeout(() => {
                     const target = document.getElementById(`tl-item-${activeIdx}`);
