@@ -22,6 +22,28 @@
             --smooth-ease: cubic-bezier(0.33, 1, 0.68, 1);
         }
 
+        /* [업그레이드] 다크모드 대응 시스템 컬러 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-main: #121214;
+                --bg-sub: #1C1C1E;
+                --card-white: #2C2C2E;
+                --text-main: #F2F2F7;
+                --text-sub: #8E8E93;
+                --glass: rgba(28, 28, 30, 0.85);
+                --shadow: 0 8px 30px rgba(0,0,0,0.3);
+            }
+            .weather-extra { background: #2C2C2E !important; }
+            .baggage-section { background: #3A3A3C !important; }
+            .list-item { background: #2C2C2E !important; border-color: rgba(255,255,255,0.05) !important; }
+            .time-bar { background: rgba(255,255,255,0.05) !important; }
+            .tab-btn { background: rgba(255,255,255,0.05) !important; }
+            .side-panel { background: #121214 !important; }
+            #calc-modal { background: #2C2C2E !important; }
+            .calc-input { background: #3A3A3C !important; }
+            .c-btn { background: #3A3A3C !important; color: #fff !important; }
+        }
+
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; }
 
@@ -31,6 +53,17 @@
             backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); 
             z-index: 1000; padding: env(safe-area-inset-top, 20px) 20px 15px; 
             border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* [업그레이드] 자가진단 헬스 체크 바 */
+        #health-check {
+            position: fixed; top: 0; left: 0; right: 0; height: 4px;
+            background: #4CAF50; z-index: 2001; transition: 0.3s; width: 0%;
+        }
+        #offline-indicator {
+            position: fixed; top: env(safe-area-inset-top, 20px); left: 50%; transform: translateX(-50%);
+            background: rgba(255, 59, 48, 0.9); color: white; padding: 4px 12px; border-radius: 20px;
+            font-size: 10px; font-weight: 800; z-index: 2002; display: none;
         }
         
         .time-bar { display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px 16px; background: rgba(0,0,0,0.03); border-radius: 14px; }
@@ -101,23 +134,22 @@
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
         .group-card { 
-            background: #fff; border-radius: 20px; margin-bottom: 15px; 
+            background: var(--bg-sub); border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
             overflow: hidden; transition: var(--transition);
         }
-        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; position: relative; z-index: 10; }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 10; }
         
         .group-body { 
             max-height: 0; opacity: 0;
             overflow: hidden; 
             transition: max-height 0.4s var(--smooth-ease), opacity 0.3s ease;
-            background: #FDFDFD;
         }
-        .group-card.open .group-body { opacity: 1; border-top: 1px solid #F2F4F7; }
+        .group-card.open .group-body { opacity: 1; }
         .group-body-inner { padding: 10px 15px 20px; }
 
         .group-card.open .arrow { transform: rotate(90deg); color: var(--point-navy); }
-        .badge { display: inline-block; padding: 3px 8px; background: var(--bg-main); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; transition: 0.3s; }
+        .badge { display: inline-block; padding: 3px 8px; background: rgba(0,0,0,0.05); border-radius: 6px; color: var(--point-navy); font-size: 10px; font-weight: 900; margin-bottom: 6px; }
         .group-card.open .badge { background: var(--point-navy); color: #fff; }
         .group-title { font-size: 16px; font-weight: 900; }
         .arrow { transition: transform 0.4s var(--smooth-ease); color: var(--point-coral); font-weight: 900; font-size: 16px; }
@@ -129,7 +161,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             transition: 0.2s;
         }
-        .list-item:active { transform: scale(0.97); background: #F9F9F9; }
         .item-main { display: flex; align-items: center; gap: 14px; }
         .item-status-icon { font-size: 16px; width: 20px; display: flex; justify-content: center; }
         .item-text { font-size: 14px; font-weight: 750; color: var(--text-main); }
@@ -149,10 +180,10 @@
             position: fixed; bottom: 100px; right: 20px; left: 20px; 
             background: #fff; border-radius: 24px; padding: 24px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.2); z-index: 1400; 
-            display: none; transform: translateY(20px); transition: var(--transition);
+            display: none; 
         }
         #calc-modal.open { display: block; animation: fabPop 0.3s ease forwards; }
-        @keyframes fabPop { to { transform: translateY(0); opacity: 1; } }
+        @keyframes fabPop { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .calc-display { text-align: right; margin-bottom: 20px; }
         .calc-input { border: none; background: #F2F4F7; border-radius: 15px; font-size: 24px; width: 100%; padding: 15px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
@@ -164,16 +195,17 @@
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #fff; z-index: 2000; transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); padding: 50px 24px; overflow-y: auto; }
         .side-panel.open { right: 0; }
         .tl-item { position: relative; margin-bottom: 35px; padding-left: 25px; border-left: 2px solid #EEE; }
-        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
+        .tl-dot { position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; background: var(--point-coral); border-radius: 50%; box-shadow: 0 0 0 4px var(--bg-sub); }
         
-        .sub-plan-title { font-size: 14px !important; font-weight: 900; }
-
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
     </style>
 </head>
 <body>
+    <div id="health-check"></div>
+    <div id="offline-indicator">OFFLINE MODE</div>
+    
     <header class="fixed-header">
         <div class="time-bar">
             <div class="time-item">SEOUL <span><span id="time-kor">--:--</span></span></div>
@@ -298,16 +330,20 @@
     <div id="day-panel" class="side-panel">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:40px;">
             <div id="panel-day-title" style="font-size:24px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
-            <button style="background:#F2F4F7; border:none; width:40px; height:40px; border-radius:20px; font-size:20px; font-weight:900;" onclick="closeDayPanel()">×</button>
+            <button style="background:rgba(0,0,0,0.05); border:none; width:40px; height:40px; border-radius:20px; font-size:20px; font-weight:900;" onclick="closeDayPanel()">×</button>
         </div>
         <div id="sub-plan-list"></div>
     </div>
 
     <script>
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
-        let cache = { plan: null, quick: null, docs: null }; // 최적화 캐시 유지
+        let cache = { plan: null, quick: null, docs: null };
         let scheduleData = {};
         
+        // [업그레이드] 네트워크 자가진단
+        window.addEventListener('online', () => document.getElementById('offline-indicator').style.display = 'none');
+        window.addEventListener('offline', () => document.getElementById('offline-indicator').style.display = 'block');
+
         function initDday() {
             const target = new Date("2026-01-13T00:00:00+09:00");
             const now = new Date();
@@ -315,20 +351,13 @@
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
             const badge = document.getElementById('dday-badge');
             badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
-            if (days > 14) badge.style.background = "linear-gradient(135deg, #1A237E 0%, #3F51B5 100%)";
-            else if (days > 7) badge.style.background = "linear-gradient(135deg, #6200EA 0%, #B388FF 100%)";
-            else { badge.style.background = "linear-gradient(135deg, #FF4D4D 0%, #FF7F50 100%)"; badge.classList.add('dday-urgent'); }
+            if (days <= 7) badge.classList.add('dday-urgent');
         }
 
         function showTab(t) {
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
-            document.querySelectorAll('.group-card').forEach(c => {
-                c.classList.remove('open');
-                const body = c.querySelector('.group-body');
-                if(body) { body.style.maxHeight = "0"; body.style.opacity = "0"; }
-            });
             closeDayPanel();
             if(t === 'plan') syncPlan(); 
             if(t === 'docs') syncDocs(); 
@@ -338,17 +367,10 @@
             const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
-            document.querySelectorAll('.group-card').forEach(c => {
-                if(c !== card) {
-                    c.classList.remove('open');
-                    const b = c.querySelector('.group-body');
-                    if(b) { b.style.maxHeight = "0"; b.style.opacity = "0"; }
-                }
-            });
             if (!isOpen) {
                 card.classList.add('open');
+                body.style.maxHeight = body.scrollHeight + "px";
                 body.style.opacity = "1";
-                requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; });
             } else {
                 card.classList.remove('open');
                 body.style.maxHeight = "0";
@@ -359,14 +381,25 @@
         function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
 
         async function fetchSheet(name) {
+            const healthBar = document.getElementById('health-check');
             if(cache[name.toLowerCase()]) return cache[name.toLowerCase()];
+            
+            healthBar.style.width = "30%";
             const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
+            
             try { 
                 const res = await fetch(url); 
+                healthBar.style.width = "70%";
                 const data = await res.text();
+                healthBar.style.width = "100%";
+                setTimeout(() => healthBar.style.width = "0%", 500);
                 cache[name.toLowerCase()] = data;
                 return data;
-            } catch(e) { return null; }
+            } catch(e) { 
+                healthBar.style.background = "#f44336";
+                document.getElementById('offline-indicator').style.display = 'block';
+                return null; 
+            }
         }
 
         async function syncPlan() {
@@ -382,7 +415,7 @@
             }
             scheduleData = data;
             document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => `
-                <div class="group-card" onclick="openDayPanel('${day}')" style="margin-bottom:10px;">
+                <div class="group-card" onclick="openDayPanel('${day}')">
                     <div class="group-header">
                         <div><span class="badge">DAY ${data[day].dayNum}</span><div class="group-title">${data[day].main || '일정'}</div><div style="font-size:11px; color:var(--text-sub); margin-top:3px;">${data[day].sub || ''}</div></div>
                         <div class="arrow">〉</div>
