@@ -168,9 +168,10 @@
         
         .sub-plan-title { font-size: 14px !important; font-weight: 900; }
 
-        .status-badge { font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: 5px; display: inline-block; }
+        .status-badge { font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: 5px; display: inline-block; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
+        .nav-link { display: inline-block; margin-left: 8px; font-size: 14px; text-decoration: none; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -426,9 +427,11 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => {
-                    const status = checkBusinessStatus(l);
-                    const cleanText = l.replace(/\(영업:\d{2}:\d{2}-\d{2}:\d{2}\)/g, '').replace(/영업:\d{2}:\d{2}-\d{2}:\d{2}/g, '').trim();
-                    return `<div style="font-size:13px; color:var(--text-sub); margin-bottom:4px;">• ${cleanText} ${status}</div>`;
+                    const statusBadge = checkBusinessStatus(l);
+                    const linkMatch = l.match(/링크:(https?:\/\/[^\s\)]+)/);
+                    const mapLink = linkMatch ? `<a href="${linkMatch[1]}" target="_blank" class="nav-link">🧭</a>` : '';
+                    const cleanText = l.replace(/\(영업:\d{2}:\d{2}-\d{2}:\d{2}\)/g, '').replace(/영업:\d{2}:\d{2}-\d{2}:\d{2}/g, '').replace(/\(링크:.*?\)/g, '').replace(/링크:.*?\b/g, '').trim();
+                    return `<div style="font-size:13px; color:var(--text-sub); margin-bottom:8px;">• ${cleanText} ${statusBadge} ${mapLink}</div>`;
                 }).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
