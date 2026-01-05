@@ -100,7 +100,6 @@
         .h-box { font-size: 11px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
 
-        /* 그룹카드(아코디언) 개선 */
         .group-card { 
             background: #fff; border-radius: 20px; margin-bottom: 15px; 
             box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); 
@@ -169,7 +168,7 @@
         
         .sub-plan-title { font-size: 14px !important; font-weight: 900; }
 
-        .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
+        .status-badge { font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: 5px; display: inline-block; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
     </style>
@@ -324,26 +323,20 @@
             document.querySelectorAll('.tab-content, .tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(t).classList.add('active');
             document.getElementById('btn-' + t).classList.add('active');
-            
-            // 탭 이동 시 모든 카드 상태 및 오버레이 초기화
             document.querySelectorAll('.group-card').forEach(c => {
                 c.classList.remove('open');
                 const body = c.querySelector('.group-body');
                 if(body) { body.style.maxHeight = "0"; body.style.opacity = "0"; }
             });
             closeDayPanel();
-
             if(t === 'plan') syncPlan(); 
             if(t === 'docs') syncDocs(); 
         }
 
-        /* 부드럽고 자연스러운 카드 열림 함수 */
         function toggleGroup(header) {
             const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
             const isOpen = card.classList.contains('open');
-            
-            // 다른 카드 닫기
             document.querySelectorAll('.group-card').forEach(c => {
                 if(c !== card) {
                     c.classList.remove('open');
@@ -351,14 +344,10 @@
                     if(b) { b.style.maxHeight = "0"; b.style.opacity = "0"; }
                 }
             });
-
             if (!isOpen) {
                 card.classList.add('open');
                 body.style.opacity = "1";
-                // 렌더링 완료 후 높이 계산을 위해 약간의 지연 처리
-                requestAnimationFrame(() => {
-                    body.style.maxHeight = body.scrollHeight + "px";
-                });
+                requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + "px"; });
             } else {
                 card.classList.remove('open');
                 body.style.maxHeight = "0";
@@ -394,7 +383,6 @@
                 </div>`).join('');
         }
 
-        /* 문서 탭 데이터 동기화 - HTML 재생성 시 상태 초기화 방지 로직 적용 */
         async function syncDocs() {
             const qCsv = await fetchSheet("QUICK");
             const qListInner = document.querySelector('#quick-list .group-body-inner');
@@ -415,24 +403,20 @@
                     return `<div class="list-item" onclick="window.open('${r[1]}', '_blank'); event.stopPropagation();"><div class="item-main"><span class="item-status-icon">📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
                 }).join('');
             }
-            // 데이터 로드 후 닫힌 상태를 확실히 보장
-            document.querySelectorAll('#docs .group-body').forEach(b => {
-                b.style.maxHeight = "0";
-                b.style.opacity = "0";
-            });
+            document.querySelectorAll('#docs .group-body').forEach(b => { b.style.maxHeight = "0"; b.style.opacity = "0"; });
         }
 
-        function checkBusinessStatus(desc) {
-            if (!desc || !desc.includes("영업:")) return "";
+        function checkBusinessStatus(text) {
+            if (!text || !text.includes("영업:")) return "";
             try {
-                const match = desc.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
+                const match = text.match(/영업:(\d{2}:\d{2})-(\d{2}:\d{2})/);
                 if (!match) return "";
                 const [_, start, end] = match;
                 const now = new Date();
                 const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
                 const curTimeStr = dadTime.getHours().toString().padStart(2, '0') + ":" + dadTime.getMinutes().toString().padStart(2, '0');
-                if (curTimeStr >= start && curTimeStr <= end) return '<span class="status-badge status-open">영업 중 ✅</span>';
-                else return '<span class="status-badge status-closed">영업 종료 ❌</span>';
+                if (curTimeStr >= start && curTimeStr <= end) return '<span class="status-badge status-open">영업 중</span>';
+                else return '<span class="status-badge status-closed">종료</span>';
             } catch(e) { return ""; }
         }
 
@@ -441,8 +425,11 @@
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
-                const bizStatus = checkBusinessStatus(item.desc);
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => {
+                    const status = checkBusinessStatus(l);
+                    const cleanText = l.replace(/\(영업:\d{2}:\d{2}-\d{2}:\d{2}\)/g, '').replace(/영업:\d{2}:\d{2}-\d{2}:\d{2}/g, '').trim();
+                    return `<div style="font-size:13px; color:var(--text-sub); margin-bottom:4px;">• ${cleanText} ${status}</div>`;
+                }).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
