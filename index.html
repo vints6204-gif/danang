@@ -171,9 +171,6 @@
         .status-badge { font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; margin-left: 8px; vertical-align: middle; }
         .status-open { background: #E8F5E9; color: #2E7D32; }
         .status-closed { background: #FFEBEE; color: #C62828; }
-        
-        /* 지도 레이아웃 추가 */
-        .map-preview { width: 100%; height: 150px; border-radius: 14px; margin-top: 10px; background: #eee; border: none; display: block; }
     </style>
 </head>
 <body>
@@ -308,8 +305,7 @@
 
     <script>
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
-        // 업그레이드: 데이터 캐싱을 위한 객체
-        let cache = { plan: null, quick: null, docs: null };
+        let cache = { plan: null, quick: null, docs: null }; // 최적화 캐시 유지
         let scheduleData = {};
         
         function initDday() {
@@ -363,13 +359,12 @@
         function toggleCalc() { document.getElementById('calc-modal').classList.toggle('open'); document.getElementById('fab').classList.toggle('active'); }
 
         async function fetchSheet(name) {
-            // 업그레이드: 캐싱된 데이터 사용
             if(cache[name.toLowerCase()]) return cache[name.toLowerCase()];
             const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${name}`;
             try { 
                 const res = await fetch(url); 
                 const data = await res.text();
-                cache[name.toLowerCase()] = data; // 캐시 저장
+                cache[name.toLowerCase()] = data;
                 return data;
             } catch(e) { return null; }
         }
@@ -437,13 +432,7 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                // 업그레이드: 구글 지도 미리보기 임베드 로직 (좌표 추출 가능 시)
-                let mapEmbed = "";
-                if(item.nav && item.nav.includes("maps")) {
-                    mapEmbed = `<iframe class="map-preview" src="https://maps.google.com/maps?q=${encodeURIComponent(item.title)}&t=&z=15&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>`;
-                }
-                
-                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div>${mapEmbed}</div>`;
+                return `<div class="tl-item"><div class="tl-dot"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
@@ -454,7 +443,6 @@
             document.getElementById('panel-overlay').style.display = 'none'; 
         }
 
-        // 환율/날씨/시계 로직 동일 (유지)
         let currentVnd = 0; let isBargainMode = false;
         function updateUI() {
             document.getElementById('vnd-input').value = currentVnd > 0 ? currentVnd.toLocaleString() : "";
