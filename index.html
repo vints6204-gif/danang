@@ -135,8 +135,13 @@
         .tip-active { background: #E8F5E9; color: #2E7D32; }
         .tip-inactive { background: #F5F5F5; color: #9E9E9E; }
 
-        /* [강화] Auto-Focus 하이라이트 효과 */
-        .today-focus { border: 2px solid var(--point-coral) !important; transform: scale(1.02); }
+        /* [완벽 최적화] Auto-Focus 하이라이트 애니메이션 */
+        .today-focus { border: 2px solid var(--point-coral) !important; animation: focusPulse 2s ease; }
+        @keyframes focusPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 127, 80, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 20px 10px rgba(255, 127, 80, 0); }
+            100% { transform: scale(1); }
+        }
 
         .group-card { 
             background: var(--bg-sub); border-radius: 20px; margin-bottom: 15px; 
@@ -417,7 +422,7 @@
             }
         }
 
-        // [강화] 향상된 동적 Auto-Focus 로직
+        // [완벽 강화] 정밀 Auto-Focus 로직
         async function syncPlan(autoScroll = false) {
             const csv = await fetchSheet("Sheet1");
             if(!csv) return;
@@ -434,14 +439,13 @@
             const now = new Date();
             const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
             const curDateStr = (dadTime.getMonth()+1).toString().padStart(2,'0') + "." + dadTime.getDate().toString().padStart(2,'0');
-            const curHHMM = dadTime.getHours().toString().padStart(2,'0') + ":" + dadTime.getMinutes().toString().padStart(2,'0');
             
             let focusId = null;
+            const dayKeys = Object.keys(data).sort();
 
-            document.getElementById('plan-container').innerHTML = Object.keys(data).sort().map(day => {
-                // 시트 데이터의 sub 필드(예: 01.13)와 현재 날짜 비교
+            document.getElementById('plan-container').innerHTML = dayKeys.map(day => {
                 const isToday = data[day].sub.includes(curDateStr);
-                if(isToday && !focusId) focusId = `day-card-${day}`;
+                if(isToday) focusId = `day-card-${day}`;
                 
                 return `
                 <div class="group-card ${isToday ? 'today-focus' : ''}" id="day-card-${day}" onclick="openDayPanel('${day}')">
@@ -452,12 +456,22 @@
                 </div>`;
             }).join('');
 
+            // [완벽 강화] 스크롤 위치 보정 및 예외처리
             if(autoScroll) {
-                const target = document.getElementById(focusId) || document.querySelector('.group-card');
-                if(target) {
+                // 오늘 일정이 없으면(여행 전/후) 첫 번째 또는 마지막 카드 선택
+                if(!focusId) {
+                    const firstDaySub = data[dayKeys[0]].sub;
+                    if(curDateStr < firstDaySub) focusId = `day-card-${dayKeys[0]}`;
+                    else focusId = `day-card-${dayKeys[dayKeys.length-1]}`;
+                }
+
+                const target = document.getElementById(focusId);
+                const container = document.getElementById('main-scroll');
+                if(target && container) {
                     setTimeout(() => {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 500);
+                        const offset = target.offsetTop - (window.innerHeight * 0.15); // 화면의 15% 지점에 정렬
+                        container.scrollTo({ top: offset, behavior: 'smooth' });
+                    }, 400);
                 }
             }
         }
@@ -509,7 +523,6 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const lines = item.desc ? item.desc.split(/[\\\n]+/).filter(l => l.trim() !== '') : [];
                 const bizStatus = checkBusinessStatus(item.desc);
-                // [강화] 세부 일정에서도 현재 시간과 매칭되는 일정 강조
                 const isNow = (item.time <= curHHMM); 
                 return `<div class="tl-item" style="${isNow ? 'opacity:1;' : 'opacity:0.6;'}"><div class="tl-dot" style="${isNow ? 'background:var(--point-coral); scale:1.2;' : 'background:#ccc;'}"></div><div style="font-size:11px; font-weight:900; color:var(--point-navy);">${item.time}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="sub-plan-title">${item.title}${bizStatus}</div>${item.nav ? `<a href="${item.nav}" target="_blank" style="text-decoration:none;">🧭</a>` : ''}</div><div style="margin-top:5px;">${lines.map(l => l.includes("영업:") ? "" : `<div style="font-size:13px; color:var(--text-sub);">• ${l}</div>`).join('')}</div></div>`;
             }).join('');
