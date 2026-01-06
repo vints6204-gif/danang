@@ -20,6 +20,8 @@
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             --smooth-ease: cubic-bezier(0.33, 1, 0.68, 1);
+            --status-green: #34C759;
+            --status-red: #FF3B30;
         }
 
         body.dark-mode {
@@ -48,15 +50,18 @@
 
         #health-check {
             position: fixed; top: 0; left: 0; right: 0; height: 4px;
-            background: #4CAF50; z-index: 2001; transition: 0.3s; width: 0%;
-        }
-        #offline-indicator {
-            position: fixed; top: calc(env(safe-area-inset-top, 20px) + 5px); left: 50%; transform: translateX(-50%);
-            background: rgba(255, 59, 48, 0.95); color: white; padding: 4px 14px; border-radius: 20px;
-            font-size: 10px; font-weight: 900; z-index: 2002; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: var(--status-green); z-index: 2001; transition: 0.3s; width: 0%;
         }
         
-        .time-bar { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 14px; background: rgba(128,128,128,0.1); border-radius: 12px; }
+        /* 네트워크 상태 배지 스타일 */
+        .network-badge {
+            font-size: 9px; font-weight: 950; color: #fff; padding: 2px 8px; border-radius: 6px; 
+            display: inline-flex; align-items: center; gap: 4px; transition: var(--transition);
+        }
+        .online-mode { background: var(--status-green); }
+        .offline-mode { background: var(--status-red); }
+
+        .time-bar { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 14px; background: rgba(128,128,128,0.1); border-radius: 12px; align-items: center; }
         .time-item { font-size: 10px; font-weight: 700; color: var(--text-sub); }
         .time-item span { color: var(--point-navy); margin-left: 4px; font-weight: 800; }
         
@@ -161,8 +166,6 @@
         .calc-input { border: none; background: var(--bg-main); border-radius: 12px; font-size: 22px; width: 100%; padding: 12px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
         .calc-res { color: var(--point-coral); font-size: 16px; font-weight: 800; text-align: right; margin-bottom: 15px; }
         .c-btn { background: var(--bg-main); border: none; color: var(--text-main); padding: 12px 0; border-radius: 12px; font-size: 13px; font-weight: 800; transition: all 0.3s; }
-        
-        /* 흥정 상태 스타일 */
         .c-btn.bargain-applied { background: var(--point-navy) !important; color: white !important; }
 
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-sub); z-index: 2000; transition: 0.5s var(--smooth-ease); padding: env(safe-area-inset-top, 50px) 20px 50px; overflow-y: auto; }
@@ -181,11 +184,11 @@
 </head>
 <body id="body-main">
     <div id="health-check"></div>
-    <div id="offline-indicator">OFFLINE MODE</div>
     
     <header id="dynamic-header" class="fixed-header">
         <div class="time-bar">
             <div class="time-item">SEOUL <span><span id="time-kor">--:--</span></span></div>
+            <div id="network-status" class="network-badge online-mode">ONLINE</div>
             <div class="time-item">DANANG <span><span id="time-dad">--:--</span></span></div>
         </div>
         <div class="weather-hero">
@@ -322,8 +325,19 @@
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
         let scheduleData = JSON.parse(localStorage.getItem('cached_plan_obj')) || {};
         
-        window.addEventListener('online', () => { document.getElementById('offline-indicator').style.display = 'none'; });
-        window.addEventListener('offline', () => { document.getElementById('offline-indicator').style.display = 'block'; });
+        // [UPDATE] 온라인/오프라인 상태 업데이트 로직
+        function updateNetworkStatus() {
+            const badge = document.getElementById('network-status');
+            if (navigator.onLine) {
+                badge.innerText = "ONLINE";
+                badge.className = "network-badge online-mode";
+            } else {
+                badge.innerText = "OFFLINE";
+                badge.className = "network-badge offline-mode";
+            }
+        }
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
 
         function triggerHaptic(type = 'light') {
             if (window.navigator && window.navigator.vibrate) {
@@ -457,12 +471,12 @@
         }
         function manualInput(el) { 
             currentVnd = parseInt(el.value.replace(/[^0-9]/g, "")) || 0; 
-            document.getElementById('btn-bargain').classList.remove('bargain-applied'); // 새 입력시 흥정 상태 해제
+            document.getElementById('btn-bargain').classList.remove('bargain-applied');
             updateUI(); 
         }
         function addVnd(v) { 
             currentVnd += v; 
-            document.getElementById('btn-bargain').classList.remove('bargain-applied'); // 추가 입력시 흥정 상태 해제
+            document.getElementById('btn-bargain').classList.remove('bargain-applied');
             updateUI(); 
         }
         function resetCalc() { 
@@ -471,14 +485,12 @@
             updateUI(); 
         }
         
-        /* [UPDATE] 흥정 버튼 색상 상태 고정 */
         function applyBargain() {
             const btn = document.getElementById('btn-bargain');
             if (currentVnd === 0 || btn.classList.contains('bargain-applied')) return;
-            
             triggerHaptic('medium');
             currentVnd = Math.round(currentVnd * 0.6);
-            btn.classList.add('bargain-applied'); // 버튼 색상을 네이비로 고정
+            btn.classList.add('bargain-applied');
             updateUI();
         }
         
@@ -511,7 +523,7 @@
         }
 
         window.onload = () => { 
-            if(!navigator.onLine) document.getElementById('offline-indicator').style.display = 'block';
+            updateNetworkStatus(); // 초기 로드시 네트워크 확인
             scheduleData = JSON.parse(localStorage.getItem('cached_plan_obj')) || {};
             if(Object.keys(scheduleData).length > 0) renderPlan();
             getW(); updateClocks(); initDday(); showTab('info'); checkDarkMode(); adjustMainPadding(); 
