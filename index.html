@@ -24,18 +24,34 @@
             --status-red: #FF3B30;
         }
 
+        /* 낮 시간대: 프렌치 시크 + 썬플레어 효과 */
         body.french-chic {
-            --bg-main: #F0F4F8;
+            --bg-main: #F8FBFF;
             --bg-sub: #FFFFFF;
             --point-coral: #FF8C69;
             --point-navy: #2C3E50;
             --text-main: #2C3E50;
             --text-sub: #7F8C8D;
-            --card-white: rgba(255, 255, 255, 0.9);
-            --glass: rgba(240, 244, 248, 0.8);
-            background: linear-gradient(135deg, #F0F4F8 0%, #E5EBF2 100%);
+            --card-white: rgba(255, 255, 255, 0.95);
+            --glass: rgba(248, 251, 255, 0.8);
+            background: linear-gradient(135deg, #F8FBFF 0%, #E9F0F7 100%);
         }
 
+        body.french-chic::after {
+            content: '';
+            position: fixed; top: -100px; right: -100px; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,223,186,0.3) 50%, transparent 70%);
+            filter: blur(50px);
+            z-index: -1;
+            animation: sun-pulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes sun-pulse {
+            from { transform: scale(1); opacity: 0.5; }
+            to { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* 야간 시간대: 로맨틱 별빛 테마 */
         body.starry-night {
             --bg-main: #05070A;
             --bg-sub: rgba(20, 25, 45, 0.8);
@@ -50,24 +66,24 @@
             background-attachment: fixed;
         }
         
-        body.starry-night::before {
+        body::before {
             content: '';
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
                 radial-gradient(1px 1px at 15% 20%, #fff, transparent),
                 radial-gradient(1.5px 1.5px at 45% 40%, #fff, transparent),
-                radial-gradient(1px 1px at 75% 15%, #fff, transparent),
-                radial-gradient(2px 2px at 85% 80%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1.2px 1.2px at 75% 15%, #fff, transparent),
                 radial-gradient(1px 1px at 30% 70%, #fff, transparent);
-            background-size: 400px 400px;
-            animation: starry-twinkle 6s ease-in-out infinite alternate;
+            background-size: 300px 300px;
+            animation: twinkle 5s ease-in-out infinite alternate;
             z-index: -1;
-            opacity: 0.6;
+            opacity: 0.15; /* 주간에는 아주 연하게 표시 */
         }
+        body.starry-night::before { opacity: 0.6; }
 
-        @keyframes starry-twinkle {
-            from { opacity: 0.4; transform: translateY(0) scale(1); }
-            to { opacity: 0.8; transform: translateY(-20px) scale(1.05); }
+        @keyframes twinkle {
+            from { opacity: 0.1; transform: translateY(0); }
+            to { opacity: 0.4; transform: translateY(-15px); }
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
@@ -116,14 +132,17 @@
         .tab-btn.active { background: var(--point-navy); color: #fff; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(26, 35, 126, 0.2); }
 
         .scroll-container { height: 100vh; overflow-y: auto; padding: 390px 0 100px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .tab-content { display: none; animation: fadeIn 0.8s ease; }
+        .tab-content { display: none; animation: slideUp 0.6s var(--smooth-ease); }
         .tab-content.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
         .padding-wrap { padding: 0 22px; }
         .section-label { font-size: 12px; font-weight: 900; color: var(--point-navy); margin: 30px 0 15px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: 0.1em; }
         .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(0,0,0,0.1), transparent); margin-left: 15px; }
 
-        .ticket-card { background: var(--card-white); border-radius: 22px; margin-bottom: 18px; box-shadow: var(--shadow); overflow: hidden; position: relative; border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); }
+        .ticket-card, .hotel-detail-card, .group-card { background: var(--card-white); border-radius: 22px; margin-bottom: 18px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); transition: transform 0.3s ease; }
+        .ticket-card:active { transform: scale(0.98); }
+        
         .ticket-top { padding: 22px; border-bottom: 2px dashed rgba(128,128,128,0.1); display: flex; justify-content: space-between; align-items: center; }
         .ticket-route { font-size: 22px; font-weight: 950; color: var(--point-navy); }
         .ticket-pnr { font-size: 10px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 5px 10px; border-radius: 8px; }
@@ -133,16 +152,14 @@
         .baggage-section { background: rgba(128,128,128,0.03); padding: 18px 22px; border-top: 1px solid rgba(128,128,128,0.05); font-size: 12px; color: var(--text-sub); }
         .vj-card { border-top: 5px solid var(--vj-red); }
 
-        .hotel-detail-card { background: var(--card-white); border-radius: 25px; padding: 22px; margin-bottom: 18px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); }
-        .hotel-name { font-size: 19px; font-weight: 900; color: var(--point-coral); margin-bottom: 6px; }
-        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; border-top: 1px solid rgba(128,128,128,0.1); padding-top: 18px; }
+        .hotel-name { font-size: 19px; font-weight: 900; color: var(--point-coral); margin-bottom: 6px; padding: 22px 22px 0; }
+        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; border-top: 1px solid rgba(128,128,128,0.1); padding: 18px 22px 22px; }
         .h-box { font-size: 10px; color: var(--text-sub); font-weight: 700; }
         .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
         .stay-tip-badge { font-size: 9px; font-weight: 900; padding: 4px 9px; border-radius: 8px; display: inline-block; margin-right: 6px; margin-top: 10px; }
         .tip-active { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
         .tip-inactive { background: rgba(128,128,128,0.1); color: var(--text-sub); }
 
-        .group-card { background: var(--card-white); border-radius: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); overflow: hidden; backdrop-filter: blur(10px); }
         .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .group-title { font-size: 15px; font-weight: 900; }
         .badge { display: inline-block; padding: 4px 8px; background: rgba(128,128,128,0.1); border-radius: 6px; color: var(--point-navy); font-size: 9px; font-weight: 900; margin-bottom: 6px; }
@@ -229,8 +246,8 @@
                 <div class="section-label">ACCOMMODATION</div>
                 <div class="hotel-detail-card">
                     <div class="hotel-name">멜리아 빈펄 리버프론트</div>
-                    <div style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
-                    <div id="hotel-status-badges"></div>
+                    <div style="font-size:11px; color:var(--text-sub); margin-bottom:10px; padding:0 22px;">341 Đ. Trần Hưng Đạo, Son Tra, Đà Nẵng</div>
+                    <div id="hotel-status-badges" style="padding:0 22px 10px;"></div>
                     <div class="hotel-info-grid">
                         <div class="h-box">예약번호<strong>#4575465</strong></div>
                         <div class="h-box">객실타입<strong>스몰 스위트 킹</strong></div>
@@ -251,14 +268,14 @@
                         <div><span class="badge">RESERVATION</span><div class="group-title">QUICK RESERVE 관리</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                    <div id="quick-list" class="group-body"><div class="group-body-inner" style="padding:10px 20px 20px;">로딩 중...</div></div>
+                    <div id="quick-list" class="group-body" style="max-height:0; opacity:0; overflow:hidden; transition:0.5s;"><div class="group-body-inner" style="padding:10px 20px 20px;">로딩 중...</div></div>
                 </div>
                 <div class="group-card" id="card-docs">
                     <div class="group-header" onclick="toggleGroup(this)">
                         <div><span class="badge">E-DOCS</span><div class="group-title">DOCUMENT 서류함</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                    <div id="docs-list" class="group-body"><div class="group-body-inner" style="padding:10px 20px 20px;">로딩 중...</div></div>
+                    <div id="docs-list" class="group-body" style="max-height:0; opacity:0; overflow:hidden; transition:0.5s;"><div class="group-body-inner" style="padding:10px 20px 20px;">로딩 중...</div></div>
                 </div>
             </div>
         </div>
@@ -367,8 +384,11 @@
             triggerHaptic('light');
             const card = header.closest('.group-card');
             const body = card.querySelector('.group-body');
-            if (!card.classList.contains('open')) { card.classList.add('open'); body.style.maxHeight = body.scrollHeight + "px"; body.style.opacity = "1"; }
-            else { card.classList.remove('open'); body.style.maxHeight = "0"; body.style.opacity = "0"; }
+            if (body.style.maxHeight === "0px" || !body.style.maxHeight) { 
+                body.style.maxHeight = body.scrollHeight + "px"; body.style.opacity = "1"; 
+            } else { 
+                body.style.maxHeight = "0px"; body.style.opacity = "0"; 
+            }
             setTimeout(adjustMainPadding, 500);
         }
 
@@ -445,20 +465,15 @@
 
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
-                // desc 열에서 (영업:10:00-15:00) 패턴 찾기
                 const bizMatch = item.desc.match(/영업:(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/);
                 let bizStatusHtml = '';
-                
                 if (bizMatch) {
-                    const startArr = bizMatch[1].split(':');
-                    const endArr = bizMatch[2].split(':');
-                    const startVal = parseInt(startArr[0]) * 100 + parseInt(startArr[1]);
-                    const endVal = parseInt(endArr[0]) * 100 + parseInt(endArr[1]);
-                    
+                    const s = bizMatch[1].split(':'); const e = bizMatch[2].split(':');
+                    const startVal = parseInt(s[0]) * 100 + parseInt(s[1]);
+                    const endVal = parseInt(e[0]) * 100 + parseInt(e[1]);
                     const isOpen = (currentHHMM >= startVal && currentHHMM <= endVal);
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
                 }
-
                 return `
                 <div style="position:relative; padding-left:30px; padding-bottom:30px;">
                     <div style="position:absolute; left:5px; top:20px; bottom:0; width:1px; background:rgba(128,128,128,0.15);"></div>
@@ -474,7 +489,6 @@
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
         }
-
         function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
         
         let currentVnd = 0;
@@ -489,8 +503,7 @@
             if (currentVnd === 0) return;
             triggerHaptic('medium');
             currentVnd = Math.round(currentVnd * 0.6);
-            document.getElementById('btn-bargain').style.opacity = "0.5";
-            updateUI();
+            document.getElementById('btn-bargain').style.opacity = "0.5"; updateUI();
         }
 
         function updateClocks() {
