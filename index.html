@@ -24,7 +24,20 @@
             --status-red: #FF3B30;
         }
 
-        /* 야간 모드(로맨틱 별빛 테마) 전용 스타일 */
+        /* [NEW] 낮 시간대: 프렌치 시크 테마 */
+        body.french-chic {
+            --bg-main: #F0F4F8;
+            --bg-sub: #FFFFFF;
+            --point-coral: #FF8C69;
+            --point-navy: #2C3E50;
+            --text-main: #2C3E50;
+            --text-sub: #7F8C8D;
+            --card-white: rgba(255, 255, 255, 0.9);
+            --glass: rgba(240, 244, 248, 0.8);
+            background: linear-gradient(135deg, #F0F4F8 0%, #E5EBF2 100%);
+        }
+
+        /* 야간 시간대: 로맨틱 별빛 테마 */
         body.starry-night {
             --bg-main: #05070A;
             --bg-sub: rgba(20, 25, 45, 0.8);
@@ -304,14 +317,23 @@
             const hour = dadTime.getHours();
             const body = document.getElementById('body-main');
             
-            // 다낭 현지 시간 기준 오후 6시(18시) ~ 오전 6시 사이일 때 로맨틱 별빛 테마 적용
+            // 다낭 현지 시간 기준 테마 변경 로직
             if (hour >= 18 || hour < 6) {
-                if (!body.classList.contains('starry-night')) body.classList.add('starry-night');
+                // 야간: 로맨틱 별빛 테마
+                if (!body.classList.contains('starry-night')) {
+                    body.classList.remove('french-chic');
+                    body.classList.add('starry-night');
+                }
             } else {
-                if (body.classList.contains('starry-night')) body.classList.remove('starry-night');
+                // 주간: 프렌치 시크 테마
+                if (!body.classList.contains('french-chic')) {
+                    body.classList.remove('starry-night');
+                    body.classList.add('french-chic');
+                }
             }
         }
 
+        // 기존 모든 스크립트 기능 유지 (네트워크 상태, 타이머, 웨더, 시트 연동 등)
         function updateNetworkStatus() {
             const badge = document.getElementById('network-status');
             if (badge) {
