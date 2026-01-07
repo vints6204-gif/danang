@@ -24,7 +24,6 @@
             --status-red: #FF3B30;
         }
 
-        /* 낮 시간대: 프렌치 시크 테마 */
         body.french-chic {
             --bg-main: #F0F4F8;
             --bg-sub: #FFFFFF;
@@ -37,7 +36,6 @@
             background: linear-gradient(135deg, #F0F4F8 0%, #E5EBF2 100%);
         }
 
-        /* 야간 시간대: 로맨틱 별빛 테마 */
         body.starry-night {
             --bg-main: #05070A;
             --bg-sub: rgba(20, 25, 45, 0.8);
@@ -92,22 +90,10 @@
         .time-item span { color: var(--point-navy); margin-left: 4px; font-weight: 800; }
         
         .unified-bar { 
-            text-align: center; 
-            font-size: 11.5px; 
-            font-weight: 900; 
-            color: var(--point-coral); 
-            background: rgba(255, 127, 80, 0.1); 
-            border-radius: 10px; 
-            padding: 9px 12px; 
-            margin-bottom: 10px;
-            letter-spacing: 0.02em; 
-            border: 1px solid rgba(255, 127, 80, 0.18);
-            text-shadow: 0 0 12px rgba(255,127,80,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-height: 38px;
+            text-align: center; font-size: 11.5px; font-weight: 900; color: var(--point-coral); 
+            background: rgba(255, 127, 80, 0.1); border-radius: 10px; padding: 9px 12px; margin-bottom: 10px;
+            letter-spacing: 0.02em; border: 1px solid rgba(255, 127, 80, 0.18);
+            text-shadow: 0 0 12px rgba(255,127,80,0.2); display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px;
         }
 
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -169,7 +155,6 @@
         .side-panel.open { right: 0; }
         .tl-content { background: rgba(128,128,128,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(128,128,128,0.1); position: relative; }
         
-        /* 세부일정 영업 배지 스타일 */
         .biz-status { position: absolute; top: 15px; right: 15px; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
         .biz-open { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
         .biz-closed { background: rgba(128,128,128,0.1); color: var(--text-sub); }
@@ -184,24 +169,16 @@
             <div id="network-status" class="network-badge online-mode">ONLINE</div>
             <div class="time-item">DANANG <span><span id="time-dad">--:--</span></span></div>
         </div>
-        
         <div id="live-timer" class="unified-bar">함께한 지 0일 0시간 0분 0초 째 ✨</div>
-
         <div class="weather-hero">
             <div id="w-icon" class="w-left">☀️</div>
             <div class="w-center">
                 <div id="w-temp" class="temp">--°</div>
                 <div id="w-feels" class="feels-like">FEELS --°</div>
             </div>
-            <div class="w-right">
-                <div id="dday-badge" class="dday-badge">D-DAY</div>
-            </div>
+            <div class="w-right"><div id="dday-badge" class="dday-badge">D-DAY</div></div>
         </div>
-
-        <div id="outfit-bar" class="unified-bar">
-            <span>👕</span><span id="outfit-text">날씨 정보를 분석 중입니다...</span>
-        </div>
-
+        <div id="outfit-bar" class="unified-bar"><span>👕</span><span id="outfit-text">분석 중...</span></div>
         <div class="weather-extra">
             <div class="ex-item"><div class="ex-label">Wind</div><div id="w-wind" class="ex-val">--m/s</div></div>
             <div class="ex-item"><div class="ex-label">Rain</div><div id="w-pop" class="ex-val">--%</div></div>
@@ -234,7 +211,6 @@
                         <div style="display:flex; justify-content:space-between;"><span>기내 수하물</span><strong>10kg / 인</strong></div>
                     </div>
                 </div>
-
                 <div class="section-label">RETURN FLIGHT</div>
                 <div class="ticket-card vj-card">
                     <div class="ticket-top"><div class="ticket-route">DAD ✈ ICN</div><div class="ticket-pnr">7GJ8NY</div></div>
@@ -250,7 +226,6 @@
                          <div style="display:flex; justify-content:space-between;"><span>Pyo Sang-Hun</span><strong>위탁 불포함</strong></div>
                     </div>
                 </div>
-
                 <div class="section-label">ACCOMMODATION</div>
                 <div class="hotel-detail-card">
                     <div class="hotel-name">멜리아 빈펄 리버프론트</div>
@@ -348,9 +323,7 @@
                 const mins = Math.floor((diff / (1000 * 60)) % 60);
                 const secs = Math.floor((diff / 1000) % 60);
                 document.getElementById('live-timer').innerText = `함께한 지 ${days}일 ${hours}시간 ${mins}분 ${secs}초 째 ✨`;
-            } else {
-                document.getElementById('live-timer').innerText = "다낭 여행이 곧 시작됩니다! ✈️";
-            }
+            } else { document.getElementById('live-timer').innerText = "다낭 여행이 곧 시작됩니다! ✈️"; }
         }
 
         function triggerHaptic(type = 'light') { if (navigator.vibrate) navigator.vibrate(type === 'light' ? 15 : 40); }
@@ -472,13 +445,17 @@
 
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
-                // 시간 문자열(예: "10:30")에서 숫자 추출
-                const itemTimeMatch = item.time.match(/(\d{2}):(\d{2})/);
+                // desc 열에서 (영업:10:00-15:00) 패턴 찾기
+                const bizMatch = item.desc.match(/영업:(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/);
                 let bizStatusHtml = '';
-                if (itemTimeMatch) {
-                    const itemHHMM = parseInt(itemTimeMatch[1]) * 100 + parseInt(itemTimeMatch[2]);
-                    // 일정 시간으로부터 2시간 이내일 때 '영업 중' 표시 (단순화된 예시 로직)
-                    const isOpen = (currentHHMM >= itemHHMM && currentHHMM <= itemHHMM + 200);
+                
+                if (bizMatch) {
+                    const startArr = bizMatch[1].split(':');
+                    const endArr = bizMatch[2].split(':');
+                    const startVal = parseInt(startArr[0]) * 100 + parseInt(startArr[1]);
+                    const endVal = parseInt(endArr[0]) * 100 + parseInt(endArr[1]);
+                    
+                    const isOpen = (currentHHMM >= startVal && currentHHMM <= endVal);
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
                 }
 
@@ -497,6 +474,7 @@
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
         }
+
         function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
         
         let currentVnd = 0;
@@ -519,9 +497,7 @@
             const now = new Date();
             document.getElementById('time-kor').innerText = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul' });
             document.getElementById('time-dad').innerText = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Ho_Chi_Minh' });
-            updateStayTips();
-            updateLiveTimer();
-            updateTheme();
+            updateStayTips(); updateLiveTimer(); updateTheme();
         }
         setInterval(updateClocks, 1000);
 
