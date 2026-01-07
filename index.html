@@ -16,7 +16,7 @@
             --text-sub: #86868B;
             --card-white: #FFFFFF;
             --vj-red: #E31E24;
-            --glass: rgba(255, 255, 255, 0.75);
+            --glass: rgba(255, 255, 255, 0.85);
             --shadow: 0 8px 30px rgba(0,0,0,0.08);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             --smooth-ease: cubic-bezier(0.33, 1, 0.68, 1);
@@ -24,18 +24,18 @@
             --status-red: #FF3B30;
         }
 
-        /* [UPGRADE] 로맨틱 "우리만의 별빛" 야간 테마 */
+        /* 야간 모드(로맨틱 별빛 테마) 전용 스타일 */
         body.starry-night {
-            --bg-main: #0B0E1B;
-            --bg-sub: #161B33;
+            --bg-main: #05070A;
+            --bg-sub: rgba(20, 25, 45, 0.8);
             --point-coral: #FFAB91; 
-            --point-navy: #9FA8DA;  
-            --text-main: #E0E0E0;
-            --text-sub: #9EA8DA;
-            --card-white: rgba(28, 34, 61, 0.9);
-            --glass: rgba(11, 14, 27, 0.85);
-            --shadow: 0 10px 40px rgba(0,0,0,0.6);
-            background: linear-gradient(135deg, #0B0E1B 0%, #1A1A2E 50%, #16213E 100%);
+            --point-navy: #C5CAE9;  
+            --text-main: #F5F5F7;
+            --text-sub: #9FA8DA;
+            --card-white: rgba(25, 30, 55, 0.7);
+            --glass: rgba(5, 7, 10, 0.85);
+            --shadow: 0 15px 45px rgba(0,0,0,0.5);
+            background: linear-gradient(180deg, #05070A 0%, #10152D 100%);
             background-attachment: fixed;
         }
         
@@ -43,133 +43,118 @@
             content: '';
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
-                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1.5px 1.5px at 100px 150px, #fff, rgba(0,0,0,0)),
-                radial-gradient(1px 1px at 200px 80px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 300px 250px, rgba(255,255,255,0.8), rgba(0,0,0,0));
-            background-size: 350px 350px;
-            animation: starry-twinkle 4s ease-in-out infinite alternate;
+                radial-gradient(1px 1px at 15% 20%, #fff, transparent),
+                radial-gradient(1.5px 1.5px at 45% 40%, #fff, transparent),
+                radial-gradient(1px 1px at 75% 15%, #fff, transparent),
+                radial-gradient(2px 2px at 85% 80%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 30% 70%, #fff, transparent);
+            background-size: 400px 400px;
+            animation: starry-twinkle 6s ease-in-out infinite alternate;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         @keyframes starry-twinkle {
-            from { opacity: 0.3; transform: translateY(0); }
-            to { opacity: 0.7; transform: translateY(-10px); }
+            from { opacity: 0.4; transform: translateY(0) scale(1); }
+            to { opacity: 0.8; transform: translateY(-20px) scale(1.05); }
         }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; transition: background 1.2s ease, color 0.8s ease; }
+        body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; transition: background 1.5s ease, color 0.8s ease; }
 
         .fixed-header { 
             position: fixed; top: 0; left: 0; right: 0; 
             background: var(--glass); 
-            backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); 
+            backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%); 
             z-index: 1000; padding: env(safe-area-inset-top, 20px) 20px 15px; 
             border-bottom: 1px solid rgba(128,128,128,0.1);
         }
 
         #health-check { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--status-green); z-index: 2001; transition: 0.3s; width: 0%; }
         .network-badge { font-size: 9px; font-weight: 950; color: #fff; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
-        .online-mode { background: var(--status-green); }
-        .offline-mode { background: var(--status-red); }
-
-        .time-bar { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 14px; background: rgba(128,128,128,0.1); border-radius: 12px; align-items: center; }
+        .online-mode { background: var(--status-green); box-shadow: 0 0 10px var(--status-green); }
+        
+        .time-bar { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 14px; background: rgba(128,128,128,0.08); border-radius: 12px; align-items: center; }
         .time-item { font-size: 10px; font-weight: 700; color: var(--text-sub); }
         .time-item span { color: var(--point-navy); margin-left: 4px; font-weight: 800; }
         
-        .live-timer-bar { 
-            text-align: center; font-size: 11px; font-weight: 950; color: var(--point-coral); 
-            background: rgba(255, 127, 80, 0.08); border-radius: 8px; padding: 7px; margin-bottom: 12px;
-            letter-spacing: 0.02em; border: 1px solid rgba(255, 127, 80, 0.15);
-            text-shadow: 0 0 10px rgba(255,127,80,0.2);
+        .unified-bar { 
+            text-align: center; 
+            font-size: 11.5px; 
+            font-weight: 900; 
+            color: var(--point-coral); 
+            background: rgba(255, 127, 80, 0.1); 
+            border-radius: 10px; 
+            padding: 9px 12px; 
+            margin-bottom: 10px;
+            letter-spacing: 0.02em; 
+            border: 1px solid rgba(255, 127, 80, 0.18);
+            text-shadow: 0 0 12px rgba(255,127,80,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 38px;
         }
 
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .w-left { font-size: 36px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1)); }
+        .w-left { font-size: 36px; filter: drop-shadow(0 0 10px rgba(0,0,0,0.1)); }
         .w-center { text-align: center; }
-        .w-center .temp { font-size: 34px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -1.5px; }
-        .w-center .feels-like { font-size: 11px; color: var(--point-coral); margin-top: 2px; font-weight: 700; }
+        .w-center .temp { font-size: 38px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -1.5px; }
+        .w-center .feels-like { font-size: 11px; color: var(--point-coral); margin-top: 4px; font-weight: 700; }
         
         .dday-badge { font-size: 10px; font-weight: 900; color: #fff; padding: 5px 12px; border-radius: 20px; background: var(--point-navy); }
-        .dday-excitement { animation: heartBeat 1.5s ease-in-out infinite; background: var(--point-coral); }
-        @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.1); } 28% { transform: scale(1); } 42% { transform: scale(1.1); } 70% { transform: scale(1); } }
+        .dday-excitement { animation: heartBeat 2s ease-in-out infinite; background: var(--point-coral); }
+        @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.08); } 28% { transform: scale(1); } 42% { transform: scale(1.08); } 70% { transform: scale(1); } }
 
-        .outfit-guide { background: rgba(255, 127, 80, 0.12); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; font-size: 12px; font-weight: 750; color: var(--point-coral); border: 1px solid rgba(255, 127, 80, 0.15); line-height: 1.5; }
-        .weather-extra { display: flex; justify-content: space-between; padding: 10px; background: var(--bg-sub); border-radius: 12px; margin-bottom: 12px; box-shadow: inset 0 0 0 1px rgba(128,128,128,0.1); }
+        .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: rgba(128,128,128,0.05); border-radius: 15px; margin-bottom: 12px; }
         .ex-item { text-align: center; flex: 1; }
-        .ex-label { font-size: 8px; color: var(--text-sub); font-weight: 700; }
+        .ex-label { font-size: 8px; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
         .ex-val { font-size: 11px; color: var(--text-main); font-weight: 800; }
 
-        .tab-group { display: flex; gap: 6px; }
-        .tab-btn { flex: 1; background: rgba(128,128,128,0.1); border: none; color: var(--text-sub); padding: 12px 0; border-radius: 10px; font-size: 13px; font-weight: 800; transition: var(--transition); }
-        .tab-btn.active { background: var(--point-navy); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26, 35, 126, 0.25); }
+        .tab-group { display: flex; gap: 8px; }
+        .tab-btn { flex: 1; background: rgba(128,128,128,0.08); border: none; color: var(--text-sub); padding: 13px 0; border-radius: 12px; font-size: 13px; font-weight: 800; transition: var(--transition); }
+        .tab-btn.active { background: var(--point-navy); color: #fff; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(26, 35, 126, 0.2); }
 
-        .scroll-container { height: 100vh; overflow-y: auto; padding: 360px 0 100px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        .tab-content { display: none; animation: slideUp 0.5s ease; }
+        .scroll-container { height: 100vh; overflow-y: auto; padding: 390px 0 100px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .tab-content { display: none; animation: fadeIn 0.8s ease; }
         .tab-content.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .padding-wrap { padding: 0 20px; }
-        .section-label { font-size: 12px; font-weight: 900; color: var(--point-navy); margin: 25px 0 12px; display: flex; align-items: center; }
-        .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(128,128,128,0.1); margin-left: 10px; }
+        .padding-wrap { padding: 0 22px; }
+        .section-label { font-size: 12px; font-weight: 900; color: var(--point-navy); margin: 30px 0 15px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: 0.1em; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(0,0,0,0.1), transparent); margin-left: 15px; }
 
-        .ticket-card { background: var(--card-white); border-radius: 18px; margin-bottom: 15px; box-shadow: var(--shadow); overflow: hidden; position: relative; border: 1px solid rgba(128,128,128,0.1); }
-        .ticket-top { padding: 20px; border-bottom: 2px dashed rgba(128,128,128,0.2); display: flex; justify-content: space-between; align-items: center; position: relative; }
-        .ticket-top::before, .ticket-top::after { content: ''; position: absolute; bottom: -12px; width: 24px; height: 24px; background: var(--bg-main); border-radius: 50%; z-index: 2; transition: background 0.8s ease; }
-        .ticket-top::before { left: -13px; } .ticket-top::after { right: -13px; }
-        .ticket-route { font-size: 20px; font-weight: 950; color: var(--point-navy); }
-        .ticket-pnr { font-size: 10px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 4px 8px; border-radius: 6px; }
-        .ticket-mid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .ticket-card { background: var(--card-white); border-radius: 22px; margin-bottom: 18px; box-shadow: var(--shadow); overflow: hidden; position: relative; border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); }
+        .ticket-top { padding: 22px; border-bottom: 2px dashed rgba(128,128,128,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .ticket-route { font-size: 22px; font-weight: 950; color: var(--point-navy); }
+        .ticket-pnr { font-size: 10px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 5px 10px; border-radius: 8px; }
+        .ticket-mid { padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .info-box { font-size: 10px; color: var(--text-sub); font-weight: 700; }
-        .info-box strong { display: block; font-size: 14px; color: var(--text-main); margin-top: 4px; font-weight: 900; }
-        .baggage-section { background: rgba(128,128,128,0.03); padding: 15px 20px; border-top: 1px solid rgba(128,128,128,0.1); font-size: 12px; color: var(--text-sub); }
+        .info-box strong { display: block; font-size: 15px; color: var(--text-main); margin-top: 5px; font-weight: 900; }
+        .baggage-section { background: rgba(128,128,128,0.03); padding: 18px 22px; border-top: 1px solid rgba(128,128,128,0.05); font-size: 12px; color: var(--text-sub); }
         .vj-card { border-top: 5px solid var(--vj-red); }
-        .vj-card .ticket-pnr { background: var(--vj-red); }
 
-        .hotel-detail-card { background: var(--card-white); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); }
-        .hotel-name { font-size: 18px; font-weight: 900; color: var(--point-coral); margin-bottom: 4px; }
-        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; border-top: 1px solid rgba(128,128,128,0.1); padding-top: 15px; }
+        .hotel-detail-card { background: var(--card-white); border-radius: 25px; padding: 22px; margin-bottom: 18px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); }
+        .hotel-name { font-size: 19px; font-weight: 900; color: var(--point-coral); margin-bottom: 6px; }
+        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; border-top: 1px solid rgba(128,128,128,0.1); padding-top: 18px; }
         .h-box { font-size: 10px; color: var(--text-sub); font-weight: 700; }
-        .h-box strong { display: block; color: var(--point-navy); font-size: 13px; margin-top: 3px; font-weight: 900; }
-        .stay-tip-badge { font-size: 9px; font-weight: 900; padding: 3px 7px; border-radius: 6px; display: inline-block; margin-right: 4px; margin-top: 8px; }
-        .tip-active { background: #E8F5E9; color: #2E7D32; }
+        .h-box strong { display: block; color: var(--point-navy); font-size: 14px; margin-top: 4px; font-weight: 900; }
+        .stay-tip-badge { font-size: 9px; font-weight: 900; padding: 4px 9px; border-radius: 8px; display: inline-block; margin-right: 6px; margin-top: 10px; }
+        .tip-active { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
         .tip-inactive { background: rgba(128,128,128,0.1); color: var(--text-sub); }
-        body.starry-night .tip-active { background: #1B5E20; color: #81C784; }
 
-        .group-card { background: var(--bg-sub); border-radius: 18px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); overflow: hidden; }
-        .group-header { padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .group-body { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.4s var(--smooth-ease), opacity 0.3s ease; }
-        .group-card.open .group-body { opacity: 1; }
-        .group-body-inner { padding: 8px 14px 18px; }
-        .badge { display: inline-block; padding: 3px 7px; background: rgba(128,128,128,0.1); border-radius: 5px; color: var(--point-navy); font-size: 9px; font-weight: 900; margin-bottom: 5px; }
-        .group-card.open .badge { background: var(--point-navy); color: #fff; }
+        .group-card { background: var(--card-white); border-radius: 20px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); overflow: hidden; backdrop-filter: blur(10px); }
+        .group-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .group-title { font-size: 15px; font-weight: 900; }
-        .arrow { transition: transform 0.4s var(--smooth-ease); color: var(--point-coral); font-weight: 900; font-size: 14px; }
+        .badge { display: inline-block; padding: 4px 8px; background: rgba(128,128,128,0.1); border-radius: 6px; color: var(--point-navy); font-size: 9px; font-weight: 900; margin-bottom: 6px; }
 
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--card-white); border-radius: 12px; margin-bottom: 7px; border: 1px solid rgba(128,128,128,0.1); }
-        .item-main { display: flex; align-items: center; gap: 12px; }
-        .item-text { font-size: 13px; font-weight: 750; }
-        .item-text.completed { color: var(--text-sub); }
-        .doc-open-btn { background: var(--point-navy); color: #fff; font-size: 10px; font-weight: 900; padding: 5px 10px; border-radius: 7px; }
+        .fab-calc { position: fixed; bottom: 30px; right: 25px; width: 60px; height: 60px; background: var(--point-navy); color: #fff; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(26, 35, 126, 0.3); z-index: 1500; font-size: 24px; border: none; }
+        #calc-modal { position: fixed; bottom: 100px; right: 20px; left: 20px; background: var(--card-white); border-radius: 25px; padding: 25px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); z-index: 1400; display: none; border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(20px); }
+        #calc-modal.open { display: block; animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .fab-calc { position: fixed; bottom: 25px; right: 20px; width: 55px; height: 55px; background: var(--point-navy); color: #fff; border-radius: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1500; font-size: 22px; border: none; }
-        #calc-modal { position: fixed; bottom: 90px; right: 20px; left: 20px; background: var(--card-white); border-radius: 20px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 1400; display: none; border: 1px solid rgba(128,128,128,0.2); }
-        #calc-modal.open { display: block; animation: fabPop 0.3s ease forwards; }
-        .calc-input { border: none; background: var(--bg-main); border-radius: 12px; font-size: 22px; width: 100%; padding: 12px; text-align: right; font-weight: 900; outline: none; color: var(--point-navy); margin-bottom: 10px; }
-        .calc-res { color: var(--point-coral); font-size: 16px; font-weight: 800; text-align: right; margin-bottom: 15px; }
-        .c-btn { background: var(--bg-main); border: none; color: var(--text-main); padding: 12px 0; border-radius: 12px; font-size: 13px; font-weight: 800; }
-        .c-btn.bargain-applied { background: var(--point-navy) !important; color: white !important; }
-
-        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-sub); z-index: 2000; transition: 0.5s var(--smooth-ease); padding: env(safe-area-inset-top, 50px) 20px 50px; overflow-y: auto; }
+        .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-main); z-index: 2000; transition: 0.6s var(--smooth-ease); padding: env(safe-area-inset-top, 50px) 20px 50px; overflow-y: auto; }
         .side-panel.open { right: 0; }
-        .tl-list { position: relative; padding: 10px 0; }
-        .tl-item { position: relative; padding-left: 30px; padding-bottom: 35px; }
-        .tl-line { position: absolute; left: 5px; top: 20px; bottom: 0; width: 2px; background: rgba(128,128,128,0.2); }
-        .tl-dot { position: absolute; left: 0; top: 5px; width: 12px; height: 12px; background: var(--text-sub); border-radius: 50%; border: 3px solid var(--bg-sub); z-index: 5; }
-        .tl-content { background: var(--bg-main); padding: 12px; border-radius: 14px; border: 1px solid rgba(128,128,128,0.05); }
-        .tl-title { font-size: 14px; font-weight: 900; color: var(--point-navy); }
-        .tl-time { font-size: 11px; font-weight: 800; color: var(--point-coral); margin-bottom: 4px; display: block; }
+        .tl-content { background: rgba(128,128,128,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(128,128,128,0.1); }
     </style>
 </head>
 <body id="body-main">
@@ -182,7 +167,7 @@
             <div class="time-item">DANANG <span><span id="time-dad">--:--</span></span></div>
         </div>
         
-        <div id="live-timer" class="live-timer-bar">함께한 지 0일 0시간 0분 0초 째 ✨</div>
+        <div id="live-timer" class="unified-bar">함께한 지 0일 0시간 0분 0초 째 ✨</div>
 
         <div class="weather-hero">
             <div id="w-icon" class="w-left">☀️</div>
@@ -195,16 +180,16 @@
             </div>
         </div>
 
-        <div id="outfit-bar" class="outfit-guide">
+        <div id="outfit-bar" class="unified-bar">
             <span>👕</span><span id="outfit-text">날씨 정보를 분석 중입니다...</span>
         </div>
 
         <div class="weather-extra">
-            <div class="ex-item"><div class="ex-label">바람세기</div><div id="w-wind" class="ex-val">--m/s</div></div>
-            <div class="ex-item"><div class="ex-label">비 확률</div><div id="w-pop" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">습도</div><div id="w-hum" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">일출</div><div id="w-sunr" class="ex-val">--:--</div></div>
-            <div class="ex-item"><div class="ex-label">일몰</div><div id="w-suns" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">Wind</div><div id="w-wind" class="ex-val">--m/s</div></div>
+            <div class="ex-item"><div class="ex-label">Rain</div><div id="w-pop" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">Humid</div><div id="w-hum" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">SunR</div><div id="w-sunr" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">SunS</div><div id="w-suns" class="ex-val">--:--</div></div>
         </div>
         <div class="tab-group">
             <button id="btn-info" class="tab-btn active" onclick="showTab('info')">정보</button>
@@ -273,14 +258,14 @@
                         <div><span class="badge">RESERVATION</span><div class="group-title">QUICK RESERVE 관리</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                    <div id="quick-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
+                    <div id="quick-list" class="group-body"><div class="group-body-inner" style="padding:10px 20px 20px;">로딩 중...</div></div>
                 </div>
                 <div class="group-card" id="card-docs">
                     <div class="group-header" onclick="toggleGroup(this)">
                         <div><span class="badge">E-DOCS</span><div class="group-title">DOCUMENT 서류함</div></div>
                         <div class="arrow">〉</div>
                     </div>
-                    <div id="docs-list" class="group-body"><div class="group-body-inner">로딩 중...</div></div>
+                    <div id="docs-list" class="group-body"><div class="group-body-inner" style="padding:10px 20px 20px;">로딩 중...</div></div>
                 </div>
             </div>
         </div>
@@ -289,34 +274,50 @@
     <button id="fab" class="fab-calc" onclick="toggleCalc()">₩</button>
     <div id="calc-modal">
         <div class="calc-display">
-            <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)">
-            <div id="krw-res" class="calc-res">≒ 0 KRW</div>
+            <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)" style="border:none; background:rgba(128,128,128,0.05); border-radius:15px; font-size:24px; width:100%; padding:15px; text-align:right; font-weight:900; outline:none; color:var(--point-navy); margin-bottom:12px;">
+            <div id="krw-res" class="calc-res" style="color:var(--point-coral); font-size:18px; font-weight:800; text-align:right; margin-bottom:20px;">≒ 0 KRW</div>
         </div>
-        <div class="calc-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-            <button class="c-btn" onclick="addVnd(100000)">+100k</button>
-            <button class="c-btn" onclick="addVnd(500000)">+500k</button>
-            <button id="btn-bargain" class="c-btn" onclick="applyBargain()">흥정 40%↓</button>
-            <button class="c-btn" style="color:var(--vj-red)" onclick="resetCalc()">AC</button>
+        <div class="calc-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <button class="c-btn" onclick="addVnd(100000)" style="background:rgba(128,128,128,0.08); border:none; padding:14px; border-radius:15px; font-weight:800; color:var(--text-main);">+100,000</button>
+            <button class="c-btn" onclick="addVnd(500000)" style="background:rgba(128,128,128,0.08); border:none; padding:14px; border-radius:15px; font-weight:800; color:var(--text-main);">+500,000</button>
+            <button id="btn-bargain" class="c-btn" onclick="applyBargain()" style="background:rgba(128,128,128,0.08); border:none; padding:14px; border-radius:15px; font-weight:800; color:var(--text-main);">흥정 40%↓</button>
+            <button class="c-btn" onclick="resetCalc()" style="background:rgba(128,128,128,0.08); border:none; padding:14px; border-radius:15px; font-weight:800; color:var(--status-red);">AC</button>
         </div>
     </div>
 
-    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1999; display:none; backdrop-filter:blur(5px);"></div>
+    <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1999; display:none; backdrop-filter:blur(8px);"></div>
     <div id="day-panel" class="side-panel">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px;">
-            <div id="panel-day-title" style="font-size:22px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
-            <button style="background:rgba(0,0,0,0.05); border:none; width:36px; height:36px; border-radius:20px; font-size:18px; color:var(--text-main);" onclick="closeDayPanel()">×</button>
+            <div id="panel-day-title" style="font-size:24px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
+            <button style="background:rgba(128,128,128,0.1); border:none; width:40px; height:40px; border-radius:20px; font-size:20px; color:var(--text-main);" onclick="closeDayPanel()">×</button>
         </div>
-        <div id="sub-plan-list" class="tl-list"></div>
+        <div id="sub-plan-list" style="position:relative; padding:10px 0;"></div>
     </div>
 
     <script>
         const SPREADSHEET_ID = "1WFHXymVsU9nFj0_6w-xpFL85GCWH5s6hya9TunzU3QY";
         let scheduleData = JSON.parse(localStorage.getItem('cached_plan_obj')) || {};
 
+        function updateTheme() {
+            const now = new Date();
+            const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+            const hour = dadTime.getHours();
+            const body = document.getElementById('body-main');
+            
+            // 다낭 현지 시간 기준 오후 6시(18시) ~ 오전 6시 사이일 때 로맨틱 별빛 테마 적용
+            if (hour >= 18 || hour < 6) {
+                if (!body.classList.contains('starry-night')) body.classList.add('starry-night');
+            } else {
+                if (body.classList.contains('starry-night')) body.classList.remove('starry-night');
+            }
+        }
+
         function updateNetworkStatus() {
             const badge = document.getElementById('network-status');
-            if (navigator.onLine) { badge.innerText = "ONLINE"; badge.className = "network-badge online-mode"; }
-            else { badge.innerText = "OFFLINE"; badge.className = "network-badge offline-mode"; }
+            if (badge) {
+                if (navigator.onLine) { badge.innerText = "ONLINE"; badge.className = "network-badge online-mode"; }
+                else { badge.innerText = "OFFLINE"; badge.className = "network-badge offline-mode"; }
+            }
         }
         window.addEventListener('online', updateNetworkStatus);
         window.addEventListener('offline', updateNetworkStatus);
@@ -336,16 +337,11 @@
             }
         }
 
-        function checkStarryNight() {
-            const now = new Date();
-            const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
-            const hour = dadTime.getHours();
-            if (hour >= 18 || hour < 6) document.body.classList.add('starry-night');
-            else document.body.classList.remove('starry-night');
+        function triggerHaptic(type = 'light') { if (navigator.vibrate) navigator.vibrate(type === 'light' ? 15 : 40); }
+        function adjustMainPadding() { 
+            const header = document.getElementById('dynamic-header');
+            if(header) document.getElementById('main-scroll').style.paddingTop = (header.offsetHeight + 15) + "px"; 
         }
-
-        function triggerHaptic(type = 'light') { if (navigator.vibrate) navigator.vibrate(type === 'light' ? 10 : 30); }
-        function adjustMainPadding() { document.getElementById('main-scroll').style.paddingTop = (document.getElementById('dynamic-header').offsetHeight + 10) + "px"; }
 
         function updateStayTips() {
             const now = new Date();
@@ -353,7 +349,8 @@
             const hhmm = dadTime.getHours() * 100 + dadTime.getMinutes();
             let breakfast = (hhmm >= 630 && hhmm <= 1030) ? '<span class="stay-tip-badge tip-active">🍳 조식 가능</span>' : '<span class="stay-tip-badge tip-inactive">🍳 조식 마감</span>';
             let pool = (hhmm >= 600 && hhmm <= 2100) ? '<span class="stay-tip-badge tip-active">🏊 수영장 가능</span>' : '<span class="stay-tip-badge tip-inactive">🏊 수영장 마감</span>';
-            document.getElementById('hotel-status-badges').innerHTML = breakfast + pool;
+            const badgeArea = document.getElementById('hotel-status-badges');
+            if(badgeArea) badgeArea.innerHTML = breakfast + pool;
         }
 
         function initDday() {
@@ -361,8 +358,10 @@
             const diff = target - new Date();
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
             const badge = document.getElementById('dday-badge');
-            badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
-            if (days >= 0 && days <= 7) badge.classList.add('dday-excitement');
+            if(badge) {
+                badge.innerText = days > 0 ? `D-${days}` : (days === 0 ? "D-DAY" : `D+${Math.abs(days)}`);
+                if (days >= 0 && days <= 7) badge.classList.add('dday-excitement');
+            }
         }
 
         function showTab(t) {
@@ -381,7 +380,7 @@
             const body = card.querySelector('.group-body');
             if (!card.classList.contains('open')) { card.classList.add('open'); body.style.maxHeight = body.scrollHeight + "px"; body.style.opacity = "1"; }
             else { card.classList.remove('open'); body.style.maxHeight = "0"; body.style.opacity = "0"; }
-            setTimeout(adjustMainPadding, 450);
+            setTimeout(adjustMainPadding, 500);
         }
 
         function toggleCalc() { triggerHaptic('medium'); document.getElementById('calc-modal').classList.toggle('open'); }
@@ -411,40 +410,53 @@
         }
 
         function renderPlan() {
-            document.getElementById('plan-container').innerHTML = Object.keys(scheduleData).sort().map(day => `
-                <div class="group-card" onclick="openDayPanel('${day}')">
-                    <div class="group-header">
-                        <div><span class="badge">DAY ${scheduleData[day].dayNum}</span><div class="group-title">${scheduleData[day].main}</div><div style="font-size:10px; color:var(--text-sub); margin-top:2px;">${scheduleData[day].sub}</div></div>
-                        <div class="arrow">〉</div>
-                    </div>
-                </div>`).join('');
+            const container = document.getElementById('plan-container');
+            if(container) {
+                container.innerHTML = Object.keys(scheduleData).sort().map(day => `
+                    <div class="group-card" onclick="openDayPanel('${day}')">
+                        <div class="group-header">
+                            <div><span class="badge">DAY ${scheduleData[day].dayNum}</span><div class="group-title">${scheduleData[day].main}</div><div style="font-size:10px; color:var(--text-sub); margin-top:3px;">${scheduleData[day].sub}</div></div>
+                            <div class="arrow" style="color:var(--point-coral); font-weight:bold;">〉</div>
+                        </div>
+                    </div>`).join('');
+            }
         }
 
         async function syncDocs() {
             const qCsv = await fetchSheet("QUICK");
             if(qCsv) {
                 const rows = qCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                document.querySelector('#quick-list .group-body-inner').innerHTML = rows.slice(1).map(r => {
-                    if(!r[1]) return "";
-                    return `<div class="list-item"><div class="item-main"><span>${r[0] ? '✅' : '🔲'}</span><span class="item-text ${r[0] ? 'completed' : ''}">${r[1]}</span></div><span class="item-sub">${r[2] || '-'}</span></div>`;
-                }).join('');
+                const inner = document.querySelector('#quick-list .group-body-inner');
+                if(inner) {
+                    inner.innerHTML = rows.slice(1).map(r => {
+                        if(!r[1]) return "";
+                        return `<div style="display:flex; justify-content:space-between; padding:15px; background:rgba(128,128,128,0.03); border-radius:12px; margin-bottom:8px; border:1px solid rgba(128,128,128,0.05);"><div style="display:flex; gap:12px; align-items:center;"><span>${r[0] ? '✅' : '🔲'}</span><span style="font-weight:750; font-size:13px; ${r[0] ? 'opacity:0.5; text-decoration:line-through;' : ''}">${r[1]}</span></div><span style="font-size:12px; color:var(--text-sub);">${r[2] || ''}</span></div>`;
+                    }).join('');
+                }
             }
             const dCsv = await fetchSheet("DOCS");
             if(dCsv) {
                 const rows = dCsv.split(/\r?\n/).map(r => r.split(',').map(c => c.replace(/"/g, '').trim()));
-                document.querySelector('#docs-list .group-body-inner').innerHTML = rows.slice(1).map(r => {
-                    if(!r[1]) return "";
-                    return `<div class="list-item" onclick="window.open('${r[1]}', '_blank')"><div class="item-main"><span>📄</span><span class="item-text">${r[0]}</span></div><div class="doc-open-btn">열기 〉</div></div>`;
-                }).join('');
+                const inner = document.querySelector('#docs-list .group-body-inner');
+                if(inner) {
+                    inner.innerHTML = rows.slice(1).map(r => {
+                        if(!r[1]) return "";
+                        return `<div onclick="window.open('${r[1]}', '_blank')" style="display:flex; justify-content:space-between; padding:15px; background:rgba(128,128,128,0.03); border-radius:12px; margin-bottom:8px; border:1px solid rgba(128,128,128,0.05); align-items:center;"><div style="display:flex; gap:12px; align-items:center;"><span>📄</span><span style="font-weight:750; font-size:13px;">${r[0]}</span></div><div style="background:var(--point-navy); color:#fff; font-size:10px; font-weight:900; padding:5px 10px; border-radius:8px;">보기 〉</div></div>`;
+                    }).join('');
+                }
             }
         }
 
         function openDayPanel(day) {
             triggerHaptic('light');
             const d = scheduleData[day];
-            document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:15px;">${d.main}</span>`;
+            document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => `
-                <div class="tl-item"><div class="tl-line"></div><div class="tl-dot"></div><span class="tl-time">${item.time}</span><div class="tl-content"><div class="tl-title">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:4px;">${item.desc.replace(/\\n/g, '<br>')}</div></div></div>
+                <div style="position:relative; padding-left:30px; padding-bottom:30px;">
+                    <div style="position:absolute; left:5px; top:20px; bottom:0; width:1px; background:rgba(128,128,128,0.15);"></div>
+                    <div style="position:absolute; left:0; top:6px; width:10px; height:10px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 10px var(--point-coral);"></div>
+                    <div class="tl-content"><span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:5px; display:block;">${item.time}</span><div style="font-weight:900; font-size:14px;">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:5px; line-height:1.5;">${item.desc.replace(/\\n/g, '<br>')}</div></div>
+                </div>
             `).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
@@ -458,13 +470,12 @@
         }
         function manualInput(el) { currentVnd = parseInt(el.value.replace(/[^0-9]/g, "")) || 0; updateUI(); }
         function addVnd(v) { currentVnd += v; updateUI(); }
-        function resetCalc() { currentVnd = 0; document.getElementById('btn-bargain').classList.remove('bargain-applied'); updateUI(); }
+        function resetCalc() { currentVnd = 0; document.getElementById('btn-bargain').style.opacity = "1"; updateUI(); }
         function applyBargain() {
-            const btn = document.getElementById('btn-bargain');
-            if (currentVnd === 0 || btn.classList.contains('bargain-applied')) return;
+            if (currentVnd === 0) return;
             triggerHaptic('medium');
             currentVnd = Math.round(currentVnd * 0.6);
-            btn.classList.add('bargain-applied');
+            document.getElementById('btn-bargain').style.opacity = "0.5";
             updateUI();
         }
 
@@ -473,8 +484,8 @@
             document.getElementById('time-kor').innerText = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul' });
             document.getElementById('time-dad').innerText = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Ho_Chi_Minh' });
             updateStayTips();
-            checkStarryNight();
             updateLiveTimer();
+            updateTheme(); // 매 초마다 테마 체크
         }
         setInterval(updateClocks, 1000);
 
@@ -490,7 +501,7 @@
                 document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
                 document.getElementById('w-sunr').innerText = new Date(d.daily.sunrise[0]).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
                 document.getElementById('w-suns').innerText = new Date(d.daily.sunset[0]).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
-                document.getElementById('outfit-text').innerText = temp >= 25 ? "매우 더운 날씨입니다. 얇은 반팔과 선글라스를 챙기세요." : "선선한 날씨입니다. 얇은 겉옷을 준비하세요.";
+                document.getElementById('outfit-text').innerText = temp >= 25 ? "더운 날씨입니다. 얇은 반팔과 선글라스를 챙기세요." : "선선한 날씨입니다. 얇은 겉옷을 준비하세요.";
                 adjustMainPadding();
             } catch(e) {}
         }
