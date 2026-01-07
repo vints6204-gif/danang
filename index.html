@@ -24,7 +24,7 @@
             --status-red: #FF3B30;
         }
 
-        /* [NEW] 낮 시간대: 프렌치 시크 테마 */
+        /* 낮 시간대: 프렌치 시크 테마 */
         body.french-chic {
             --bg-main: #F0F4F8;
             --bg-sub: #FFFFFF;
@@ -167,7 +167,12 @@
 
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-main); z-index: 2000; transition: 0.6s var(--smooth-ease); padding: env(safe-area-inset-top, 50px) 20px 50px; overflow-y: auto; }
         .side-panel.open { right: 0; }
-        .tl-content { background: rgba(128,128,128,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(128,128,128,0.1); }
+        .tl-content { background: rgba(128,128,128,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(128,128,128,0.1); position: relative; }
+        
+        /* 세부일정 영업 배지 스타일 */
+        .biz-status { position: absolute; top: 15px; right: 15px; font-size: 9px; font-weight: 900; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+        .biz-open { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
+        .biz-closed { background: rgba(128,128,128,0.1); color: var(--text-sub); }
     </style>
 </head>
 <body id="body-main">
@@ -316,24 +321,13 @@
             const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
             const hour = dadTime.getHours();
             const body = document.getElementById('body-main');
-            
-            // 다낭 현지 시간 기준 테마 변경 로직
             if (hour >= 18 || hour < 6) {
-                // 야간: 로맨틱 별빛 테마
-                if (!body.classList.contains('starry-night')) {
-                    body.classList.remove('french-chic');
-                    body.classList.add('starry-night');
-                }
+                if (!body.classList.contains('starry-night')) { body.classList.remove('french-chic'); body.classList.add('starry-night'); }
             } else {
-                // 주간: 프렌치 시크 테마
-                if (!body.classList.contains('french-chic')) {
-                    body.classList.remove('starry-night');
-                    body.classList.add('french-chic');
-                }
+                if (!body.classList.contains('french-chic')) { body.classList.remove('starry-night'); body.classList.add('french-chic'); }
             }
         }
 
-        // 기존 모든 스크립트 기능 유지 (네트워크 상태, 타이머, 웨더, 시트 연동 등)
         function updateNetworkStatus() {
             const badge = document.getElementById('network-status');
             if (badge) {
@@ -472,14 +466,34 @@
         function openDayPanel(day) {
             triggerHaptic('light');
             const d = scheduleData[day];
+            const now = new Date();
+            const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+            const currentHHMM = dadTime.getHours() * 100 + dadTime.getMinutes();
+
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:16px;">${d.main}</span>`;
-            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => `
+            document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
+                // 시간 문자열(예: "10:30")에서 숫자 추출
+                const itemTimeMatch = item.time.match(/(\d{2}):(\d{2})/);
+                let bizStatusHtml = '';
+                if (itemTimeMatch) {
+                    const itemHHMM = parseInt(itemTimeMatch[1]) * 100 + parseInt(itemTimeMatch[2]);
+                    // 일정 시간으로부터 2시간 이내일 때 '영업 중' 표시 (단순화된 예시 로직)
+                    const isOpen = (currentHHMM >= itemHHMM && currentHHMM <= itemHHMM + 200);
+                    bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
+                }
+
+                return `
                 <div style="position:relative; padding-left:30px; padding-bottom:30px;">
                     <div style="position:absolute; left:5px; top:20px; bottom:0; width:1px; background:rgba(128,128,128,0.15);"></div>
                     <div style="position:absolute; left:0; top:6px; width:10px; height:10px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 10px var(--point-coral);"></div>
-                    <div class="tl-content"><span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:5px; display:block;">${item.time}</span><div style="font-weight:900; font-size:14px;">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:5px; line-height:1.5;">${item.desc.replace(/\\n/g, '<br>')}</div></div>
-                </div>
-            `).join('');
+                    <div class="tl-content">
+                        ${bizStatusHtml}
+                        <span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:5px; display:block;">${item.time}</span>
+                        <div style="font-weight:900; font-size:14px; padding-right:60px;">${item.title}</div>
+                        <div style="font-size:12px; color:var(--text-sub); margin-top:5px; line-height:1.5;">${item.desc.replace(/\\n/g, '<br>')}</div>
+                    </div>
+                </div>`;
+            }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
         }
@@ -507,7 +521,7 @@
             document.getElementById('time-dad').innerText = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Ho_Chi_Minh' });
             updateStayTips();
             updateLiveTimer();
-            updateTheme(); // 매 초마다 테마 체크
+            updateTheme();
         }
         setInterval(updateClocks, 1000);
 
