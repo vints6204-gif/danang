@@ -77,7 +77,7 @@
             background-size: 300px 300px;
             animation: twinkle 5s ease-in-out infinite alternate;
             z-index: -1;
-            opacity: 0.15; /* 주간에는 아주 연하게 표시 */
+            opacity: 0.15;
         }
         body.starry-night::before { opacity: 0.6; }
 
@@ -141,7 +141,6 @@
         .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(0,0,0,0.1), transparent); margin-left: 15px; }
 
         .ticket-card, .hotel-detail-card, .group-card { background: var(--card-white); border-radius: 22px; margin-bottom: 18px; box-shadow: var(--shadow); border: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); transition: transform 0.3s ease; }
-        .ticket-card:active { transform: scale(0.98); }
         
         .ticket-top { padding: 22px; border-bottom: 2px dashed rgba(128,128,128,0.1); display: flex; justify-content: space-between; align-items: center; }
         .ticket-route { font-size: 22px; font-weight: 950; color: var(--point-navy); }
@@ -467,13 +466,18 @@
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
                 const bizMatch = item.desc.match(/영업:(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/);
                 let bizStatusHtml = '';
+                let cleanDesc = item.desc;
+
                 if (bizMatch) {
                     const s = bizMatch[1].split(':'); const e = bizMatch[2].split(':');
                     const startVal = parseInt(s[0]) * 100 + parseInt(s[1]);
                     const endVal = parseInt(e[0]) * 100 + parseInt(e[1]);
                     const isOpen = (currentHHMM >= startVal && currentHHMM <= endVal);
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
+                    // 화면 표시 시 (영업:00:00-00:00) 텍스트 제거
+                    cleanDesc = item.desc.replace(/\(영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}\)|영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}/g, '').trim();
                 }
+
                 return `
                 <div style="position:relative; padding-left:30px; padding-bottom:30px;">
                     <div style="position:absolute; left:5px; top:20px; bottom:0; width:1px; background:rgba(128,128,128,0.15);"></div>
@@ -482,13 +486,14 @@
                         ${bizStatusHtml}
                         <span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:5px; display:block;">${item.time}</span>
                         <div style="font-weight:900; font-size:14px; padding-right:60px;">${item.title}</div>
-                        <div style="font-size:12px; color:var(--text-sub); margin-top:5px; line-height:1.5;">${item.desc.replace(/\\n/g, '<br>')}</div>
+                        <div style="font-size:12px; color:var(--text-sub); margin-top:5px; line-height:1.5;">${cleanDesc.replace(/\\n/g, '<br>')}</div>
                     </div>
                 </div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
         }
+
         function closeDayPanel() { document.getElementById('day-panel').classList.remove('open'); document.getElementById('panel-overlay').style.display = 'none'; }
         
         let currentVnd = 0;
