@@ -51,7 +51,7 @@
             to { transform: scale(1.2); opacity: 0.8; }
         }
 
-        /* 야간 시간대: 로맨틱 별빛 테마 */
+        /* 야간 시간대: 로맨틱 별빛 테마 (원본 복구) */
         body.starry-night {
             --bg-main: #05070A;
             --bg-sub: rgba(20, 25, 45, 0.8);
@@ -476,7 +476,6 @@
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
                 }
                 
-                // (영업:00:00-00:00) 또는 영업:00:00-00:00 텍스트 제거
                 cleanDesc = cleanDesc.replace(/\(영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}\)|영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}/g, '').trim();
 
                 return `
