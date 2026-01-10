@@ -454,7 +454,7 @@
             const currentHHMM = dadTime.getHours() * 100 + dadTime.getMinutes();
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:18px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
-                const bizMatch = item.desc.match(/영업:(\\d{1,2}:\\d{2})-(\\d{1,2}:\\d{2})/);
+                const bizMatch = item.desc.match(/영업:(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/);
                 let bizStatusHtml = ''; let cleanDesc = item.desc;
                 if (bizMatch) {
                     const s = bizMatch[1].split(':'); const e = bizMatch[2].split(':');
@@ -462,9 +462,10 @@
                     const endVal = parseInt(e[0]) * 100 + parseInt(e[1]);
                     const isOpen = (currentHHMM >= startVal && currentHHMM <= endVal);
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
+                    // 영업 텍스트 배지화 후 원본 텍스트에서는 제거 (괄호 포함)
+                    cleanDesc = cleanDesc.replace(/\(영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}\)|영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}/g, '').trim();
                 }
-                cleanDesc = cleanDesc.replace(/\\(영업:\\d{1,2}:\\d{2}-\\d{1,2}:\\d{2}\\)|영업:\\d{1,2}:\\d{2}-\\d{1,2}:\\d{2}/g, '').trim();
-                return `<div style="position:relative; padding-left:35px; padding-bottom:35px;"><div style="position:absolute; left:6px; top:22px; bottom:0; width:1.5px; background:rgba(0,0,0,0.1);"></div><div style="position:absolute; left:0; top:8px; width:12px; height:12px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 12px var(--point-coral);"></div><div class="tl-content">${bizStatusHtml}<span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:6px; display:block;">${item.time}</span><div style="font-weight:900; font-size:15px; padding-right:70px;">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:6px; line-height:1.6;">${cleanDesc.replace(/\\n/g, '<br>')}</div></div></div>`;
+                return `<div style="position:relative; padding-left:35px; padding-bottom:35px;"><div style="position:absolute; left:6px; top:22px; bottom:0; width:1.5px; background:rgba(0,0,0,0.1);"></div><div style="position:absolute; left:0; top:8px; width:12px; height:12px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 12px var(--point-coral);"></div><div class="tl-content">${bizStatusHtml}<span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:6px; display:block;">${item.time}</span><div style="font-weight:900; font-size:15px; padding-right:70px;">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:6px; line-height:1.6;">${cleanDesc.replace(/\n/g, '<br>')}</div></div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
