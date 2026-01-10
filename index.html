@@ -17,7 +17,6 @@
             --card-white: #FFFFFF;
             --vj-red: #E31E24;
             --glass: rgba(255, 255, 255, 0.75);
-            /* 2번 개선: 뉴모피즘 스타일의 깊이감 있는 그림자 */
             --shadow: 0 12px 40px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.02);
             --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             --smooth-ease: cubic-bezier(0.33, 1, 0.68, 1);
@@ -25,7 +24,6 @@
             --status-red: #FF3B30;
         }
 
-        /* 낮 시간대: 프렌치 시크 + 썬플레어 */
         body.french-chic {
             --bg-main: #F8FBFF;
             --bg-sub: #FFFFFF;
@@ -38,27 +36,17 @@
             background: linear-gradient(135deg, #F8FBFF 0%, #E9F0F7 100%);
         }
 
-        body.french-chic::after {
-            content: '';
-            position: fixed; top: -100px; right: -100px; width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,223,186,0.3) 50%, transparent 70%);
-            filter: blur(50px); z-index: -1; animation: sun-pulse 8s ease-in-out infinite alternate;
-        }
-
-        @keyframes sun-pulse { from { transform: scale(1); opacity: 0.5; } to { transform: scale(1.2); opacity: 0.8; } }
-
-        /* 야간 시간대: 로맨틱 별빛 테마 */
         body.starry-night {
-            --bg-main: #05070A;
-            --bg-sub: rgba(20, 25, 45, 0.8);
-            --point-coral: #FFAB91; 
-            --point-navy: #C5CAE9;  
-            --text-main: #F5F5F7;
-            --text-sub: #9FA8DA;
-            --card-white: rgba(25, 30, 55, 0.6);
-            --glass: rgba(5, 7, 10, 0.7);
-            --shadow: 0 20px 50px rgba(0,0,0,0.4);
-            background: linear-gradient(180deg, #05070A 0%, #10152D 100%);
+            --bg-main: #020817;
+            --bg-sub: rgba(10, 20, 45, 0.8);
+            --point-coral: #00D1FF;
+            --point-navy: #F8FAFC; 
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+            --card-white: rgba(15, 23, 42, 0.6);
+            --glass: rgba(2, 8, 23, 0.7);
+            --shadow: 0 20px 50px rgba(0, 209, 255, 0.15);
+            background: radial-gradient(circle at center, #0B1120 0%, #020817 100%);
             background-attachment: fixed;
         }
         
@@ -66,115 +54,116 @@
             content: '';
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
-                radial-gradient(1px 1px at 15% 20%, #fff, transparent),
-                radial-gradient(1.5px 1.5px at 45% 40%, #fff, transparent),
-                radial-gradient(1.2px 1.2px at 75% 15%, #fff, transparent),
+                radial-gradient(1.5px 1.5px at 15% 20%, #00D1FF, transparent),
+                radial-gradient(2px 2px at 45% 40%, #fff, transparent),
+                radial-gradient(1.2px 1.2px at 75% 15%, #00D1FF, transparent),
                 radial-gradient(1px 1px at 30% 70%, #fff, transparent);
-            background-size: 300px 300px; animation: twinkle 5s ease-in-out infinite alternate; z-index: -1; opacity: 0.15;
+            background-size: 350px 350px; animation: twinkle 6s ease-in-out infinite alternate; z-index: -1; opacity: 0.15;
         }
-        body.starry-night::before { opacity: 0.6; }
+        body.starry-night::before { opacity: 0.5; }
 
-        @keyframes twinkle { from { opacity: 0.1; transform: translateY(0); } to { opacity: 0.4; transform: translateY(-15px); } }
+        @keyframes twinkle { from { opacity: 0.2; transform: translateY(0); } to { opacity: 0.5; transform: translateY(-20px); } }
 
         * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; letter-spacing: -0.03em; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; background: var(--bg-main); color: var(--text-main); font-size: 14px; line-height: 1.6; overflow: hidden; height: 100vh; transition: background 1.5s ease, color 0.8s ease; }
 
-        /* 헤더 글래스모피즘 강화 */
         .fixed-header { 
             position: fixed; top: 0; left: 0; right: 0; 
             background: var(--glass); 
             backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%); 
             z-index: 1000; padding: env(safe-area-inset-top, 20px) 22px 18px; 
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             box-shadow: 0 4px 30px rgba(0,0,0,0.03);
         }
 
         #health-check { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--status-green); z-index: 2001; transition: 0.3s; width: 0%; }
         .network-badge { font-size: 9px; font-weight: 950; color: #fff; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
         .online-mode { background: var(--status-green); box-shadow: 0 0 10px var(--status-green); }
+        .offline-mode { background: var(--status-red); box-shadow: 0 0 10px var(--status-red); }
         
         .time-bar { display: flex; justify-content: space-between; margin-bottom: 12px; padding: 8px 14px; background: rgba(128,128,128,0.06); border-radius: 12px; align-items: center; }
         .time-item { font-size: 10px; font-weight: 700; color: var(--text-sub); }
-        .time-item span { color: var(--point-navy); margin-left: 4px; font-weight: 800; }
+        .time-item span { color: var(--point-coral); margin-left: 4px; font-weight: 800; }
         
         .unified-bar { 
             text-align: center; font-size: 11.5px; font-weight: 900; color: var(--point-coral); 
-            background: rgba(255, 127, 80, 0.08); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
-            letter-spacing: 0.02em; border: 1px solid rgba(255, 127, 80, 0.12);
+            background: rgba(0, 209, 255, 0.08); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+            letter-spacing: 0.02em; border: 1px solid rgba(0, 209, 255, 0.15);
             display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px;
         }
 
         .weather-hero { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .w-left { font-size: 38px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
+        .w-left { font-size: 38px; filter: drop-shadow(0 0 12px rgba(0, 209, 255, 0.4)); }
         .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -1.5px; }
         .w-center .feels-like { font-size: 11px; color: var(--point-coral); margin-top: 4px; font-weight: 700; }
         
-        .dday-badge { font-size: 10px; font-weight: 900; color: #fff; padding: 6px 14px; border-radius: 25px; background: var(--point-navy); box-shadow: 0 4px 12px rgba(26, 35, 126, 0.2); }
-        .dday-excitement { animation: heartBeat 2s ease-in-out infinite; background: var(--point-coral); box-shadow: 0 4px 12px rgba(255, 127, 80, 0.3); }
-        @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.05); } 28% { transform: scale(1); } 42% { transform: scale(1.05); } 70% { transform: scale(1); } }
+        .dday-badge { font-size: 10px; font-weight: 900; color: #fff; padding: 6px 14px; border-radius: 25px; background: var(--point-coral); box-shadow: 0 4px 15px rgba(0, 209, 255, 0.3); }
+        
+        .dday-excitement { animation: heartbeat 1.5s ease-in-out infinite; }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); box-shadow: 0 0 20px var(--point-coral); }
+            100% { transform: scale(1); }
+        }
 
-        .weather-extra { display: flex; justify-content: space-between; padding: 12px; background: rgba(128,128,128,0.04); border-radius: 18px; margin-bottom: 12px; border: 1px solid rgba(128,128,128,0.05); }
-        .ex-item { text-align: center; flex: 1; }
-        .ex-label { font-size: 8px; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
-        .ex-val { font-size: 11px; color: var(--text-main); font-weight: 800; }
+        .weather-extra { display: flex; justify-content: space-between; padding: 12px 8px; background: rgba(128,128,128,0.04); border-radius: 18px; margin-bottom: 12px; border: 1px solid rgba(128,128,128,0.05); }
+        .ex-item { text-align: center; flex: 1; border-right: 1px solid rgba(128,128,128,0.1); }
+        .ex-item:last-child { border-right: none; }
+        .ex-label { font-size: 8px; color: var(--text-sub); font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+        .ex-val { font-size: 10px; color: var(--text-main); font-weight: 800; }
 
         .tab-group { display: flex; gap: 10px; }
         .tab-btn { flex: 1; background: rgba(128,128,128,0.06); border: none; color: var(--text-sub); padding: 14px 0; border-radius: 14px; font-size: 13px; font-weight: 800; transition: var(--transition); }
-        .tab-btn.active { background: var(--point-navy); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26, 35, 126, 0.2); }
+        .tab-btn.active { background: var(--point-coral); color: #020817; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 209, 255, 0.3); }
 
-        .scroll-container { height: 100vh; overflow-y: auto; padding: 410px 0 100px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+        .scroll-container { height: 100vh; overflow-y: auto; padding: 430px 0 100px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         .tab-content { display: none; animation: slideUp 0.6s var(--smooth-ease); }
         .tab-content.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
         .padding-wrap { padding: 0 22px; }
-        .section-label { font-size: 12px; font-weight: 900; color: var(--point-navy); margin: 32px 0 18px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: 0.1em; }
-        .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(128,128,128,0.15), transparent); margin-left: 15px; }
+        .section-label { font-size: 12px; font-weight: 900; color: var(--point-coral); margin: 32px 0 18px; display: flex; align-items: center; text-transform: uppercase; letter-spacing: 0.1em; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(0, 209, 255, 0.2), transparent); margin-left: 15px; }
 
-        /* 2번 개선: 카드의 입체감 강화 */
         .ticket-card, .hotel-detail-card, .group-card { 
             background: var(--card-white); border-radius: 24px; margin-bottom: 20px; 
-            box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.2); 
+            box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.08); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             transition: var(--transition); 
         }
-        .ticket-card:active, .group-card:active { transform: scale(0.985); }
         
-        .ticket-top { padding: 24px; border-bottom: 2px dashed rgba(128,128,128,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .ticket-route { font-size: 24px; font-weight: 950; color: var(--point-navy); letter-spacing: -0.5px; }
-        .ticket-pnr { font-size: 10px; font-weight: 900; color: #fff; background: var(--point-navy); padding: 6px 12px; border-radius: 10px; box-shadow: 0 4px 10px rgba(26,35,126,0.15); }
+        .ticket-top { padding: 24px; border-bottom: 2px dashed rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .ticket-route { font-size: 24px; font-weight: 950; color: var(--point-coral); letter-spacing: -0.5px; }
+        .ticket-pnr { font-size: 10px; font-weight: 900; color: #020817; background: var(--point-coral); padding: 6px 12px; border-radius: 10px; }
         .ticket-mid { padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .info-box { font-size: 10px; color: var(--text-sub); font-weight: 700; }
         .info-box strong { display: block; font-size: 16px; color: var(--text-main); margin-top: 6px; font-weight: 900; }
-        .baggage-section { background: rgba(128,128,128,0.03); padding: 20px 24px; border-top: 1px solid rgba(128,128,128,0.05); font-size: 12px; color: var(--text-sub); border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+        .baggage-section { background: rgba(0, 209, 255, 0.03); padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: var(--text-sub); border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
         .vj-card { border-top: 6px solid var(--vj-red); }
 
         .hotel-name { font-size: 20px; font-weight: 900; color: var(--point-coral); margin-bottom: 8px; padding: 24px 24px 0; }
-        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid rgba(128,128,128,0.08); padding: 20px 24px 24px; }
-        .h-box { font-size: 10px; color: var(--text-sub); font-weight: 700; }
-        .h-box strong { display: block; color: var(--point-navy); font-size: 15px; margin-top: 5px; font-weight: 900; }
+        .hotel-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding: 20px 24px 24px; }
+        .h-box strong { display: block; color: var(--point-coral); font-size: 15px; margin-top: 5px; font-weight: 900; }
         .stay-tip-badge { font-size: 9px; font-weight: 900; padding: 5px 10px; border-radius: 10px; display: inline-block; margin-right: 8px; margin-top: 12px; }
-        .tip-active { background: rgba(52, 199, 89, 0.12); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.1); }
-        .tip-inactive { background: rgba(128,128,128,0.08); color: var(--text-sub); }
+        .tip-active { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
+        .tip-inactive { background: rgba(255, 255, 255, 0.08); color: var(--text-sub); }
 
         .group-header { padding: 20px 22px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .group-title { font-size: 16px; font-weight: 900; }
-        .badge { display: inline-block; padding: 5px 10px; background: rgba(26, 35, 126, 0.06); border-radius: 8px; color: var(--point-navy); font-size: 9px; font-weight: 900; margin-bottom: 8px; }
+        .badge { display: inline-block; padding: 5px 10px; background: rgba(0, 209, 255, 0.1); border-radius: 8px; color: var(--point-coral); font-size: 9px; font-weight: 900; margin-bottom: 8px; }
 
-        .fab-calc { position: fixed; bottom: 35px; right: 28px; width: 65px; height: 65px; background: var(--point-navy); color: #fff; border-radius: 32px; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(26, 35, 126, 0.3); z-index: 1500; font-size: 26px; border: none; transition: var(--transition); }
-        .fab-calc:active { transform: scale(0.9) translateY(2px); }
+        .fab-calc { position: fixed; bottom: 35px; right: 25px; width: 55px; height: 55px; background: var(--point-coral); color: #020817; border-radius: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 12px 30px rgba(0, 209, 255, 0.4); z-index: 1500; font-size: 22px; border: none; transition: var(--transition); }
         
-        #calc-modal { position: fixed; bottom: 110px; right: 22px; left: 22px; background: var(--card-white); border-radius: 28px; padding: 28px; box-shadow: 0 30px 80px rgba(0,0,0,0.2); z-index: 1400; display: none; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(25px); }
+        #calc-modal { position: fixed; bottom: 110px; right: 22px; left: 22px; background: var(--card-white); border-radius: 28px; padding: 28px; box-shadow: 0 30px 80px rgba(0,0,0,0.4); z-index: 1400; display: none; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(25px); }
         #calc-modal.open { display: block; animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes modalPop { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
         .side-panel { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: var(--bg-main); z-index: 2000; transition: 0.6s var(--smooth-ease); padding: env(safe-area-inset-top, 50px) 20px 50px; overflow-y: auto; }
         .side-panel.open { right: 0; }
-        .tl-content { background: rgba(128,128,128,0.03); padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .tl-content { background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
         
         .biz-status { position: absolute; top: 18px; right: 18px; font-size: 9px; font-weight: 900; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; }
-        .biz-open { background: rgba(52, 199, 89, 0.12); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.1); }
-        .biz-closed { background: rgba(128,128,128,0.08); color: var(--text-sub); }
+        .biz-open { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid rgba(52, 199, 89, 0.2); }
+        .biz-closed { background: rgba(255, 255, 255, 0.08); color: var(--text-sub); }
     </style>
 </head>
 <body id="body-main">
@@ -197,9 +186,11 @@
         </div>
         <div id="outfit-bar" class="unified-bar"><span>👕</span><span id="outfit-text">분석 중...</span></div>
         <div class="weather-extra">
-            <div class="ex-item"><div class="ex-label">Wind</div><div id="w-wind" class="ex-val">--m/s</div></div>
-            <div class="ex-item"><div class="ex-label">Rain</div><div id="w-pop" class="ex-val">--%</div></div>
-            <div class="ex-item"><div class="ex-label">Humid</div><div id="w-hum" class="ex-val">--%</div></div>
+            <div class="ex-item"><div class="ex-label">Wind</div><div id="w-wind" class="ex-val">--</div></div>
+            <div class="ex-item"><div class="ex-label">Rain</div><div id="w-pop" class="ex-val">--</div></div>
+            <div class="ex-item"><div class="ex-label">Humid</div><div id="w-hum" class="ex-val">--</div></div>
+            <div class="ex-item"><div class="ex-label">Sunrise</div><div id="w-sunrise" class="ex-val">--:--</div></div>
+            <div class="ex-item"><div class="ex-label">Sunset</div><div id="w-sunset" class="ex-val">--:--</div></div>
         </div>
         <div class="tab-group">
             <button id="btn-info" class="tab-btn active" onclick="showTab('info')">정보</button>
@@ -233,7 +224,6 @@
                         <div class="info-box">출발시간<strong>01.17 15:10</strong></div>
                         <div class="info-box">도착예정<strong>01.17 22:20</strong></div>
                         <div class="info-box">편명<strong>비엣젯 VJ874</strong></div>
-                        <div class="info-box">체크인시작<strong>01.16 15:10</strong></div>
                         <div class="info-box" style="grid-column: span 2;">탑승객<strong>Won / Pyo</strong></div>
                     </div>
                     <div class="baggage-section">
@@ -255,7 +245,7 @@
                         <div class="h-box">부대시설<strong>인피니티 풀 (2층)</strong></div>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
         <div id="plan" class="tab-content"><div class="padding-wrap"><div class="section-label" style="margin-top:10px;">TRAVEL TIMELINE</div><div id="plan-container"></div></div></div>
         <div id="docs" class="tab-content">
@@ -282,22 +272,22 @@
     <button id="fab" class="fab-calc" onclick="toggleCalc()">₩</button>
     <div id="calc-modal">
         <div class="calc-display">
-            <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)" style="border:none; background:rgba(128,128,128,0.05); border-radius:18px; font-size:26px; width:100%; padding:18px; text-align:right; font-weight:900; outline:none; color:var(--point-navy); margin-bottom:14px;">
+            <input type="text" id="vnd-input" class="calc-input" placeholder="0 VND" oninput="manualInput(this)" style="border:none; background:rgba(0, 209, 255, 0.05); border-radius:18px; font-size:26px; width:100%; padding:18px; text-align:right; font-weight:900; outline:none; color:var(--point-coral); margin-bottom:14px;">
             <div id="krw-res" class="calc-res" style="color:var(--point-coral); font-size:20px; font-weight:800; text-align:right; margin-bottom:24px;">≒ 0 KRW</div>
         </div>
         <div class="calc-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-            <button class="c-btn" onclick="addVnd(100000)" style="background:rgba(128,128,128,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--text-main);">+10만</button>
-            <button class="c-btn" onclick="addVnd(500000)" style="background:rgba(128,128,128,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--text-main);">+50만</button>
-            <button id="btn-bargain" class="c-btn" onclick="applyBargain()" style="background:rgba(128,128,128,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--text-main);">흥정 40%↓</button>
-            <button class="c-btn" onclick="resetCalc()" style="background:rgba(128,128,128,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--status-red);">AC</button>
+            <button class="c-btn" onclick="addVnd(100000)" style="background:rgba(255,255,255,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--text-main);">+10만</button>
+            <button class="c-btn" onclick="addVnd(500000)" style="background:rgba(255,255,255,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--text-main);">+50만</button>
+            <button id="btn-bargain" class="c-btn" onclick="applyBargain()" style="background:rgba(255,255,255,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--text-main);">흥정 40%↓</button>
+            <button class="c-btn" onclick="resetCalc()" style="background:rgba(255,255,255,0.06); border:none; padding:16px; border-radius:18px; font-weight:800; color:var(--status-red);">AC</button>
         </div>
     </div>
 
     <div id="panel-overlay" onclick="closeDayPanel()" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1999; display:none; backdrop-filter:blur(10px);"></div>
     <div id="day-panel" class="side-panel">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:35px;">
-            <div id="panel-day-title" style="font-size:26px; font-weight:950; color:var(--point-navy); line-height:1.2;">DAY</div>
-            <button style="background:rgba(128,128,128,0.1); border:none; width:44px; height:44px; border-radius:22px; font-size:22px; color:var(--text-main);" onclick="closeDayPanel()">×</button>
+            <div id="panel-day-title" style="font-size:26px; font-weight:950; color:var(--point-coral); line-height:1.2;">DAY</div>
+            <button style="background:rgba(255, 255, 255, 0.1); border:none; width:44px; height:44px; border-radius:22px; font-size:22px; color:var(--text-main);" onclick="closeDayPanel()">×</button>
         </div>
         <div id="sub-plan-list" style="position:relative; padding:10px 0;"></div>
     </div>
@@ -342,6 +332,7 @@
         }
 
         function triggerHaptic(type = 'light') { if (navigator.vibrate) navigator.vibrate(type === 'light' ? 15 : 40); }
+        
         function adjustMainPadding() { 
             const header = document.getElementById('dynamic-header');
             if(header) document.getElementById('main-scroll').style.paddingTop = (header.offsetHeight + 18) + "px"; 
@@ -437,7 +428,7 @@
                 if(inner) {
                     inner.innerHTML = rows.slice(1).map(r => {
                         if(!r[1]) return "";
-                        return `<div style="display:flex; justify-content:space-between; padding:18px; background:rgba(128,128,128,0.03); border-radius:15px; margin-bottom:10px; border:1px solid rgba(128,128,128,0.05);"><div style="display:flex; gap:12px; align-items:center;"><span>${r[0] ? '✅' : '🔲'}</span><span style="font-weight:750; font-size:14px; ${r[0] ? 'opacity:0.5; text-decoration:line-through;' : ''}">${r[1]}</span></div><span style="font-size:12px; color:var(--text-sub);">${r[2] || ''}</span></div>`;
+                        return `<div style="display:flex; justify-content:space-between; padding:18px; background:rgba(255,255,255,0.03); border-radius:15px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.05);"><div style="display:flex; gap:12px; align-items:center;"><span>${r[0] ? '✅' : '🔲'}</span><span style="font-weight:750; font-size:14px; ${r[0] ? 'opacity:0.5; text-decoration:line-through;' : ''}">${r[1]}</span></div><span style="font-size:12px; color:var(--text-sub);">${r[2] || ''}</span></div>`;
                     }).join('');
                 }
             }
@@ -448,7 +439,7 @@
                 if(inner) {
                     inner.innerHTML = rows.slice(1).map(r => {
                         if(!r[1]) return "";
-                        return `<div onclick="window.open('${r[1]}', '_blank')" style="display:flex; justify-content:space-between; padding:18px; background:rgba(128,128,128,0.03); border-radius:15px; margin-bottom:10px; border:1px solid rgba(128,128,128,0.05); align-items:center;"><div style="display:flex; gap:12px; align-items:center;"><span>📄</span><span style="font-weight:750; font-size:14px;">${r[0]}</span></div><div style="background:var(--point-navy); color:#fff; font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px;">열기 〉</div></div>`;
+                        return `<div onclick="window.open('${r[1]}', '_blank')" style="display:flex; justify-content:space-between; padding:18px; background:rgba(255,255,255,0.03); border-radius:15px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.05); align-items:center;"><div style="display:flex; gap:12px; align-items:center;"><span>📄</span><span style="font-weight:750; font-size:14px;">${r[0]}</span></div><div style="background:var(--point-coral); color:#020817; font-size:10px; font-weight:900; padding:6px 12px; border-radius:10px;">열기 〉</div></div>`;
                     }).join('');
                 }
             }
@@ -460,13 +451,10 @@
             const now = new Date();
             const dadTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
             const currentHHMM = dadTime.getHours() * 100 + dadTime.getMinutes();
-
             document.getElementById('panel-day-title').innerHTML = `DAY ${d.dayNum}<br><span style="color:var(--point-coral); font-size:18px;">${d.main}</span>`;
             document.getElementById('sub-plan-list').innerHTML = d.items.map(item => {
-                const bizMatch = item.desc.match(/영업:(\d{1,2}:\d{2})-(\d{1,2}:\d{2})/);
-                let bizStatusHtml = '';
-                let cleanDesc = item.desc;
-
+                const bizMatch = item.desc.match(/영업:(\\d{1,2}:\\d{2})-(\\d{1,2}:\\d{2})/);
+                let bizStatusHtml = ''; let cleanDesc = item.desc;
                 if (bizMatch) {
                     const s = bizMatch[1].split(':'); const e = bizMatch[2].split(':');
                     const startVal = parseInt(s[0]) * 100 + parseInt(s[1]);
@@ -474,20 +462,8 @@
                     const isOpen = (currentHHMM >= startVal && currentHHMM <= endVal);
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
                 }
-                
-                cleanDesc = cleanDesc.replace(/\(영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}\)|영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}/g, '').trim();
-
-                return `
-                <div style="position:relative; padding-left:35px; padding-bottom:35px;">
-                    <div style="position:absolute; left:6px; top:22px; bottom:0; width:1.5px; background:rgba(128,128,128,0.12);"></div>
-                    <div style="position:absolute; left:0; top:8px; width:12px; height:12px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 12px var(--point-coral);"></div>
-                    <div class="tl-content">
-                        ${bizStatusHtml}
-                        <span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:6px; display:block;">${item.time}</span>
-                        <div style="font-weight:900; font-size:15px; padding-right:70px;">${item.title}</div>
-                        <div style="font-size:12px; color:var(--text-sub); margin-top:6px; line-height:1.6;">${cleanDesc.replace(/\\n/g, '<br>')}</div>
-                    </div>
-                </div>`;
+                cleanDesc = cleanDesc.replace(/\\(영업:\\d{1,2}:\\d{2}-\\d{1,2}:\\d{2}\\)|영업:\\d{1,2}:\\d{2}-\\d{1,2}:\\d{2}/g, '').trim();
+                return `<div style="position:relative; padding-left:35px; padding-bottom:35px;"><div style="position:absolute; left:6px; top:22px; bottom:0; width:1.5px; background:rgba(255,255,255,0.12);"></div><div style="position:absolute; left:0; top:8px; width:12px; height:12px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 12px var(--point-coral);"></div><div class="tl-content">${bizStatusHtml}<span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:6px; display:block;">${item.time}</span><div style="font-weight:900; font-size:15px; padding-right:70px;">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:6px; line-height:1.6;">${cleanDesc.replace(/\\n/g, '<br>')}</div></div></div>`;
             }).join('');
             document.getElementById('day-panel').classList.add('open'); 
             document.getElementById('panel-overlay').style.display = 'block';
@@ -503,12 +479,7 @@
         function manualInput(el) { currentVnd = parseInt(el.value.replace(/[^0-9]/g, "")) || 0; updateUI(); }
         function addVnd(v) { currentVnd += v; updateUI(); }
         function resetCalc() { currentVnd = 0; document.getElementById('btn-bargain').style.opacity = "1"; updateUI(); }
-        function applyBargain() {
-            if (currentVnd === 0) return;
-            triggerHaptic('medium');
-            currentVnd = Math.round(currentVnd * 0.6);
-            document.getElementById('btn-bargain').style.opacity = "0.5"; updateUI();
-        }
+        function applyBargain() { if (currentVnd === 0) return; triggerHaptic('medium'); currentVnd = Math.round(currentVnd * 0.6); document.getElementById('btn-bargain').style.opacity = "0.5"; updateUI(); }
 
         function updateClocks() {
             const now = new Date();
@@ -525,9 +496,11 @@
                 const temp = Math.round(d.current.temperature_2m);
                 document.getElementById('w-temp').innerText = temp + "°";
                 document.getElementById('w-feels').innerText = "FEELS " + Math.round(d.current.apparent_temperature) + "°";
-                document.getElementById('w-wind').innerText = d.current.wind_speed_10m + "m/s";
+                document.getElementById('w-wind').innerText = Math.round(d.current.wind_speed_10m) + "m/s";
                 document.getElementById('w-pop').innerText = d.daily.precipitation_probability_max[0] + "%";
                 document.getElementById('w-hum').innerText = d.current.relative_humidity_2m + "%";
+                document.getElementById('w-sunrise').innerText = new Date(d.daily.sunrise[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false, timeZone:'Asia/Ho_Chi_Minh'});
+                document.getElementById('w-sunset').innerText = new Date(d.daily.sunset[0]).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', hour12:false, timeZone:'Asia/Ho_Chi_Minh'});
                 document.getElementById('outfit-text').innerText = temp >= 25 ? "더운 날씨입니다. 얇은 반팔과 선글라스를 챙기세요." : "선선한 날씨입니다. 얇은 겉옷을 준비하세요.";
                 adjustMainPadding();
             } catch(e) {}
