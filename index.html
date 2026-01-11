@@ -22,6 +22,7 @@
             --smooth-ease: cubic-bezier(0.33, 1, 0.68, 1);
             --status-green: #34C759;
             --status-red: #FF3B30;
+            --hot-pink: #FF1493;
         }
 
         /* 6번 테마 적용: Cool Minimalism */
@@ -98,13 +99,23 @@
         .w-center .temp { font-size: 40px; color: var(--text-main); font-weight: 900; line-height: 1; letter-spacing: -1.5px; }
         .w-center .feels-like { font-size: 11px; color: var(--point-coral); margin-top: 4px; font-weight: 700; }
         
-        .dday-badge { font-size: 10px; font-weight: 900; color: #fff; padding: 6px 14px; border-radius: 25px; background: var(--point-coral); box-shadow: 0 4px 15px rgba(0, 191, 165, 0.3); }
+        /* D-DAY 하트 배지 텍스트 위치 최적화 */
+        .dday-badge { 
+            font-size: 10px; font-weight: 950; color: #fff; 
+            width: 58px; height: 41px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--hot-pink); 
+            clip-path: path('M29 9.5c-4.5-9-21-7-21 6 0 8.5 15 18.5 21 25 6-6.5 21-16.5 21-25 0-13-16.5-15-21-6z');
+            transform-origin: center;
+            padding-bottom: 6px; /* 텍스트를 위로 약간 올려 시각적 중앙을 맞춤 */
+            line-height: 1;
+        }
         
         .dday-excitement { animation: heartbeat 1.5s ease-in-out infinite; }
         @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); box-shadow: 0 0 20px var(--point-coral); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--hot-pink)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 15px var(--hot-pink)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--hot-pink)); }
         }
 
         .weather-extra { display: flex; justify-content: space-between; padding: 12px 8px; background: rgba(128,128,128,0.04); border-radius: 18px; margin-bottom: 12px; border: 1px solid rgba(128,128,128,0.05); }
@@ -462,7 +473,6 @@
                     const endVal = parseInt(e[0]) * 100 + parseInt(e[1]);
                     const isOpen = (currentHHMM >= startVal && currentHHMM <= endVal);
                     bizStatusHtml = isOpen ? '<div class="biz-status biz-open">영업 중</div>' : '<div class="biz-status biz-closed">영업 종료</div>';
-                    // 영업 텍스트 배지화 후 원본 텍스트에서는 제거 (괄호 포함)
                     cleanDesc = cleanDesc.replace(/\(영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}\)|영업:\d{1,2}:\d{2}-\d{1,2}:\d{2}/g, '').trim();
                 }
                 return `<div style="position:relative; padding-left:35px; padding-bottom:35px;"><div style="position:absolute; left:6px; top:22px; bottom:0; width:1.5px; background:rgba(0,0,0,0.1);"></div><div style="position:absolute; left:0; top:8px; width:12px; height:12px; border-radius:50%; background:var(--point-coral); box-shadow:0 0 12px var(--point-coral);"></div><div class="tl-content">${bizStatusHtml}<span style="font-size:11px; font-weight:800; color:var(--point-coral); margin-bottom:6px; display:block;">${item.time}</span><div style="font-weight:900; font-size:15px; padding-right:70px;">${item.title}</div><div style="font-size:12px; color:var(--text-sub); margin-top:6px; line-height:1.6;">${cleanDesc.replace(/\n/g, '<br>')}</div></div></div>`;
